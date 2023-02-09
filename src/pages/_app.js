@@ -37,13 +37,13 @@ export default function App({ Component, pageProps }) {
     } else {
       contractAddress = contractFilecoin;
     }
-
+  
     const ProjectFactoryContract = new ethers.Contract(
       contractAddress,
       abi.abi,
       signer
     );
-
+    
     setProvider(ProjectFactoryContract);
   };
 

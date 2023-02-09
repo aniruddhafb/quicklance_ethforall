@@ -5,12 +5,17 @@ import abi from "../../../artifacts/contracts/Project.sol/Project.json";
 
 const project = ({ signer }) => {
   const router = useRouter();
+  const [project, setProject] = useState();
   const { address } = router.query;
 
-  const fetch_project = async () => {};
-
+  const fetch_project_info = async () => {
+    if (signer && address) {
+      const project_info = new ethers.Contract(address, abi.abi, signer);
+      
+    }
+  };
   useEffect(() => {
-    fetch_project();
+    fetch_project_info();
   }, [address, signer]);
   return <div></div>;
 };
