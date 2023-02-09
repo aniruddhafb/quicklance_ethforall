@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 
 export default function App({ Component, pageProps }) {
   const contractMumbai = "0xC2aB8fbf39107c1bba09462509E8E206f7074b84";
-  const contractOptimism = "0x60E5aABd492a9c6479D74dCec24B0dAa78a89b0B";
+  const contractOptimism = "0xC2aB8fbf39107c1bba09462509E8E206f7074b84";
   const contractFilecoin = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
   const contractMantle = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
 
@@ -30,12 +30,12 @@ export default function App({ Component, pageProps }) {
     let chainIdMain = network.chainId;
     if (chainIdMain == 420) {
       contractAddress = contractOptimism;
-    } else if (chainIdMain == 80001) {
-      contractAddress = contractMumbai;
-    } else if (chainIdMain == 50001) {
+    } else if (chainIdMain == 3141) {
+      contractAddress = contractFilecoin;
+    } else if (chainIdMain == 5001) {
       contractAddress = contractMantle;
     } else {
-      contractAddress = contractFilecoin;
+      contractAddress = contractMumbai;
     }
 
     const ProjectFactoryContract = new ethers.Contract(

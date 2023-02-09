@@ -5,7 +5,9 @@ const userProfile = () => {
     const router = useRouter();
     const { walletAddress } = router.query
 
-    return <p>freelancer walletAddress is: {walletAddress}</p>
+    return (
+        <div className="h-[100vh] bg-[#111827] pt-6">freelancer walletAddress is: {walletAddress}</div>
+    )
 }
 
 export default userProfile
