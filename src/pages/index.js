@@ -17,7 +17,9 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <header className="bg-white dark:bg-gray-900">
+
+      {/* hero section  */}
+      <header className=" dark:bg-gray-900">
 
         <div className="container px-6 py-16 mx-auto">
           <div className="items-center lg:flex">
@@ -38,6 +40,93 @@ export default function Home() {
           </div>
         </div>
       </header >
+
+      {/* freelancers section  */}
+      <div className='bg-gray-300'>
+        <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+          <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
+            <div>
+              <p className="inline-block px-3 py-px mb-2 text-xs font-semibold tracking-wider text-teal-900 uppercase rounded-full bg-teal-accent-400">
+                Platform Verified
+              </p>
+            </div>
+            <h2 className="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
+              Top Freelancers
+            </h2>
+            <p className="text-base text-gray-700 md:text-lg">
+              Find the best person for your web3 work from experienced and verified freelancers
+            </p>
+          </div>
+          <div className="grid gap-10 row-gap-8 mx-auto sm:row-gap-10 lg:max-w-screen-lg sm:grid-cols-2 lg:grid-cols-3">
+            <div className="flex">
+              <img
+                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
+                src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=3&amp;h=750&amp;w=1260"
+                alt="Person"
+              />
+              <div className="flex flex-col justify-center">
+                <p className="text-lg font-bold">Oliver Aguilerra</p>
+                <p className="text-sm text-gray-800">React Dev</p>
+              </div>
+            </div>
+            <div className="flex">
+              <img
+                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
+                src="https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
+                alt="Person"
+              />
+              <div className="flex flex-col justify-center">
+                <p className="text-lg font-bold">Marta Clermont</p>
+                <p className="text-sm text-gray-800">Design Team Lead</p>
+              </div>
+            </div>
+            <div className="flex">
+              <img
+                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
+                src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
+                alt="Person"
+              />
+              <div className="flex flex-col justify-center">
+                <p className="text-lg font-bold">Anthony Geek</p>
+                <p className="text-sm text-gray-800">CTO, Lorem Inc.</p>
+              </div>
+            </div>
+            <div className="flex">
+              <img
+                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
+                src="https://images.pexels.com/photos/3747435/pexels-photo-3747435.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
+                alt="Person"
+              />
+              <div className="flex flex-col justify-center">
+                <p className="text-lg font-bold">Alice Melbourne</p>
+                <p className="text-sm text-gray-800">Human Resources</p>
+              </div>
+            </div>
+            <div className="flex">
+              <img
+                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
+                src="https://images.pexels.com/photos/3785077/pexels-photo-3785077.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;w=500"
+                alt="Person"
+              />
+              <div className="flex flex-col justify-center">
+                <p className="text-lg font-bold">Martin Garix</p>
+                <p className="text-sm text-gray-800">Bad boy</p>
+              </div>
+            </div>
+            <div className="flex">
+              <img
+                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
+                src="https://images.pexels.com/photos/3931603/pexels-photo-3931603.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
+                alt="Person"
+              />
+              <div className="flex flex-col justify-center">
+                <p className="text-lg font-bold">Andrew Larkin</p>
+                <p className="text-sm text-gray-800">Backend Developer</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   )
 }
