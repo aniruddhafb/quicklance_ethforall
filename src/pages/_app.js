@@ -6,7 +6,7 @@ import abi from "../../artifacts/contracts/ProjectFactory.sol/ProjectFactory.jso
 import Footer from "@/components/Footer";
 
 export default function App({ Component, pageProps }) {
-  const contractMumbai = "0x067Bf3A474F54BCe1e0818FFb95FEDF99d100Af2";
+  const contractMumbai = "0xC2aB8fbf39107c1bba09462509E8E206f7074b84";
   const contractOptimism = "0x60E5aABd492a9c6479D74dCec24B0dAa78a89b0B";
   const contractFilecoin = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
   const contractMantle = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
@@ -30,14 +30,11 @@ export default function App({ Component, pageProps }) {
     let chainIdMain = network.chainId;
     if (chainIdMain == 420) {
       contractAddress = contractOptimism;
-    }
-    else if (chainIdMain == 80001) {
+    } else if (chainIdMain == 80001) {
       contractAddress = contractMumbai;
-    }
-    else if (chainIdMain == 50001) {
+    } else if (chainIdMain == 50001) {
       contractAddress = contractMantle;
-    }
-    else {
+    } else {
       contractAddress = contractFilecoin;
     }
 
@@ -46,6 +43,7 @@ export default function App({ Component, pageProps }) {
       abi.abi,
       signer
     );
+
     setProvider(ProjectFactoryContract);
   };
 
@@ -61,7 +59,11 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
-      <Navbar connectToContract={connectToContract} userAddress={userAddress} provider={provider} />
+      <Navbar
+        connectToContract={connectToContract}
+        userAddress={userAddress}
+        provider={provider}
+      />
       <Component
         {...pageProps}
         provider={provider}
