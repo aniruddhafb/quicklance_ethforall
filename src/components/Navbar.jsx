@@ -28,7 +28,7 @@ const Navbar = ({ connectToContract, userAddress }) => {
 
   useEffect(() => {
     connectToWallet();
-  });
+  }, []);
 
   // switch or add chain mainnets
   const switchoptimismChain = async () => {

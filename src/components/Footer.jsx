@@ -16,7 +16,7 @@ const Footer = () => {
         <div className="flex -mx-2">
           <a
             href="https://github.com/aniruddhafb/quicklance_ethforall"
-            target="_blank"
+            target="_blank" rel="noreferrer"
             className="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
             aria-label="Github"
           >
