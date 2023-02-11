@@ -82,9 +82,7 @@ const projects = ({ provider }) => {
                 {e.title}
               </h1>
               <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Assumenda quasi expedita odio consectetur quaerat minima
-                molestiae necessitatibus. Labore, deleniti in.
+                {e.description}
               </p>
             </div>
             <div class="flex flex-row px-4">
