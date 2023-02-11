@@ -11,6 +11,7 @@ export default function App({ Component, pageProps }) {
   const contractFilecoin = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
   const contractMantle = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
 
+
   const [provider, setProvider] = useState(null);
   const [userAddress, setUserAddress] = useState("");
   const [signer, setSigner] = useState();
@@ -37,13 +38,13 @@ export default function App({ Component, pageProps }) {
     } else {
       contractAddress = contractMumbai;
     }
-  
+
     const ProjectFactoryContract = new ethers.Contract(
       contractAddress,
       abi.abi,
       signer
     );
-    
+
     setProvider(ProjectFactoryContract);
   };
 
@@ -55,7 +56,7 @@ export default function App({ Component, pageProps }) {
     }
 
     connectToContract();
-  }, [userAddress]);
+  }, []);
 
   return (
     <>

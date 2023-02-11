@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
 
 const createProject = ({ provider }) => {
+  
   const [data, setData] = useState({
     title: "",
     description: "",

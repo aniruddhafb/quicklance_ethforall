@@ -8,13 +8,14 @@ import optimismPng from "../../public/images/optimism.png";
 import filPng from "../../public/images/fil.png";
 import mantlePng from "../../public/images/mantle.png";
 import { BsChevronDown } from "react-icons/bs";
-
+import { useDispatch } from "react-redux";
 
 const Navbar = ({ connectToContract, userAddress }) => {
   const [showProfile, SetShowProfile] = useState(false);
   const [chainIdMain, setChainIdMain] = useState();
   const [showNetworkPopup, setShowNetworkPopup] = useState(false);
   const [navDropDown, setnavDropDown] = useState(true);
+
   const connectToWallet = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
 
@@ -28,7 +29,7 @@ const Navbar = ({ connectToContract, userAddress }) => {
 
   useEffect(() => {
     connectToWallet();
-  });
+  }, []);
 
   // switch or add chain mainnets
   const switchoptimismChain = async () => {
@@ -207,7 +208,9 @@ const Navbar = ({ connectToContract, userAddress }) => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   strokeWidth="2"
-                  onClick={() => { setnavDropDown(!navDropDown) }}
+                  onClick={() => {
+                    setnavDropDown(!navDropDown);
+                  }}
                 >
                   <path
                     strokeLinecap="round"
@@ -235,9 +238,8 @@ const Navbar = ({ connectToContract, userAddress }) => {
             </div>
           </div>
 
-
           {/* navbar drop down  */}
-          {navDropDown ?
+          {navDropDown ? (
             <div className="absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white dark:bg-gray-800 lg:mt-0 lg:p-0 lg:top-0 lg:relative lg:bg-transparent lg:w-auto lg:opacity-100 lg:translate-x-0 lg:flex lg:items-center">
               <div className="flex flex-col -mx-6 lg:flex-row lg:items-center lg:mx-8">
                 <Link
@@ -264,13 +266,19 @@ const Navbar = ({ connectToContract, userAddress }) => {
                 <div className="flex flex-row">
                   <div className="relative mr-20 z-[100]">
                     {/* network nav div  */}
-                    <button onClick={() => setShowNetworkPopup(!showNetworkPopup)} className="relative hidden sm:block">
-                      <div
-                        className="flex flex-row justify-center align-middle w-[200px]"
-                      >
+                    <button
+                      onClick={() => setShowNetworkPopup(!showNetworkPopup)}
+                      className="relative hidden sm:block"
+                    >
+                      <div className="flex flex-row justify-center align-middle w-[200px]">
                         {chainIdMain == 420 && (
                           <>
-                            <Image src={optimismPng} height={25} width={35} alt="ethPng" />
+                            <Image
+                              src={optimismPng}
+                              height={25}
+                              width={35}
+                              alt="ethPng"
+                            />
                             <p className="pl-1 pr-2 mt-1 font-bold text-white">
                               Optimism
                             </p>
@@ -279,7 +287,12 @@ const Navbar = ({ connectToContract, userAddress }) => {
                         )}
                         {chainIdMain == 80001 && (
                           <>
-                            <Image src={polygonPng} height={20} width={30} alt="maticPng" />
+                            <Image
+                              src={polygonPng}
+                              height={20}
+                              width={30}
+                              alt="maticPng"
+                            />
                             <p className="pl-1 pr-2 mt-1 font-bold text-white">
                               Polygon
                             </p>
@@ -288,7 +301,12 @@ const Navbar = ({ connectToContract, userAddress }) => {
                         )}
                         {chainIdMain == 3141 && (
                           <>
-                            <Image src={filPng} height={25} width={35} alt="filPng" />
+                            <Image
+                              src={filPng}
+                              height={25}
+                              width={35}
+                              alt="filPng"
+                            />
                             <p className="pl-1 pr-2 mt-1 font-bold text-white">
                               Filecoin
                             </p>
@@ -297,7 +315,12 @@ const Navbar = ({ connectToContract, userAddress }) => {
                         )}
                         {chainIdMain == 5001 && (
                           <>
-                            <Image src={mantlePng} height={25} width={35} alt="filPng" />
+                            <Image
+                              src={mantlePng}
+                              height={25}
+                              width={35}
+                              alt="filPng"
+                            />
                             <p className="pl-1 pr-2 mt-1 font-bold text-white">
                               Mantle
                             </p>
@@ -308,14 +331,19 @@ const Navbar = ({ connectToContract, userAddress }) => {
                     </button>
 
                     {/* network drop down  */}
-                    {showNetworkPopup &&
+                    {showNetworkPopup && (
                       <div className="flex flex-col justify-center w-[200px] absolute top-[24px] right-0 mt-7 shadow-lg bg-gray-800 z-10 text-sm shadow-4xl rounded-b-lg cursor-pointer">
                         {chainIdMain != 420 && (
                           <div
                             className="flex flex-row justify-center mt-4 mb-2"
                             onClick={() => switchoptimismChain()}
                           >
-                            <Image src={optimismPng} height={25} width={35} alt="ethPng" />
+                            <Image
+                              src={optimismPng}
+                              height={25}
+                              width={35}
+                              alt="ethPng"
+                            />
                             <p className="pl-1 pr-2 mt-1 font-bold text-white">
                               Optimism
                             </p>
@@ -326,7 +354,12 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             className="flex flex-row justify-center mt-4 mb-2"
                             onClick={() => switchFilChain()}
                           >
-                            <Image src={filPng} height={25} width={35} alt="filPng" />
+                            <Image
+                              src={filPng}
+                              height={25}
+                              width={35}
+                              alt="filPng"
+                            />
                             <p className="pl-1 pr-2 mt-1 font-bold text-white">
                               Filecoin
                             </p>
@@ -337,7 +370,12 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             className="flex flex-row justify-center mt-2 mb-4"
                             onClick={() => switchPolygonChain()}
                           >
-                            <Image src={polygonPng} height={20} width={30} alt="maticPng" />
+                            <Image
+                              src={polygonPng}
+                              height={20}
+                              width={30}
+                              alt="maticPng"
+                            />
                             <p className="pl-1 pr-2 mt-1 font-bold text-white">
                               Polygon
                             </p>
@@ -348,17 +386,21 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             className="flex flex-row justify-center mt-2 mb-4"
                             onClick={() => switchMantleChain()}
                           >
-                            <Image src={mantlePng} height={20} width={30} alt="maticPng" />
+                            <Image
+                              src={mantlePng}
+                              height={20}
+                              width={30}
+                              alt="maticPng"
+                            />
                             <p className="pl-1 pr-2 mt-1 font-bold text-white">
                               Mantle
                             </p>
                           </div>
                         )}
-                      </div>}
-
+                      </div>
+                    )}
                   </div>
                   <div className="relative flex items-center mt-4 lg:mt-0">
-
                     {/* notification button  */}
                     <button
                       className="hidden mx-4 text-gray-600 transition-colors duration-300 transform lg:block dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-400 focus:text-gray-700 dark:focus:text-gray-400 focus:outline-none"
@@ -533,8 +575,9 @@ const Navbar = ({ connectToContract, userAddress }) => {
                 </div>
               )}
             </div>
-            : ""}
-
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </nav>
