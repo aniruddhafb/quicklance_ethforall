@@ -211,7 +211,6 @@ const project = ({ userAddress, signer, provider }) => {
                         >
                           <button class="flex items-center gap-x-2">
                             <span>Status</span>
-
                             <svg
                               class="h-3"
                               viewBox="0 0 10 11"
