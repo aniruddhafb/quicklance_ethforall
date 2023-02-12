@@ -140,7 +140,7 @@ const project = ({ userAddress, signer, provider }) => {
                 </button>
               </div>
             </div>
-            {/* <Image src={projectOverview.images} alt="herImage" height={100} width={100} className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" /> */}
+            {/* <Image src={ipfsNewURL} alt="herImage" height={100} width={100} className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" /> */}
           </div>
         </div>
 
