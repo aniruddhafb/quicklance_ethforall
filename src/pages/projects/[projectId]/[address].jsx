@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ethers } from "ethers";
 import abi from "../../../../artifacts/contracts/Project.sol/Project.json";
+import Image from "next/image";
 
 const project = ({ userAddress, signer, provider }) => {
   const router = useRouter();
@@ -80,7 +81,6 @@ const project = ({ userAddress, signer, provider }) => {
     const date = new Date();
     const date_of_completion = date.getTime(proposalData.completion_date);
     const txn = await project_info.createProposal(
-      proposalData.title,
       proposalData.description,
       ethers.utils.parseEther(proposalData.amount),
       date_of_completion
@@ -99,6 +99,12 @@ const project = ({ userAddress, signer, provider }) => {
     }
   }, [provider]);
 
+  let ipfsURL = projectOverview.images;
+  let ipfsNewURL = ipfsURL.replace(
+    "ipfs://",
+    "https://gateway.ipfscdn.io/ipfs/"
+  );
+
   return (
     <>
       <section className="text-gray-400 bg-gray-900 body-font overflow-hidden relative">
@@ -109,7 +115,6 @@ const project = ({ userAddress, signer, provider }) => {
               <h1 className="text-white text-3xl title-font font-medium mb-4">{projectOverview.title}</h1>
               <div className="flex mb-4">
                 <a className="flex-grow text-indigo-400 border-b-2 border-indigo-500 py-2 text-lg px-1">Description</a>
-                <a className="flex-grow border-b-2 border-gray-800 py-2 text-lg px-1">Coatations</a>
                 <a className="flex-grow border-b-2 border-gray-800 py-2 text-lg px-1">Other Details</a>
               </div>
               <p className="leading-relaxed mb-4">{projectOverview.description}</p>
@@ -122,8 +127,8 @@ const project = ({ userAddress, signer, provider }) => {
                 <span className="ml-auto text-white">{projectOverview.deadLine.toString()}</span>
               </div>
               <div className="flex border-t border-b mb-6 border-gray-800 py-2">
-                <span className="text-gray-500">Total Coatations</span>
-                <span className="ml-auto text-white">20</span>
+                <span className="text-gray-500">Detailed Info</span>
+                <span className="ml-auto text-white"><a href="">View PDF</a></span>
               </div>
               <div className="flex">
                 {/* <span className="title-font font-medium text-2xl text-white">$58.00</span> */}
@@ -135,9 +140,108 @@ const project = ({ userAddress, signer, provider }) => {
                 </button>
               </div>
             </div>
-            <img alt="ecommerce" className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="https://dummyimage.com/400x400" />
+            {/* <Image src={projectOverview.images} alt="herImage" height={100} width={100} className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" /> */}
           </div>
         </div>
+
+        {/* all proposals section */}
+        <section class="container px-4 mx-auto mb-40">
+          <div class="flex items-center gap-x-3">
+            <h2 class="text-lg font-medium text-gray-800 dark:text-white">All Proposals</h2>
+
+            <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">3</span>
+          </div>
+
+          <div class="flex flex-col mt-6">
+            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+                  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-800">
+                      <tr>
+                        <th scope="col" class="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                          <div class="flex items-center gap-x-3">
+                            <span>Name</span>
+                          </div>
+                        </th>
+
+                        <th scope="col" class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                          <button class="flex items-center gap-x-2">
+                            <span>Status</span>
+
+                            <svg class="h-3" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M2.13347 0.0999756H2.98516L5.01902 4.79058H3.86226L3.45549 3.79907H1.63772L1.24366 4.79058H0.0996094L2.13347 0.0999756ZM2.54025 1.46012L1.96822 2.92196H3.11227L2.54025 1.46012Z" fill="currentColor" stroke="currentColor" stroke-width="0.1" />
+                              <path d="M0.722656 9.60832L3.09974 6.78633H0.811638V5.87109H4.35819V6.78633L2.01925 9.60832H4.43446V10.5617H0.722656V9.60832Z" fill="currentColor" stroke="currentColor" stroke-width="0.1" />
+                              <path d="M8.45558 7.25664V7.40664H8.60558H9.66065C9.72481 7.40664 9.74667 7.42274 9.75141 7.42691C9.75148 7.42808 9.75146 7.42993 9.75116 7.43262C9.75001 7.44265 9.74458 7.46304 9.72525 7.49314C9.72522 7.4932 9.72518 7.49326 9.72514 7.49332L7.86959 10.3529L7.86924 10.3534C7.83227 10.4109 7.79863 10.418 7.78568 10.418C7.77272 10.418 7.73908 10.4109 7.70211 10.3534L7.70177 10.3529L5.84621 7.49332C5.84617 7.49325 5.84612 7.49318 5.84608 7.49311C5.82677 7.46302 5.82135 7.44264 5.8202 7.43262C5.81989 7.42993 5.81987 7.42808 5.81994 7.42691C5.82469 7.42274 5.84655 7.40664 5.91071 7.40664H6.96578H7.11578V7.25664V0.633865C7.11578 0.42434 7.29014 0.249976 7.49967 0.249976H8.07169C8.28121 0.249976 8.45558 0.42434 8.45558 0.633865V7.25664Z" fill="currentColor" stroke="currentColor" stroke-width="0.3" />
+                            </svg>
+                          </button>
+                        </th>
+
+                        <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                          <button class="flex items-center gap-x-2">
+                            <span>Budget</span>
+                          </button>
+                        </th>
+
+                        <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Description</th>
+                        {project_owner === userAddress ? (
+                          <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Action</th>
+                        ) : (
+                          ""
+                        )}
+                      </tr>
+                    </thead>
+                    {all_proposals.map((e) => {
+                      let date = new Date();
+                      let completionDate = date.toISOString(
+                        e.time_of_completion.toString()
+                      );
+                      return (
+                        <tbody key={e.id} class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                          <tr>
+                            <td class="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                              <div class="inline-flex items-center gap-x-3">
+
+                                <div class="flex items-center gap-x-2">
+                                  <img class="object-cover w-10 h-10 rounded-full" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="" />
+                                  <div>
+                                    <h2 class="font-medium text-gray-800 dark:text-white ">shravan</h2>
+                                    <p class="text-sm font-normal text-gray-600 dark:text-gray-400">@srha</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td class="px-12 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                              <div class="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+
+                                <h2 class="text-sm font-normal text-emerald-500">Active</h2>
+                              </div>
+                            </td>
+                            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{e.budget}</td>
+                            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{e.description}</td>
+                            {project_owner === userAddress ? (
+                              <td class="px-4 py-4 text-sm whitespace-nowrap">
+                                <div class="flex items-center gap-x-2">
+                                  <button onClick={() => accept_proposal(e.id)}>
+                                    <p class="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">Accept</p>
+                                  </button>
+                                  <p class="px-3 py-1 text-xs text-pink-500 rounded-full dark:bg-gray-800 bg-pink-100/60">Reject</p>
+                                </div>
+                              </td>
+                            ) : (
+                              ""
+                            )}
+                          </tr>
+                        </tbody>
+                      );
+                    })}
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </section >
 
       {/* create proposal box */}
@@ -152,37 +256,25 @@ const project = ({ userAddress, signer, provider }) => {
 
               <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-900 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
                 <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white" id="modal-title">
-                  Invite your team
+                  Create a proposal
                 </h3>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  Your new project has been created. Invite your
-                  team to collaborate on this project.
+                  Create a coat by adding your coatation, description and deadline for the project
                 </p>
 
-                <form className="mt-4" action="#">
-                  <label for="emails-list" className="text-sm text-gray-700 dark:text-gray-200">
-                    Email address
+                <form className="mt-4" action="#" onSubmit={handleSubmit}>
+
+                  <label className="block mt-3" for="amount">
+                    <input step="any" required onChange={onChangeProposal} type="number" name="amount" id="coatation" placeholder="enter your coatation" className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
                   </label>
 
-                  <label className="block mt-3" for="email">
-                    <input type="email" name="email" id="email" placeholder="user@email.xyz" value="devdhaif@gmail.com" className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+                  <label className="block mt-3" for="description">
+                    <textarea required onChange={onChangeProposal} name="description" placeholder="Mention your tech stack and other requirements" id="description" cols="10" rows="4" className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"></textarea>
                   </label>
 
-                  <label className="block mt-3" for="email">
-                    <input type="email" name="email" id="email" placeholder="user@email.xyz" className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+                  <label className="block mt-3" for="completion_date">
+                    <input required onChange={onChangeProposal} type="date" name="completion_date" id="deadline" placeholder="deadline" className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
                   </label>
-
-                  <label className="block mt-3" for="email">
-                    <input type="email" name="email" id="email" placeholder="user@email.xyz" className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
-                  </label>
-
-                  <button type="button" className="mt-2 flex items-center rounded py-1.5 px-2 text-sm text-blue-600 transition-colors duration-300 hover:text-blue-400 focus:outline-none dark:text-blue-400 dark:hover:text-blue-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-
-                    <span className="mx-2">Add another</span>
-                  </button>
 
 
                   <div className="mt-4 sm:flex sm:items-center sm:-mx-2">
@@ -190,8 +282,8 @@ const project = ({ userAddress, signer, provider }) => {
                       Cancel
                     </button>
 
-                    <button type="button" className="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
-                      Send invites
+                    <button type="submit" className="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
+                      Create Proposal
                     </button>
                   </div>
                 </form>
@@ -201,8 +293,8 @@ const project = ({ userAddress, signer, provider }) => {
         </div>
       }
 
-      {/* main  */}
-      < div >
+      {/* testing  */}
+      {/* < div >
         <img src={projectOverview.images} alt="" />
         <div>
           <h1>{projectOverview.title}</h1>
@@ -271,7 +363,7 @@ const project = ({ userAddress, signer, provider }) => {
             </div>
           )}
         </div>
-      </div >
+      </div > */}
     </>
   );
 };
