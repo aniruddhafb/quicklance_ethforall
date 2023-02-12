@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\shrav\\Desktop\\Quicklance\\quicklance_ethforall\\contracts\\Project.sol": {
-      "lastModificationDate": 1675774197175,
-      "contentHash": "81514e95a73d3830120b6685967e1d95",
+      "lastModificationDate": 1676127258151,
+      "contentHash": "e876338eed2863510c91dff79b5e6c48",
       "sourceName": "contracts/Project.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -74,8 +74,8 @@
       ]
     },
     "C:\\Users\\shrav\\Desktop\\Quicklance\\quicklance_ethforall\\contracts\\ProjectFactory.sol": {
-      "lastModificationDate": 1675774197175,
-      "contentHash": "82e0efdd1648ea815f636fc1c17cafee",
+      "lastModificationDate": 1676126856322,
+      "contentHash": "928c1f7d88c415986efe27f8e52d83a0",
       "sourceName": "contracts/ProjectFactory.sol",
       "solcConfig": {
         "version": "0.8.17",

@@ -16,7 +16,9 @@ contract ProjectFactory {
     struct ProjectInfo {
         uint256 id;
         string title;
+        string short_description;
         string description;
+        string pdf;
         string images;
         uint256 budget;
         uint256 time;
@@ -28,7 +30,9 @@ contract ProjectFactory {
     event ProjectCreated(
         uint256 id,
         string title,
+        string short_description,
         string description,
+        string pdf,
         string images,
         uint256 budget,
         uint256 time,
@@ -42,7 +46,9 @@ contract ProjectFactory {
 
     function createProject(
         string memory _title,
+        string memory _short_description,
         string memory _description,
+        string memory _pdf,
         string memory _images,
         uint256 _budget,
         uint256 _deadline
@@ -60,7 +66,9 @@ contract ProjectFactory {
         ProjectInfo memory project = ProjectInfo(
             id,
             _title,
+            _short_description,
             _description,
+            _pdf,
             _images,
             _budget,
             block.timestamp,
@@ -74,7 +82,9 @@ contract ProjectFactory {
         emit ProjectCreated(
             id,
             _title,
+            _short_description,
             _description,
+            _pdf,
             _images,
             _budget,
             block.timestamp,

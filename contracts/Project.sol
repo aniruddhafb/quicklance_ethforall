@@ -23,7 +23,6 @@ contract Project {
 
     struct Proposal {
         uint256 id;
-        string title;
         string description;
         address payable owner;
         uint256 asked_amount;
@@ -36,7 +35,6 @@ contract Project {
 
     event ProposalCreated(
         uint256 id,
-        string title,
         string description,
         address payable owner,
         uint256 asked_amount,
@@ -62,8 +60,8 @@ contract Project {
         _;
     }
 
+    //Implemented
     function createProposal(
-        string memory _title,
         string memory _description,
         uint256 _amount,
         uint256 _time_of_completion
@@ -80,7 +78,6 @@ contract Project {
         uint256 _proposalId = proposalId.current();
         Proposal memory newProposal = Proposal(
             _proposalId,
-            _title,
             _description,
             payable(msg.sender),
             _amount,
@@ -95,7 +92,6 @@ contract Project {
         proposalId.increment();
         emit ProposalCreated(
             _proposalId,
-            _title,
             _description,
             payable(msg.sender),
             _amount,
@@ -107,6 +103,7 @@ contract Project {
         );
     }
 
+    //Implemented
     function approveProposal(uint256 _proposaId) public onlyOwner {
         Proposal storage proposal = proposals[_proposaId];
         require(
@@ -118,7 +115,7 @@ contract Project {
             "Only Project Owner Can Aprove The Proposals"
         );
         require(
-            block.timestamp > projectDeadline,
+            block.timestamp < projectDeadline,
             "This Project Is Already Completed You Cannot Make Anymore Approvals"
         );
         proposal.approvalDate = block.timestamp;
@@ -127,6 +124,7 @@ contract Project {
         selectedProposal = proposal;
         is_freelancer_occupied[msg.sender] = true;
     }
+
 
     function markProjectAsComplete() public {
         require(
@@ -178,6 +176,7 @@ contract Project {
         return markAsComplete[selectedProposal.owner];
     }
 
+    //Implemented
     function getProposals() public view returns (Proposal[] memory) {
         uint256 currentProposalCount = proposalId.current();
         Proposal[] memory allProposals = new Proposal[](currentProposalCount);
