@@ -3,13 +3,14 @@ import { ethers } from "ethers";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
 
 const createProject = ({ provider }) => {
-  
   const [data, setData] = useState({
     title: "",
+    short_desc: "",
     description: "",
     budget: "",
     deadline: "",
-    images: [],
+    pdf: "",
+    image: [],
   });
   const storage = new ThirdwebStorage();
 
@@ -19,39 +20,42 @@ const createProject = ({ provider }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(data);
     if (
       !data.title &&
       !data.description &&
       !data.budget &&
       !data.deadline &&
-      !data.images
+      !data.image
     )
       return alert("Please Fill Out The Complete Form");
     let date = new Date();
     let deadline_date = date.getTime(data.budget);
 
-    const ipfs_image = storage.upload(data.images);
+    const ipfs_pdf = storage.upload(data.pdf);
+    const ipfs_image = storage.upload(data.image);
+    const ipfs_url = await Promise.all([ipfs_pdf, ipfs_image]);
 
     const txn = await provider.createProject(
       data.title,
       data.description,
-      ipfs_image,
+      ipfs_url[0],
+      ipfs_url[1],
       ethers.utils.parseEther(data.budget),
       deadline_date,
       {
         value: ethers.utils.parseEther(data.budget),
       }
     );
-
     console.log(txn);
   };
 
   return (
     <div className="h-[100vh] bg-[#111827] pt-6">
       <section className="max-w-4xl p-6 mx-auto my-20 rounded-md shadow-md dark:bg-gray-800">
-        < h2 className="text-lg font-semibold text-gray-700 capitalize dark:text-white" >
+        <h2 className="text-lg font-semibold text-gray-700 capitalize dark:text-white">
           Create Project
-        </h2 >
+        </h2>
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
@@ -82,7 +86,7 @@ const createProject = ({ provider }) => {
               </label>
               <input
                 onChange={onChange}
-                name="description"
+                name="short_desc"
                 id="description"
                 type="text"
                 className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
@@ -99,7 +103,7 @@ const createProject = ({ provider }) => {
               </label>
               <textarea
                 onChange={onChange}
-                name="longDesc"
+                name="description"
                 id="description"
                 type="text"
                 className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
@@ -150,7 +154,7 @@ const createProject = ({ provider }) => {
                 Upload Reference PDF *
               </label>
               <input
-                // onChange={(e) => setData({ ...data, images: e.target.files[0] })}
+                onChange={(e) => setData({ ...data, pdf: e.target.files[0] })}
                 id="pdf"
                 name="pdf"
                 type="file"
@@ -166,9 +170,9 @@ const createProject = ({ provider }) => {
               Upload Cover Image*
             </label>
             <input
-              onChange={(e) => setData({ ...data, images: e.target.files[0] })}
+              onChange={(e) => setData({ ...data, image: e.target.files[0] })}
               id="images"
-              name="images"
+              name="image"
               type="file"
               className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
             />
@@ -183,7 +187,7 @@ const createProject = ({ provider }) => {
             </button>
           </div>
         </form>
-      </section >
+      </section>
     </div>
   );
 };
