@@ -9,12 +9,35 @@ import filPng from "../../public/images/fil.png";
 import mantlePng from "../../public/images/mantle.png";
 import { BsChevronDown } from "react-icons/bs";
 import { useDispatch } from "react-redux";
+import * as PushAPI from "@pushprotocol/restapi";
+
 
 const Navbar = ({ connectToContract, userAddress }) => {
+  const [showNotifications, SetShowNotifications] = useState(false);
   const [showProfile, SetShowProfile] = useState(false);
-  const [chainIdMain, setChainIdMain] = useState();
   const [showNetworkPopup, setShowNetworkPopup] = useState(false);
+
+  const [notificationData, setNotificationData] = useState();
+  const [chainIdMain, setChainIdMain] = useState();
   const [navDropDown, setnavDropDown] = useState(true);
+  const [currentAddress, setCurrentAddress] = useState();
+
+
+  async function pushInitiate() {
+    setCurrentAddress(userAddress);
+    const notifications = await PushAPI.user.getFeeds({
+      // user: 'eip155:137:${currentAddress}',
+      user: 'eip155:137:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
+      env: 'staging'
+    });
+    setNotificationData(notifications);
+    console.log(notifications);
+
+    // const subscriptions = await PushAPI.user.getSubscriptions({
+    //   user: 'eip155:137:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
+    //   env: 'staging'
+    // });
+  }
 
   const connectToWallet = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
@@ -29,6 +52,7 @@ const Navbar = ({ connectToContract, userAddress }) => {
 
   useEffect(() => {
     connectToWallet();
+    pushInitiate();
   }, []);
 
   // switch or add chain mainnets
@@ -403,6 +427,7 @@ const Navbar = ({ connectToContract, userAddress }) => {
                   <div className="relative flex items-center mt-4 lg:mt-0">
                     {/* notification button  */}
                     <button
+                      onClick={() => SetShowNotifications(!showNotifications)}
                       className="hidden mx-4 text-gray-600 transition-colors duration-300 transform lg:block dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-400 focus:text-gray-700 dark:focus:text-gray-400 focus:outline-none"
                       aria-label="show notifications"
                     >
@@ -422,6 +447,28 @@ const Navbar = ({ connectToContract, userAddress }) => {
                       </svg>
                     </button>
 
+                    {showNotifications &&
+                      <div className="relative inline-block">
+                        <div
+                          class="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800"
+                        >
+                          {notificationData.map((e) => {
+                            return (
+                              <div key={e.sid}>
+                                <a href="#" class="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700">
+                                  <img class="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full" src={e.image} alt="avatar" />
+                                  <p class="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
+                                    <a class="font-bold text-[12px]" href={e.cta} target="_blank" >{e.notification.title}</a>
+                                    <span class="font-mono text-[10px]">{e.notification.body}</span>
+                                  </p>
+                                </a>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    }
+
                     {/* profile button  */}
                     <button
                       type="button"
@@ -440,10 +487,10 @@ const Navbar = ({ connectToContract, userAddress }) => {
                     </button>
 
                     {showProfile && (
-                      <div class="absolute left-[-60px] top-11 w-56 py-2 mt-2 overflow-hidden origin-top-right bg-white rounded-md shadow-xl dark:bg-gray-800">
+                      <div className="absolute left-[-60px] top-11 w-56 py-2 mt-2 overflow-hidden origin-top-right bg-white rounded-md shadow-xl dark:bg-gray-800">
                         <a
                           href="#"
-                          class="flex items-center p-3 -mt-2 text-sm text-gray-600 transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 -mt-2 text-sm text-gray-600 transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <Image
                             src={profileImg}
@@ -451,22 +498,22 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             width={40}
                             alt="avatar"
                           />
-                          <div class="mx-1">
-                            {/* <h1 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Jane Doe</h1> */}
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                          <div className="mx-1">
+                            {/* <h1 className="text-sm font-semibold text-gray-700 dark:text-gray-200">Jane Doe</h1> */}
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
                               {userAddress}
                             </p>
                           </div>
                         </a>
 
-                        <hr class="border-gray-200 dark:border-gray-700 " />
+                        <hr className="border-gray-200 dark:border-gray-700 " />
 
                         <Link
                           href={`/freelancers/${userAddress}`}
-                          class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-                            class="w-5 h-5 mx-1"
+                            className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -481,15 +528,15 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             ></path>
                           </svg>
 
-                          <span class="mx-1">view profile</span>
+                          <span className="mx-1">view profile</span>
                         </Link>
 
                         <Link
                           href="/create/create-profile"
-                          class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-                            class="w-5 h-5 mx-1"
+                            className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -500,15 +547,15 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             ></path>
                           </svg>
 
-                          <span class="mx-1">Edit Profile</span>
+                          <span className="mx-1">Edit Profile</span>
                         </Link>
 
                         <Link
                           href="/create/create-project"
-                          class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-                            class="w-5 h-5 mx-1"
+                            className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -519,15 +566,15 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             ></path>
                           </svg>
 
-                          <span class="mx-1">Create Project</span>
+                          <span className="mx-1">Create Project</span>
                         </Link>
 
                         <Link
                           href="/create/create-job"
-                          class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-                            class="w-5 h-5 mx-1"
+                            className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -538,16 +585,16 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             ></path>
                           </svg>
 
-                          <span class="mx-1">Create Job</span>
+                          <span className="mx-1">Create Job</span>
                         </Link>
 
-                        <hr class="border-gray-200 dark:border-gray-700 " />
+                        <hr className="border-gray-200 dark:border-gray-700 " />
                         <a
                           href="#"
-                          class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-                            class="w-5 h-5 mx-1"
+                            className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -558,7 +605,7 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             ></path>
                           </svg>
 
-                          <span class="mx-1">Sign Out</span>
+                          <span className="mx-1">Sign Out</span>
                         </a>
                       </div>
                     )}

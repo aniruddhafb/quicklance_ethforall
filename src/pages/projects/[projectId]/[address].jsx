@@ -178,41 +178,41 @@ const project = ({ userAddress, signer, provider }) => {
         </div>
 
         {/* all proposals section */}
-        <section class="container px-4 mx-auto mb-40">
-          <div class="flex items-center gap-x-3">
-            <h2 class="text-lg font-medium text-gray-800 dark:text-white">
+        <section className="container px-4 mx-auto mb-40">
+          <div className="flex items-center gap-x-3">
+            <h2 className="text-lg font-medium text-gray-800 dark:text-white">
               All Proposals
             </h2>
 
-            <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">
+            <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">
               3
             </span>
           </div>
 
-          <div class="flex flex-col mt-6">
-            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-              <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
-                  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-gray-800">
+          <div className="flex flex-col mt-6">
+            <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
                         <th
                           scope="col"
-                          class="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                         >
-                          <div class="flex items-center gap-x-3">
+                          <div className="flex items-center gap-x-3">
                             <span>Name</span>
                           </div>
                         </th>
 
                         <th
                           scope="col"
-                          class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                         >
-                          <button class="flex items-center gap-x-2">
+                          <button className="flex items-center gap-x-2">
                             <span>Status</span>
                             <svg
-                              class="h-3"
+                              className="h-3"
                               viewBox="0 0 10 11"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
@@ -241,23 +241,23 @@ const project = ({ userAddress, signer, provider }) => {
 
                         <th
                           scope="col"
-                          class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                         >
-                          <button class="flex items-center gap-x-2">
+                          <button className="flex items-center gap-x-2">
                             <span>Budget</span>
                           </button>
                         </th>
 
                         <th
                           scope="col"
-                          class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                         >
                           Description
                         </th>
                         {project_owner === userAddress ? (
                           <th
                             scope="col"
-                            class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                            className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                           >
                             Action
                           </th>
@@ -274,52 +274,52 @@ const project = ({ userAddress, signer, provider }) => {
                       return (
                         <tbody
                           key={e.id}
-                          class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900"
+                          className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900"
                         >
                           <tr>
-                            <td class="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                              <div class="inline-flex items-center gap-x-3">
-                                <div class="flex items-center gap-x-2">
+                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                              <div className="inline-flex items-center gap-x-3">
+                                <div className="flex items-center gap-x-2">
                                   <img
-                                    class="object-cover w-10 h-10 rounded-full"
+                                    className="object-cover w-10 h-10 rounded-full"
                                     src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
                                     alt=""
                                   />
                                   <div>
-                                    <h2 class="font-medium text-gray-800 dark:text-white ">
+                                    <h2 className="font-medium text-gray-800 dark:text-white ">
                                       shravan
                                     </h2>
-                                    <p class="text-sm font-normal text-gray-600 dark:text-gray-400">
+                                    <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
                                       @srha
                                     </p>
                                   </div>
                                 </div>
                               </div>
                             </td>
-                            <td class="px-12 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                              <div class="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
-                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                            <td className="px-12 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                              <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
 
-                                <h2 class="text-sm font-normal text-emerald-500">
+                                <h2 className="text-sm font-normal text-emerald-500">
                                   Active
                                 </h2>
                               </div>
                             </td>
-                            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                            <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                               {e.budget}
                             </td>
-                            <td class="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                            <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                               {e.description}
                             </td>
                             {project_owner === userAddress ? (
-                              <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                <div class="flex items-center gap-x-2">
+                              <td className="px-4 py-4 text-sm whitespace-nowrap">
+                                <div className="flex items-center gap-x-2">
                                   <button onClick={() => accept_proposal(e.id)}>
-                                    <p class="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
+                                    <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
                                       Accept
                                     </p>
                                   </button>
-                                  <p class="px-3 py-1 text-xs text-pink-500 rounded-full dark:bg-gray-800 bg-pink-100/60">
+                                  <p className="px-3 py-1 text-xs text-pink-500 rounded-full dark:bg-gray-800 bg-pink-100/60">
                                     Reject
                                   </p>
                                 </div>
