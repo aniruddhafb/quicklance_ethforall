@@ -33,7 +33,7 @@ const projects = ({ provider }) => {
         title,
         description,
         budget,
-        deadLine: date.toLocaleDateString(deadLine),
+        deadLine: deadLine,
         images,
         time: date.toLocaleDateString(time),
         owner,
@@ -42,9 +42,11 @@ const projects = ({ provider }) => {
     });
     setProjects(projectData);
   };
+
   useEffect(() => {
     fetchProjects();
   }, [provider]);
+
   return (
     <div className="h-[100vh] bg-[#111827] pt-6">
       {/* <div className="flex m-10 gap-10 h-auto">
@@ -98,6 +100,7 @@ const projects = ({ provider }) => {
                 alt="matic"
               />
             </div>
+
             <div class="flex flex-row px-4">
               <h1 className="text-white">Deadline - </h1>
               <p className="ml-2 text-gray-300">{e.deadLine.toString()}</p>

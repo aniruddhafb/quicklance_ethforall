@@ -36,15 +36,18 @@ const createProject = ({ provider }) => {
     const ipfs_image = storage.upload(data.image);
     const ipfs_url = await Promise.all([ipfs_pdf, ipfs_image]);
 
+    const budget = ethers.utils.parseEther(data.budget).toString();
+
     const txn = await provider.createProject(
       data.title,
+      data.short_desc,
       data.description,
       ipfs_url[0],
       ipfs_url[1],
-      ethers.utils.parseEther(data.budget),
+      budget,
       deadline_date,
       {
-        value: ethers.utils.parseEther(data.budget),
+        value: budget,
       }
     );
     console.log(txn);
