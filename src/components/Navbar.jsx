@@ -440,10 +440,10 @@ const Navbar = ({ connectToContract, userAddress }) => {
                     </button>
 
                     {showProfile && (
-                      <div class="absolute left-[-60px] top-11 w-56 py-2 mt-2 overflow-hidden origin-top-right bg-white rounded-md shadow-xl dark:bg-gray-800">
+                      <div className="absolute left-[-60px] top-11 w-56 py-2 mt-2 overflow-hidden origin-top-right bg-white rounded-md shadow-xl dark:bg-gray-800">
                         <a
                           href="#"
-                          class="flex items-center p-3 -mt-2 text-sm text-gray-600 transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 -mt-2 text-sm text-gray-600 transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <Image
                             src={profileImg}
@@ -451,22 +451,22 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             width={40}
                             alt="avatar"
                           />
-                          <div class="mx-1">
-                            {/* <h1 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Jane Doe</h1> */}
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                          <div className="mx-1">
+                            {/* <h1 className="text-sm font-semibold text-gray-700 dark:text-gray-200">Jane Doe</h1> */}
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
                               {userAddress}
                             </p>
                           </div>
                         </a>
 
-                        <hr class="border-gray-200 dark:border-gray-700 " />
+                        <hr className="border-gray-200 dark:border-gray-700 " />
 
                         <Link
                           href={`/freelancers/${userAddress}`}
-                          class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-                            class="w-5 h-5 mx-1"
+                            className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -481,15 +481,15 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             ></path>
                           </svg>
 
-                          <span class="mx-1">view profile</span>
+                          <span className="mx-1">view profile</span>
                         </Link>
 
                         <Link
                           href="/create/create-profile"
-                          class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-                            class="w-5 h-5 mx-1"
+                            className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -500,15 +500,15 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             ></path>
                           </svg>
 
-                          <span class="mx-1">Edit Profile</span>
+                          <span className="mx-1">Edit Profile</span>
                         </Link>
 
                         <Link
                           href="/create/create-project"
-                          class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-                            class="w-5 h-5 mx-1"
+                            className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -519,15 +519,15 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             ></path>
                           </svg>
 
-                          <span class="mx-1">Create Project</span>
+                          <span className="mx-1">Create Project</span>
                         </Link>
 
                         <Link
                           href="/create/create-job"
-                          class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-                            class="w-5 h-5 mx-1"
+                            className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -538,16 +538,16 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             ></path>
                           </svg>
 
-                          <span class="mx-1">Create Job</span>
+                          <span className="mx-1">Create Job</span>
                         </Link>
 
-                        <hr class="border-gray-200 dark:border-gray-700 " />
+                        <hr className="border-gray-200 dark:border-gray-700 " />
                         <a
                           href="#"
-                          class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-                            class="w-5 h-5 mx-1"
+                            className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -558,7 +558,7 @@ const Navbar = ({ connectToContract, userAddress }) => {
                             ></path>
                           </svg>
 
-                          <span class="mx-1">Sign Out</span>
+                          <span className="mx-1">Sign Out</span>
                         </a>
                       </div>
                     )}

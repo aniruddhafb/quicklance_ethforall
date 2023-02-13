@@ -1,9 +1,21 @@
 import connectDB from "@/middleware/db";
 import User from "@/models/User";
 
-const handler = async (req, res) => {
+export default async function handler(req, res) {
+  await connectDB();
   if (req.method === "POST") {
-    const { username, email, fullName, wallets, role } = res.body;
+    const {
+      username,
+      email,
+      fullName,
+      wallets,
+      age,
+      role,
+      about,
+      twitter,
+      github,
+      linkedin,
+    } = req.body;
     let user = await User.findOne({ username });
     if (user) return res.status(500).json({ error: "User Already Exists" });
     let newUser = await User.create({
@@ -11,10 +23,14 @@ const handler = async (req, res) => {
       email,
       fullName,
       wallets,
+      age,
       role,
+      about,
+      twitter,
+      github,
+      linkedin,
     });
-    res.json(newUser);
-  }
-};
 
-export default connectDB(handler);
+    res.status(200).json(newUser);
+  }
+}
