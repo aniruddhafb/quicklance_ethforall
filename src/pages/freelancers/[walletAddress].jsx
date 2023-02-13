@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
+=======
+import React, { useEffect } from "react";
+>>>>>>> 75386f7e7cb0d635f885cb4cadf95a8f21534f46
 import { useRouter } from "next/router";
 import * as PushAPI from "@pushprotocol/restapi";
 import { ethers } from "ethers";

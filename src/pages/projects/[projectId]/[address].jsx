@@ -305,27 +305,19 @@ const project = ({ userAddress, signer, provider }) => {
                             <td className="px-12 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                               <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                                {e.isApproved ? (
-                                  <h2 className="text-sm font-normal text-emerald-500">
-                                    Accepted
-                                  </h2>
-                                ) : (
-                                  <h2 className="text-sm font-normal text-yellow-500">
-                                    Pending
-                                  </h2>
-                                )}
+
+                                <h2 className="text-sm font-normal text-emerald-500">
+                                  Active
+                                </h2>
                               </div>
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                              {ethers.utils.formatEther(
-                                e.asked_amount.toString()
-                              )}{" "}
-                              Eth
+                              {e.budget}
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                               {e.description}
                             </td>
-                            {projectInfo.project_owner === userAddress ? (
+                            {project_owner === userAddress ? (
                               <td className="px-4 py-4 text-sm whitespace-nowrap">
                                 <div className="flex items-center gap-x-2">
                                   <button onClick={() => accept_proposal(e.id)}>

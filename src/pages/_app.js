@@ -13,38 +13,45 @@ export default function App({ Component, pageProps }) {
 
   const [provider, setProvider] = useState(null);
   const [userAddress, setUserAddress] = useState("");
+  const [chainId, setChainId] = useState("");
   const [signer, setSigner] = useState();
 
   const connectToContract = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    await provider.send("eth_requestAccounts", []);
+    if (window?.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      await provider.send("eth_requestAccounts", []);
 
-    const signer = provider.getSigner();
-    setSigner(signer);
+      const signer = provider.getSigner();
+      setSigner(signer);
 
-    let _user_address = await signer.getAddress();
-    setUserAddress(_user_address);
+      let _user_address = await signer.getAddress();
+      setUserAddress(_user_address);
 
-    const network = await provider.getNetwork();
-    let contractAddress;
-    let chainIdMain = network.chainId;
-    if (chainIdMain == 420) {
-      contractAddress = contractOptimism;
-    } else if (chainIdMain == 3141) {
-      contractAddress = contractFilecoin;
-    } else if (chainIdMain == 5001) {
-      contractAddress = contractMantle;
-    } else {
-      contractAddress = contractMumbai;
+      const network = await provider.getNetwork();
+      let contractAddress;
+      let chainIdMain = network.chainId;
+      setChainId(chainIdMain);
+      if (chainIdMain == 420) {
+        contractAddress = contractOptimism;
+      } else if (chainIdMain == 3141) {
+        contractAddress = contractFilecoin;
+      } else if (chainIdMain == 5001) {
+        contractAddress = contractMantle;
+      } else {
+        contractAddress = contractMumbai;
+      }
+
+      const ProjectFactoryContract = new ethers.Contract(
+        contractAddress,
+        abi.abi,
+        signer
+      );
+
+      setProvider(ProjectFactoryContract);
     }
-
-    const ProjectFactoryContract = new ethers.Contract(
-      contractAddress,
-      abi.abi,
-      signer
-    );
-
-    setProvider(ProjectFactoryContract);
+    else {
+      message.warn("Please install Metamask or any other web3 enabled browser");
+    }
   };
 
   useEffect(() => {
@@ -63,6 +70,7 @@ export default function App({ Component, pageProps }) {
         connectToContract={connectToContract}
         userAddress={userAddress}
         provider={provider}
+        chainId={chainId}
       />
       <Component
         {...pageProps}
