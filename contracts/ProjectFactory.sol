@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./Project.sol";
-
+import './Project.sol';
 contract ProjectFactory {
     using Counters for Counters.Counter;
     Counters.Counter private _projectId;
-
     address payable public admin;
 
     constructor() {
@@ -26,7 +24,7 @@ contract ProjectFactory {
         address payable owner;
         Project project;
     }
-
+    
     event ProjectCreated(
         uint256 id,
         string title,

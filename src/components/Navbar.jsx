@@ -25,10 +25,12 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
 
   const QUICKLANCE_CHANNEL_ADDRESS = "0xe7ac0B19e48D5369db1d70e899A18063E1f19021";
 
-
   const connectToWallet = async () => {
     if (window?.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
 
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
@@ -36,8 +38,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
       connectToContract(signer);
       const { chainId } = await provider.getNetwork();
       setChainIdMain(chainId);
-    }
-    else {
+    } else {
       message.warn("Please install Metamask or any other web3 enabled browser");
     }
   };
@@ -48,7 +49,24 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         user: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
         env: "staging",
         page: 1,
-        limit: 10
+        limit: 10,
+      })
+      .then((feeds) => {
+        console.log("user notifications: ", feeds);
+        setNotificationData(feeds);
+      })
+      .catch((err) => {
+        console.error("failed to get user notifications: ", err);
+      });
+  };
+
+  const getUser = () => {
+    PushAPI.user
+      .getFeeds({
+        user: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
+        env: "staging",
+        page: 1,
+        limit: 10,
       })
       .then((feeds) => {
         console.log("user notifications: ", feeds);
@@ -78,9 +96,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
   useEffect(() => {
     connectToWallet();
     getNotifications();
-
   }, [chainIdMain, userAddress]);
-
 
   // switch or add chain mainnets
   const switchoptimismChain = async () => {
@@ -474,36 +490,54 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                       </svg>
                     </button>
 
-                    {showNotifications &&
+                    {showNotifications && (
                       <div className="relative inline-block">
-                        <div
-                          className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800"
-                        >
+                        <div className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800">
                           {notificationData.map((e) => {
                             return (
                               <div key={e.sid}>
-                                <a href="#" className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700">
-                                  <img className="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full" src={e.image} alt="avatar" />
+                                <a
+                                  href="#"
+                                  className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
+                                >
+                                  <img
+                                    className="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full"
+                                    src={e.image}
+                                    alt="avatar"
+                                  />
                                   <p className="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
-                                    <a className="font-bold text-[12px]" href={e.cta} target="_blank" >{e.notification.title}</a>
-                                    <span className="font-mono text-[10px]">{e.notification.body}</span>
+                                    <a
+                                      className="font-bold text-[12px]"
+                                      href={e.cta}
+                                      target="_blank"
+                                    >
+                                      {e.notification.title}
+                                    </a>
+                                    <span className="font-mono text-[10px]">
+                                      {e.notification.body}
+                                    </span>
                                   </p>
                                 </a>
                               </div>
-                            )
+                            );
                           })}
-                          {notificationData.length === 0 &&
+                          {notificationData.length === 0 && (
                             <div>
-                              <a href="#" className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700">
+                              <a
+                                href="#"
+                                className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
+                              >
                                 <p className="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
-                                  <a className="font-bold text-[12px]" href="#">No Notifications</a>
+                                  <a className="font-bold text-[12px]" href="#">
+                                    No Notifications
+                                  </a>
                                 </p>
                               </a>
                             </div>
-                          }
+                          )}
                         </div>
                       </div>
-                    }
+                    )}
 
                     {/* profile button  */}
                     <button

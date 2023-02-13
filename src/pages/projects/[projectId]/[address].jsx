@@ -6,45 +6,51 @@ import Image from "next/image";
 
 const project = ({ userAddress, signer, provider }) => {
   const router = useRouter();
-
   const [isPropsalBox, setIsPropsalBox] = useState(false);
-  const [isProjectApproved, setIsProjectApproved] = useState(false);
-  const [proposal_provider, setProposalProivder] = useState();
-  const [project_owner, setProjectOwner] = useState("");
-  const [projectOverview, setProjectOverview] = useState({
-    id: "",
-    title: "",
-    description: "",
-    images: "",
-    budget: "",
-    time: "",
-    deadLine: "",
-    owner: "",
-    project: "",
-  });
   const [proposalData, setProposalData] = useState({
-    title: "",
+    coatation: "",
     description: "",
-    amount: "",
     completion_date: "",
   });
-  const [all_proposals, setAllProposals] = useState([]);
+  const [project_owner, setProjectOwner] = useState("");
+  const [project_status, setProject_status] = useState();
+  const [projectInfo, setProjectInfo] = useState({
+    isProjectApproved: undefined,
+    proposal_provider: "",
+    proposals: [],
+    project_overview: {
+      id: "",
+      title: "",
+      description: "",
+      images: "",
+      budget: "",
+      time: "",
+      deadLine: "",
+      owner: "",
+      project: "",
+    },
+  });
 
   const { address, projectId } = router.query;
 
   const fetch_project_info = async () => {
-    const project_info = new ethers.Contract(address, abi.abi, signer);
-    setProposalProivder(project_info);
+    const proposal_info = new ethers.Contract(address, abi.abi, signer);
+    setProjectInfo({ ...projectInfo, proposal_provider: proposal_info });
 
     // Get Project owner
-    const projectOwner = await project_info.projectOwner();
-    setProjectOwner(projectOwner);
+    const projectOwner = await proposal_info.projectOwner();
+    
+    //Checks the project status if project assigned or not
+    const projectStatus = await proposal_info.getProjectStatus();
+    setProject_status(projectStatus);
+    
     // Checks if project is assigned to anyone
-    const isProjectApproved = await project_info.isProjectApproved();
-    setIsProjectApproved(isProjectApproved);
-    console.log({ isProjectApproved });
-    const proposals = await project_info.getProposals();
-    setAllProposals(proposals);
+    const isProjectApproved = await proposal_info.isProjectApproved();
+    setProjectInfo({ ...projectInfo, isProjectApproved: isProjectApproved });
+
+    // Fetches All Proposals
+    const proposals = await proposal_info.getProposals();
+    setProjectInfo({ ...projectInfo, proposals: proposals });
   };
 
   const fetch_project_by_id = async () => {
@@ -61,16 +67,19 @@ const project = ({ userAddress, signer, provider }) => {
       project,
     } = project_overview;
 
-    setProjectOverview({
-      id,
-      title,
-      description,
-      images,
-      budget,
-      time,
-      deadLine,
-      owner,
-      project,
+    setProjectInfo({
+      ...projectInfo,
+      project_overview: {
+        id,
+        title,
+        description,
+        images,
+        budget,
+        time,
+        deadLine,
+        owner,
+        project,
+      },
     });
   };
 
@@ -86,7 +95,7 @@ const project = ({ userAddress, signer, provider }) => {
     const date_of_completion = date.getTime(proposalData.completion_date);
     const txn = await project_info.createProposal(
       proposalData.description,
-      ethers.utils.parseEther(proposalData.amount),
+      ethers.utils.parseEther(proposalData.coatation),
       date_of_completion
     );
     console.log(txn);
@@ -94,7 +103,21 @@ const project = ({ userAddress, signer, provider }) => {
 
   //Accept Proposal
   const accept_proposal = async (proposalId) => {
-    const txn = await proposal_provider.approveProposal(proposalId);
+    const txn = await projectInfo.proposal_provider.approveProposal(proposalId);
+  };
+
+  const completeProject = async () => {
+    const txn = await projectInfo.proposal_provider.markProjectAsComplete();
+    console.log(txn);
+  };
+
+  const finalizeProject = async () => {
+    console.log("finalize project called");
+    console.log({ userAddress });
+    console.log({ project_owner: projectInfo.project_owner });
+    if (userAddress !== projectInfo.project_owner) return;
+    const txn = await projectInfo.proposal_provider.finalizeProject();
+    console.log(txn);
   };
 
   useEffect(() => {
@@ -102,9 +125,9 @@ const project = ({ userAddress, signer, provider }) => {
       fetch_project_info();
       fetch_project_by_id();
     }
-  }, [provider]);
+  }, [userAddress, signer]);
 
-  let ipfsURL = projectOverview.images;
+  let ipfsURL = projectInfo.project_overview.images;
   let ipfsNewURL = ipfsURL.replace(
     "ipfs://",
     "https://gateway.ipfscdn.io/ipfs/"
@@ -120,7 +143,7 @@ const project = ({ userAddress, signer, provider }) => {
                 3293993
               </h2>
               <h1 className="text-white text-3xl title-font font-medium mb-4">
-                {projectOverview.title}
+                {projectInfo.project_overview.title}
               </h1>
               <div className="flex mb-4">
                 <a className="flex-grow text-indigo-400 border-b-2 border-indigo-500 py-2 text-lg px-1">
@@ -131,18 +154,18 @@ const project = ({ userAddress, signer, provider }) => {
                 </a>
               </div>
               <p className="leading-relaxed mb-4">
-                {projectOverview.description}
+                {projectInfo.project_overview.description}
               </p>
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Budget</span>
                 <span className="ml-auto text-white">
-                  {projectOverview.budget.toString()}
+                  {projectInfo.project_overview.budget.toString()}
                 </span>
               </div>
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Deadline</span>
                 <span className="ml-auto text-white">
-                  {projectOverview.deadLine.toString()}
+                  {projectInfo.project_overview.deadLine.toString()}
                 </span>
               </div>
               <div className="flex border-t border-b mb-6 border-gray-800 py-2">
@@ -162,9 +185,9 @@ const project = ({ userAddress, signer, provider }) => {
                 <button className="rounded-full w-10 h-10 bg-gray-800 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                   <svg
                     fill="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     className="w-5 h-5"
                     viewBox="0 0 24 24"
                   >
@@ -173,19 +196,27 @@ const project = ({ userAddress, signer, provider }) => {
                 </button>
               </div>
             </div>
-            {/* <Image src={ipfsNewURL} alt="herImage" height={100} width={100} className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" /> */}
           </div>
         </div>
 
         {/* all proposals section */}
         <section className="container px-4 mx-auto mb-40">
+          <div className="flex">
+            <h1>Project Status: </h1> <h1>{project_status}</h1>
+          </div>
           <div className="flex items-center gap-x-3">
             <h2 className="text-lg font-medium text-gray-800 dark:text-white">
               All Proposals
             </h2>
+            <button
+              className="p-1 bg-green-500 rounded-md text-white"
+              onClick={finalizeProject}
+            >
+              Finalize Project
+            </button>
 
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">
-              3
+              {projectInfo.proposals.length}
             </span>
           </div>
 
@@ -221,19 +252,19 @@ const project = ({ userAddress, signer, provider }) => {
                                 d="M2.13347 0.0999756H2.98516L5.01902 4.79058H3.86226L3.45549 3.79907H1.63772L1.24366 4.79058H0.0996094L2.13347 0.0999756ZM2.54025 1.46012L1.96822 2.92196H3.11227L2.54025 1.46012Z"
                                 fill="currentColor"
                                 stroke="currentColor"
-                                stroke-width="0.1"
+                                strokeWidth="0.1"
                               />
                               <path
                                 d="M0.722656 9.60832L3.09974 6.78633H0.811638V5.87109H4.35819V6.78633L2.01925 9.60832H4.43446V10.5617H0.722656V9.60832Z"
                                 fill="currentColor"
                                 stroke="currentColor"
-                                stroke-width="0.1"
+                                strokeWidth="0.1"
                               />
                               <path
                                 d="M8.45558 7.25664V7.40664H8.60558H9.66065C9.72481 7.40664 9.74667 7.42274 9.75141 7.42691C9.75148 7.42808 9.75146 7.42993 9.75116 7.43262C9.75001 7.44265 9.74458 7.46304 9.72525 7.49314C9.72522 7.4932 9.72518 7.49326 9.72514 7.49332L7.86959 10.3529L7.86924 10.3534C7.83227 10.4109 7.79863 10.418 7.78568 10.418C7.77272 10.418 7.73908 10.4109 7.70211 10.3534L7.70177 10.3529L5.84621 7.49332C5.84617 7.49325 5.84612 7.49318 5.84608 7.49311C5.82677 7.46302 5.82135 7.44264 5.8202 7.43262C5.81989 7.42993 5.81987 7.42808 5.81994 7.42691C5.82469 7.42274 5.84655 7.40664 5.91071 7.40664H6.96578H7.11578V7.25664V0.633865C7.11578 0.42434 7.29014 0.249976 7.49967 0.249976H8.07169C8.28121 0.249976 8.45558 0.42434 8.45558 0.633865V7.25664Z"
                                 fill="currentColor"
                                 stroke="currentColor"
-                                stroke-width="0.3"
+                                strokeWidth="0.3"
                               />
                             </svg>
                           </button>
@@ -247,26 +278,22 @@ const project = ({ userAddress, signer, provider }) => {
                             <span>Budget</span>
                           </button>
                         </th>
-
                         <th
                           scope="col"
                           className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                         >
                           Description
                         </th>
-                        {project_owner === userAddress ? (
-                          <th
-                            scope="col"
-                            className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                          >
-                            Action
-                          </th>
-                        ) : (
-                          ""
-                        )}
+
+                        <th
+                          scope="col"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                        >
+                          Action
+                        </th>
                       </tr>
                     </thead>
-                    {all_proposals.map((e) => {
+                    {projectInfo.proposals.map((e) => {
                       let date = new Date();
                       let completionDate = date.toISOString(
                         e.time_of_completion.toString()
@@ -290,7 +317,9 @@ const project = ({ userAddress, signer, provider }) => {
                                       shravan
                                     </h2>
                                     <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
-                                      @srha
+                                      {e.owner.slice(0, 5) +
+                                        "..." +
+                                        e.owner.slice(38)}
                                     </p>
                                   </div>
                                 </div>
@@ -306,27 +335,39 @@ const project = ({ userAddress, signer, provider }) => {
                               </div>
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                              {e.budget}
+                              {ethers.utils.formatEther(
+                                e.asked_amount.toString()
+                              )}{" "}
+                              Eth
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                               {e.description}
                             </td>
-                            {project_owner === userAddress ? (
-                              <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                <div className="flex items-center gap-x-2">
+
+                            <td className="px-4 py-4 text-sm whitespace-nowrap">
+                              <div className="flex items-center gap-x-2">
+                                {!e.isApproved ? (
                                   <button onClick={() => accept_proposal(e.id)}>
                                     <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
                                       Accept
                                     </p>
                                   </button>
-                                  <p className="px-3 py-1 text-xs text-pink-500 rounded-full dark:bg-gray-800 bg-pink-100/60">
-                                    Reject
-                                  </p>
-                                </div>
-                              </td>
-                            ) : (
-                              ""
-                            )}
+                                ) : (
+                                  <button
+                                    onClick={() => {
+                                      if (!e.owner === userAddress) return;
+                                      completeProject();
+                                    }}
+                                  >
+                                    <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
+                                      {e.owner === userAddress
+                                        ? "Complete Project"
+                                        : " Approved"}
+                                    </p>
+                                  </button>
+                                )}
+                              </div>
+                            </td>
                           </tr>
                         </tbody>
                       );
@@ -369,20 +410,20 @@ const project = ({ userAddress, signer, provider }) => {
                 </p>
 
                 <form className="mt-4" action="#" onSubmit={handleSubmit}>
-                  <label className="block mt-3" for="amount">
+                  <label className="block mt-3" htmlFor="amount">
                     <input
                       step="any"
                       required
                       onChange={onChangeProposal}
                       type="number"
-                      name="amount"
+                      name="coatation"
                       id="coatation"
                       placeholder="enter your coatation"
                       className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"
                     />
                   </label>
 
-                  <label className="block mt-3" for="description">
+                  <label className="block mt-3" htmlFor="description">
                     <textarea
                       required
                       onChange={onChangeProposal}
@@ -395,7 +436,7 @@ const project = ({ userAddress, signer, provider }) => {
                     ></textarea>
                   </label>
 
-                  <label className="block mt-3" for="completion_date">
+                  <label className="block mt-3" htmlFor="completion_date">
                     <input
                       required
                       onChange={onChangeProposal}
@@ -429,78 +470,6 @@ const project = ({ userAddress, signer, provider }) => {
           </div>
         </div>
       )}
-
-      {/* testing  */}
-      {/* < div >
-        <img src={projectOverview.images} alt="" />
-        <div>
-          <h1>{projectOverview.title}</h1>
-          <p>{projectOverview.description}</p>
-        </div>
-
-        <div>
-          <h1>Proposals:</h1>
-          <form onSubmit={handleSubmit}>
-            <h1>Create Proposal</h1>
-            <div className="flex flex-col">
-              <input
-                type="text"
-                placeholder="title"
-                name="title"
-                onChange={onChangeProposal}
-              />
-              <input
-                type="text"
-                placeholder="description"
-                name="description"
-                onChange={onChangeProposal}
-              />
-              <input
-                type="number"
-                placeholder="amount"
-                name="amount"
-                step="any"
-                onChange={onChangeProposal}
-              />
-              <input
-                type="date"
-                name="completion_date"
-                id=""
-                onChange={onChangeProposal}
-              />
-            </div>
-            <button type="submit">create proposal</button>
-          </form>
-        </div>
-
-        <div className="mt-10">
-          All proposals:-
-          {!isProjectApproved && (
-            <div className="flex gap-10">
-              {all_proposals.map((e) => {
-                let date = new Date();
-                let completionDate = date.toISOString(
-                  e.time_of_completion.toString()
-                );
-                return (
-                  <div key={e.id} className="gap-10">
-                    <h1>{e.title}</h1>
-                    <p>{e.description}</p>
-                    <p>{completionDate}</p>
-                    {project_owner === userAddress ? (
-                      <button onClick={() => accept_proposal(e.id)}>
-                        Accept proposal
-                      </button>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div > */}
     </>
   );
 };

@@ -36,15 +36,18 @@ const createProject = ({ provider }) => {
     const ipfs_image = storage.upload(data.image);
     const ipfs_url = await Promise.all([ipfs_pdf, ipfs_image]);
 
+    const budget = ethers.utils.parseEther(data.budget).toString();
+
     const txn = await provider.createProject(
       data.title,
+      data.short_desc,
       data.description,
       ipfs_url[0],
       ipfs_url[1],
-      ethers.utils.parseEther(data.budget),
+      budget,
       deadline_date,
       {
-        value: ethers.utils.parseEther(data.budget),
+        value: budget,
       }
     );
     console.log(txn);
@@ -62,7 +65,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlFor="username"
+                htmlhtmlFor="username"
               >
                 Title *
               </label>
@@ -80,7 +83,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlFor="shortDesc"
+                htmlhtmlFor="shortDesc"
               >
                 Project Short Description *
               </label>
@@ -97,7 +100,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlFor="longDesc"
+                htmlhtmlFor="longDesc"
               >
                 Project Detailed Description *
               </label>
@@ -115,7 +118,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlFor="budget"
+                htmlhtmlFor="budget"
               >
                 Enter Budget *
               </label>
@@ -133,7 +136,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlFor="passwordConfirmation"
+                htmlhtmlFor="passwordConfirmation"
               >
                 Project Deadline *
               </label>
@@ -149,7 +152,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlFor="passwordConfirmation"
+                htmlhtmlFor="passwordConfirmation"
               >
                 Upload Reference PDF *
               </label>
@@ -165,7 +168,7 @@ const createProject = ({ provider }) => {
           <div className="mt-4">
             <label
               className="text-gray-700 dark:text-gray-200 "
-              htmlFor="passwordConfirmation"
+              htmlhtmlFor="passwordConfirmation"
             >
               Upload Cover Image*
             </label>
@@ -185,14 +188,23 @@ const createProject = ({ provider }) => {
             >
               Create Project
             </button> */}
-            <button type="submit"
-              class="flex items-center justify-between px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+            <button
+              type="submit"
+              className="flex items-center justify-between px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+            >
               <span>Create Project </span>
 
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 rtl:-scale-x-100" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5 rtl:-scale-x-100"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
                   d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clip-rule="evenodd" />
+                  clipRule="evenodd"
+                />
               </svg>
             </button>
           </div>
