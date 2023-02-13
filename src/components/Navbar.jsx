@@ -20,40 +20,46 @@ const Navbar = ({ connectToContract, userAddress }) => {
   const [notificationData, setNotificationData] = useState();
   const [chainIdMain, setChainIdMain] = useState();
   const [navDropDown, setnavDropDown] = useState(true);
-  const [currentAddress, setCurrentAddress] = useState();
 
-
-  async function pushInitiate() {
-    setCurrentAddress(userAddress);
-    const notifications = await PushAPI.user.getFeeds({
-      // user: 'eip155:137:${currentAddress}',
-      user: 'eip155:137:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
-      env: 'staging'
-    });
-    setNotificationData(notifications);
-    console.log(notifications);
-
-    // const subscriptions = await PushAPI.user.getSubscriptions({
-    //   user: 'eip155:137:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
-    //   env: 'staging'
-    // });
-  }
 
   const connectToWallet = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    if (window?.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
 
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-    connectToContract(signer);
-    const network = await provider.getNetwork();
-    const { chainId } = await provider.getNetwork();
-    setChainIdMain(chainId);
+      await provider.send("eth_requestAccounts", []);
+      const signer = provider.getSigner();
+      connectToContract(signer);
+      const { chainId } = await provider.getNetwork();
+      setChainIdMain(chainId);
+    }
+    else {
+      message.warn("Please install Metamask or any other web3 enabled browser");
+    }
+  };
+
+  const getNotifications = () => {
+    PushAPI.user
+      .getFeeds({
+        user: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
+        env: "staging",
+        page: 1,
+        limit: 10
+      })
+      .then((feeds) => {
+        console.log("user notifications: ", feeds);
+        setNotificationData(feeds);
+      })
+      .catch((err) => {
+        console.error("failed to get user notifications: ", err);
+      });
   };
 
   useEffect(() => {
     connectToWallet();
-    pushInitiate();
-  }, []);
+    getNotifications();
+
+  }, [chainIdMain, userAddress]);
+
 
   // switch or add chain mainnets
   const switchoptimismChain = async () => {
@@ -450,21 +456,30 @@ const Navbar = ({ connectToContract, userAddress }) => {
                     {showNotifications &&
                       <div className="relative inline-block">
                         <div
-                          class="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800"
+                          className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800"
                         >
                           {notificationData.map((e) => {
                             return (
                               <div key={e.sid}>
-                                <a href="#" class="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700">
-                                  <img class="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full" src={e.image} alt="avatar" />
-                                  <p class="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
-                                    <a class="font-bold text-[12px]" href={e.cta} target="_blank" >{e.notification.title}</a>
-                                    <span class="font-mono text-[10px]">{e.notification.body}</span>
+                                <a href="#" className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700">
+                                  <img className="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full" src={e.image} alt="avatar" />
+                                  <p className="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
+                                    <a className="font-bold text-[12px]" href={e.cta} target="_blank" >{e.notification.title}</a>
+                                    <span className="font-mono text-[10px]">{e.notification.body}</span>
                                   </p>
                                 </a>
                               </div>
                             )
                           })}
+                          {notificationData.length === 0 &&
+                            <div>
+                              <a href="#" className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700">
+                                <p className="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
+                                  <a className="font-bold text-[12px]" href="#">No Notifications</a>
+                                </p>
+                              </a>
+                            </div>
+                          }
                         </div>
                       </div>
                     }
@@ -589,6 +604,28 @@ const Navbar = ({ connectToContract, userAddress }) => {
                         </Link>
 
                         <hr className="border-gray-200 dark:border-gray-700 " />
+
+                        <Link
+                          href="#"
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                        >
+                          <svg
+                            className="w-6 h-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M15 17H20L18.5951 15.5951C18.2141 15.2141 18 14.6973 18 14.1585V11C18 8.38757 16.3304 6.16509 14 5.34142V5C14 3.89543 13.1046 3 12 3C10.8954 3 10 3.89543 10 5V5.34142C7.66962 6.16509 6 8.38757 6 11V14.1585C6 14.6973 5.78595 15.2141 5.40493 15.5951L4 17H9M15 17V18C15 19.6569 13.6569 21 12 21C10.3431 21 9 19.6569 9 18V17M15 17H9"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          <span className="mx-1">Opt-in Notifications</span>
+                        </Link>
+
                         <a
                           href="#"
                           className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
