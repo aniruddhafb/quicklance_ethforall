@@ -11,7 +11,6 @@ import { BsChevronDown } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import * as PushAPI from "@pushprotocol/restapi";
 
-
 const Navbar = ({ connectToContract, userAddress }) => {
   const [showNotifications, SetShowNotifications] = useState(false);
   const [showProfile, SetShowProfile] = useState(false);
@@ -21,18 +20,19 @@ const Navbar = ({ connectToContract, userAddress }) => {
   const [chainIdMain, setChainIdMain] = useState();
   const [navDropDown, setnavDropDown] = useState(true);
 
-
   const connectToWallet = async () => {
     if (window?.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        "any"
+      );
 
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
       connectToContract(signer);
       const { chainId } = await provider.getNetwork();
       setChainIdMain(chainId);
-    }
-    else {
+    } else {
       message.warn("Please install Metamask or any other web3 enabled browser");
     }
   };
@@ -43,7 +43,7 @@ const Navbar = ({ connectToContract, userAddress }) => {
         user: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
         env: "staging",
         page: 1,
-        limit: 10
+        limit: 10,
       })
       .then((feeds) => {
         console.log("user notifications: ", feeds);
@@ -57,9 +57,7 @@ const Navbar = ({ connectToContract, userAddress }) => {
   useEffect(() => {
     connectToWallet();
     getNotifications();
-
   }, [chainIdMain, userAddress]);
-
 
   // switch or add chain mainnets
   const switchoptimismChain = async () => {
@@ -453,36 +451,54 @@ const Navbar = ({ connectToContract, userAddress }) => {
                       </svg>
                     </button>
 
-                    {showNotifications &&
+                    {showNotifications && (
                       <div className="relative inline-block">
-                        <div
-                          className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800"
-                        >
+                        <div className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800">
                           {notificationData.map((e) => {
                             return (
                               <div key={e.sid}>
-                                <a href="#" className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700">
-                                  <img className="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full" src={e.image} alt="avatar" />
+                                <a
+                                  href="#"
+                                  className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
+                                >
+                                  <img
+                                    className="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full"
+                                    src={e.image}
+                                    alt="avatar"
+                                  />
                                   <p className="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
-                                    <a className="font-bold text-[12px]" href={e.cta} target="_blank" >{e.notification.title}</a>
-                                    <span className="font-mono text-[10px]">{e.notification.body}</span>
+                                    <a
+                                      className="font-bold text-[12px]"
+                                      href={e.cta}
+                                      target="_blank"
+                                    >
+                                      {e.notification.title}
+                                    </a>
+                                    <span className="font-mono text-[10px]">
+                                      {e.notification.body}
+                                    </span>
                                   </p>
                                 </a>
                               </div>
-                            )
+                            );
                           })}
-                          {notificationData.length === 0 &&
+                          {notificationData.length === 0 && (
                             <div>
-                              <a href="#" className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700">
+                              <a
+                                href="#"
+                                className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
+                              >
                                 <p className="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
-                                  <a className="font-bold text-[12px]" href="#">No Notifications</a>
+                                  <a className="font-bold text-[12px]" href="#">
+                                    No Notifications
+                                  </a>
                                 </p>
                               </a>
                             </div>
-                          }
+                          )}
                         </div>
                       </div>
-                    }
+                    )}
 
                     {/* profile button  */}
                     <button
@@ -604,18 +620,12 @@ const Navbar = ({ connectToContract, userAddress }) => {
                         </Link>
 
                         <hr className="border-gray-200 dark:border-gray-700 " />
-<<<<<<< HEAD
-                        <a
-=======
 
                         <Link
->>>>>>> 75386f7e7cb0d635f885cb4cadf95a8f21534f46
                           href="#"
                           className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
-<<<<<<< HEAD
-=======
                             className="w-6 h-6"
                             viewBox="0 0 24 24"
                             fill="none"
@@ -637,7 +647,6 @@ const Navbar = ({ connectToContract, userAddress }) => {
                           className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <svg
->>>>>>> 75386f7e7cb0d635f885cb4cadf95a8f21534f46
                             className="w-5 h-5 mx-1"
                             viewBox="0 0 24 24"
                             fill="none"

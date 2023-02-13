@@ -12,8 +12,9 @@ const project = ({ userAddress, signer, provider }) => {
     description: "",
     completion_date: "",
   });
+  const [project_owner, setProjectOwner] = useState("");
+  const [project_status, setProject_status] = useState();
   const [projectInfo, setProjectInfo] = useState({
-    project_owner: "",
     isProjectApproved: undefined,
     proposal_provider: "",
     proposals: [],
@@ -38,12 +39,16 @@ const project = ({ userAddress, signer, provider }) => {
 
     // Get Project owner
     const projectOwner = await proposal_info.projectOwner();
-    setProjectInfo({ ...projectInfo, project_owner: projectOwner });
-
+    
+    //Checks the project status if project assigned or not
+    const projectStatus = await proposal_info.getProjectStatus();
+    setProject_status(projectStatus);
+    
     // Checks if project is assigned to anyone
     const isProjectApproved = await proposal_info.isProjectApproved();
     setProjectInfo({ ...projectInfo, isProjectApproved: isProjectApproved });
 
+    // Fetches All Proposals
     const proposals = await proposal_info.getProposals();
     setProjectInfo({ ...projectInfo, proposals: proposals });
   };
@@ -98,7 +103,21 @@ const project = ({ userAddress, signer, provider }) => {
 
   //Accept Proposal
   const accept_proposal = async (proposalId) => {
-    const txn = await proposal_provider.approveProposal(proposalId);
+    const txn = await projectInfo.proposal_provider.approveProposal(proposalId);
+  };
+
+  const completeProject = async () => {
+    const txn = await projectInfo.proposal_provider.markProjectAsComplete();
+    console.log(txn);
+  };
+
+  const finalizeProject = async () => {
+    console.log("finalize project called");
+    console.log({ userAddress });
+    console.log({ project_owner: projectInfo.project_owner });
+    if (userAddress !== projectInfo.project_owner) return;
+    const txn = await projectInfo.proposal_provider.finalizeProject();
+    console.log(txn);
   };
 
   useEffect(() => {
@@ -106,7 +125,7 @@ const project = ({ userAddress, signer, provider }) => {
       fetch_project_info();
       fetch_project_by_id();
     }
-  }, [provider]);
+  }, [userAddress, signer]);
 
   let ipfsURL = projectInfo.project_overview.images;
   let ipfsNewURL = ipfsURL.replace(
@@ -177,16 +196,24 @@ const project = ({ userAddress, signer, provider }) => {
                 </button>
               </div>
             </div>
-            {/* <Image src={ipfsNewURL} alt="herImage" height={100} width={100} className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" /> */}
           </div>
         </div>
 
         {/* all proposals section */}
         <section className="container px-4 mx-auto mb-40">
+          <div className="flex">
+            <h1>Project Status: </h1> <h1>{project_status}</h1>
+          </div>
           <div className="flex items-center gap-x-3">
             <h2 className="text-lg font-medium text-gray-800 dark:text-white">
               All Proposals
             </h2>
+            <button
+              className="p-1 bg-green-500 rounded-md text-white"
+              onClick={finalizeProject}
+            >
+              Finalize Project
+            </button>
 
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">
               {projectInfo.proposals.length}
@@ -251,23 +278,19 @@ const project = ({ userAddress, signer, provider }) => {
                             <span>Budget</span>
                           </button>
                         </th>
-
                         <th
                           scope="col"
                           className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                         >
                           Description
                         </th>
-                        {/* {console.log({ userAddress })}
-                        {console.log({ owner: projectInfo.project_owner })} */}
-                        {userAddress === projectInfo.project_owner && (
-                          <th
-                            scope="col"
-                            className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                          >
-                            Action
-                          </th>
-                        )}
+
+                        <th
+                          scope="col"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                        >
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     {projectInfo.proposals.map((e) => {
@@ -312,27 +335,39 @@ const project = ({ userAddress, signer, provider }) => {
                               </div>
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                              {e.budget}
+                              {ethers.utils.formatEther(
+                                e.asked_amount.toString()
+                              )}{" "}
+                              Eth
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                               {e.description}
                             </td>
-                            {project_owner === userAddress ? (
-                              <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                <div className="flex items-center gap-x-2">
+
+                            <td className="px-4 py-4 text-sm whitespace-nowrap">
+                              <div className="flex items-center gap-x-2">
+                                {!e.isApproved ? (
                                   <button onClick={() => accept_proposal(e.id)}>
                                     <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
                                       Accept
                                     </p>
                                   </button>
-                                  <p className="px-3 py-1 text-xs text-pink-500 rounded-full dark:bg-gray-800 bg-pink-100/60">
-                                    Reject
-                                  </p>
-                                </div>
-                              </td>
-                            ) : (
-                              ""
-                            )}
+                                ) : (
+                                  <button
+                                    onClick={() => {
+                                      if (!e.owner === userAddress) return;
+                                      completeProject();
+                                    }}
+                                  >
+                                    <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
+                                      {e.owner === userAddress
+                                        ? "Complete Project"
+                                        : " Approved"}
+                                    </p>
+                                  </button>
+                                )}
+                              </div>
+                            </td>
                           </tr>
                         </tbody>
                       );

@@ -22,7 +22,6 @@ const CreateProfile = ({ userAddress }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let prof_data = { ...data };
-    console.log(prof_data);
     const res = await axios({
       url: `http://localhost:3000/api/signup`,
       // url: `${process.env.NEXT_PUBLIC_MONGODB_BASE}/api/signup`,

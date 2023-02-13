@@ -11,6 +11,15 @@ contract Project {
     uint256 projectBudget;
     bool private isProjectCompleted = false;
 
+    enum project_status{
+        open,
+        in_progress,
+        marked_as_complete,
+        completed
+    }
+
+    project_status public currentProjectStatus;
+
     constructor(
         address payable _projectOwner,
         uint256 _projectDeadline,
@@ -19,6 +28,7 @@ contract Project {
         projectOwner = _projectOwner;
         projectDeadline = _projectDeadline;
         projectBudget = _projectBudget;
+        currentProjectStatus = project_status.open;
     }
 
     struct Proposal {
@@ -75,6 +85,7 @@ contract Project {
             !is_freelancer_occupied[msg.sender],
             "Please first complete your previous projects"
         );
+        require(currentProjectStatus != project_status.in_progress, "This project is already under progress");
         uint256 _proposalId = proposalId.current();
         Proposal memory newProposal = Proposal(
             _proposalId,
@@ -107,7 +118,7 @@ contract Project {
     function approveProposal(uint256 _proposaId) public onlyOwner {
         Proposal storage proposal = proposals[_proposaId];
         require(
-            !isProjectApproved,
+            currentProjectStatus != project_status.in_progress,
             "This Project Is Already Approved To Someone else"
         );
         require(
@@ -120,49 +131,44 @@ contract Project {
         );
         proposal.approvalDate = block.timestamp;
         proposal.isApproved = true;
-        isProjectApproved = true;
         selectedProposal = proposal;
         is_freelancer_occupied[msg.sender] = true;
+        currentProjectStatus = project_status.in_progress;
     }
 
 
     function markProjectAsComplete() public {
         require(
-            selectedProposal.isApproved,
-            "Please First Approve This Project"
+            currentProjectStatus == project_status.in_progress,
+            "Your coatation is not yet approved"
         );
-        require(!isProjectCompleted, "This Project Is Already Completed");
+        require(currentProjectStatus != project_status.completed , "This Project Is Already Completed");
         require(
             msg.sender == selectedProposal.owner,
             "Only proposal owner can mark project as complete"
         );
         // require(block.timestamp < proposal.time_of_completion, "You Cannot Complete This Project, You Have Crossed The Deadline");
         require(
-            !markAsComplete[msg.sender],
+            currentProjectStatus != project_status.marked_as_complete,
             "You have already marked this project as complete"
         );
 
-        markAsComplete[selectedProposal.owner] = true;
-        selectedProposal.isCompleted = true;
+        currentProjectStatus = project_status.marked_as_complete;
     }
 
     function finalizeProject() public {
-        require(!isProjectCompleted, "This Project Is Already Completed");
+        require(currentProjectStatus != project_status.completed, "This Project Is Already Completed");
         require(
             msg.sender == projectOwner,
             "You Are Not Authorized To Finalize This Project"
         );
         require(
-            selectedProposal.isCompleted,
-            "Please First Compelete The Project Before Finalizing It"
+            currentProjectStatus == project_status.marked_as_complete,
+            "Project is not yet completed"
         );
         require(
-            selectedProposal.isApproved,
+            currentProjectStatus == project_status.in_progress,
             "This Project Is Not Yet Approved"
-        );
-        require(
-            markAsComplete[selectedProposal.owner],
-            "Freelancer has not yet Completed this project"
         );
 
         uint256 refundAmount = projectBudget - selectedProposal.asked_amount;
@@ -170,11 +176,12 @@ contract Project {
         payable(selectedProposal.owner).transfer(selectedProposal.asked_amount);
         selectedProposal.isFinalized = true;
         is_freelancer_occupied[selectedProposal.owner] = false;
+        currentProjectStatus = project_status.completed;
     }
 
-    function getProjectStatus() public view returns (bool) {
-        return markAsComplete[selectedProposal.owner];
-    }
+    // function getProjectStatus() public view returns (bool) {
+    //     return markAsComplete[selectedProposal.owner];
+    // }
 
     //Implemented
     function getProposals() public view returns (Proposal[] memory) {
@@ -193,6 +200,13 @@ contract Project {
         return address(this).balance;
     }
 
+    function getProjectStatus() public view returns(string memory){
+        if(currentProjectStatus == project_status.open) return "Open";
+        if(currentProjectStatus == project_status.in_progress) return "In Progress";
+        if(currentProjectStatus == project_status.marked_as_complete) return "Marked As Complete";
+        if(currentProjectStatus == project_status.completed) return "Completed";
+    }
+    
     function getSelectedProposal() public view returns (Proposal memory) {
         require(
             msg.sender == projectOwner,
