@@ -57,7 +57,7 @@ const createJob = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="username"
+                htmlFor="username"
               >
                 Job Role *
               </label>
@@ -75,7 +75,7 @@ const createJob = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="username"
+                htmlFor="username"
               >
                 Job Location *
               </label>
@@ -93,7 +93,7 @@ const createJob = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="username"
+                htmlFor="username"
               >
                 Job Type *
               </label>
@@ -111,7 +111,7 @@ const createJob = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="shortDesc"
+                htmlFor="shortDesc"
               >
                 Job Short Description *
               </label>
@@ -128,7 +128,7 @@ const createJob = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="longDesc"
+                htmlFor="longDesc"
               >
                 Job Long Description *
               </label>
@@ -146,7 +146,7 @@ const createJob = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="budget"
+                htmlFor="budget"
               >
                 Enter Budget *
               </label>
@@ -164,7 +164,7 @@ const createJob = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="passwordConfirmation"
+                htmlFor="passwordConfirmation"
               >
                 Project Deadline *
               </label>
@@ -180,7 +180,7 @@ const createJob = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="passwordConfirmation"
+                htmlFor="passwordConfirmation"
               >
                 Upload Reference PDF *
               </label>
@@ -196,7 +196,7 @@ const createJob = ({ provider }) => {
           <div className="mt-4">
             <label
               className="text-gray-700 dark:text-gray-200 "
-              htmlhtmlFor="passwordConfirmation"
+              htmlFor="passwordConfirmation"
             >
               Upload Cover Image*
             </label>

@@ -1,6 +1,6 @@
-import connectDB from "@/middleware/db";
+// import connectDB from "@/middleware/db";
 import User from "@/models/User";
-
+import connectDB from "@/middleware/db";
 export default async function handler(req, res) {
   await connectDB();
   if (req.method === "POST") {

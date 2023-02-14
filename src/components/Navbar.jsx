@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import * as PushAPI from "@pushprotocol/restapi";
 
 
-const Navbar = ({ connectToContract, userAddress, provider }) => {
+const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
   const [showNotifications, SetShowNotifications] = useState(false);
   const [showProfile, SetShowProfile] = useState(false);
   const [showNetworkPopup, setShowNetworkPopup] = useState(false);

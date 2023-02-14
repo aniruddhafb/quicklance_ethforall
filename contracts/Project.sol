@@ -166,10 +166,6 @@ contract Project {
             currentProjectStatus == project_status.marked_as_complete,
             "Project is not yet completed"
         );
-        require(
-            currentProjectStatus == project_status.in_progress,
-            "This Project Is Not Yet Approved"
-        );
 
         uint256 refundAmount = projectBudget - selectedProposal.asked_amount;
         payable(projectOwner).transfer(refundAmount);

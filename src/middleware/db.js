@@ -1,14 +1,9 @@
-const mongoose = require("mongoose");
+import mongoose, { connect } from "mongoose";
 
-// const connectDB = (handler) => async (req, res) => {
-//   if (mongoose.connections[0].readyState) {
-//     return handler(req, res);
-//   }
-// };
+const connectDB = async () => {
+  mongoose.set("strictQuery", false);
 
-// export default connectDB;
+  mongoose.connect(process.env.MONGODB_URI);
+};
 
-const connectMongo = async (req, res) =>
-  mongoose.connect("mongodb://localhost:27017");
-
-export default connectMongo;
+export default connectDB;
