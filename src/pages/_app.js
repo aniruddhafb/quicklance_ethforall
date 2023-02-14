@@ -12,7 +12,7 @@ export default function App({ Component, pageProps }) {
   const contractFilecoin = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
   const contractMantle = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
 
-  const [userId, serUserId] = useState("");
+  const [userId, setUserId] = useState("");
   const [provider, setProvider] = useState(null);
   const [userAddress, setUserAddress] = useState("");
   const [chainId, setChainId] = useState("");
@@ -59,6 +59,9 @@ export default function App({ Component, pageProps }) {
   };
 
   useEffect(() => {
+    const userId = localStorage.getItem("userInfo");
+    console.log(userId);
+    setUserId(userId);
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", () => {
         window.location.reload();

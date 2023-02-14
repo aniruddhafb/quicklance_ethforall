@@ -32,7 +32,7 @@ const CreateProfile = ({ userAddress, userId }) => {
 
     if (res.status == 200) {
       localStorage.setItem("userInfo", res.data._id);
-      console.log(res.data);
+      router.back();
     }
   };
 

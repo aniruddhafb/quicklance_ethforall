@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
-
-const createProject = ({ provider }) => {
+import { useRouter } from "next/router";
+const createProject = ({ provider, userId }) => {
+  const router = useRouter();
   const [data, setData] = useState({
     title: "",
     short_desc: "",
@@ -20,7 +21,11 @@ const createProject = ({ provider }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(data);
+    if (!userId) {
+      alert("Please Create Your Profile First");
+      router.push("/create/create-profile");
+      return;
+    }
     if (
       !data.title &&
       !data.description &&
@@ -52,6 +57,14 @@ const createProject = ({ provider }) => {
     );
     console.log(txn);
   };
+
+  useEffect(() => {
+    console.log({ userId });
+    if (!userId) {
+      router.push("/create/create-profile");
+      return;
+    }
+  }, []);
 
   return (
     <div className="h-[100vh] bg-[#111827] pt-6">

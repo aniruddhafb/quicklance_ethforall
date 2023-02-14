@@ -11,12 +11,7 @@ import { BsChevronDown } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import * as PushAPI from "@pushprotocol/restapi";
 
-<<<<<<< HEAD
-const Navbar = ({ connectToContract, userAddress, userId }) => {
-=======
-
-const Navbar = ({ connectToContract, userAddress, provider }) => {
->>>>>>> 89a734d6c96b68c1b0769d30dcf736f4a48e189d
+const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
   const [showNotifications, SetShowNotifications] = useState(false);
   const [showProfile, SetShowProfile] = useState(false);
   const [showNetworkPopup, setShowNetworkPopup] = useState(false);
@@ -27,7 +22,8 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
   const [chainIdMain, setChainIdMain] = useState();
   const [trueSigner, setTrueSigner] = useState();
 
-  const QUICKLANCE_CHANNEL_ADDRESS = "0xe7ac0B19e48D5369db1d70e899A18063E1f19021";
+  const QUICKLANCE_CHANNEL_ADDRESS =
+    "0xe7ac0B19e48D5369db1d70e899A18063E1f19021";
 
   const connectToWallet = async () => {
     if (window?.ethereum) {
@@ -93,7 +89,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
       },
       onError: (err) => {
         console.error("opt-in error", err);
-      }
+      },
     });
   };
 
@@ -581,29 +577,29 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                         </a>
 
                         <hr className="border-gray-200 dark:border-gray-700 " />
-
-                        <Link
-                          href={`/freelancers/${userAddress}`}
-                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
-                        >
-                          <svg
-                            className="w-5 h-5 mx-1"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                        {userId && (
+                          <Link
+                            href={`/freelancers/${userAddress}`}
+                            className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                           >
-                            <path
-                              d="M7 8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8C17 10.7614 14.7614 13 12 13C9.23858 13 7 10.7614 7 8ZM12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"
-                              fill="currentColor"
-                            ></path>
-                            <path
-                              d="M6.34315 16.3431C4.84285 17.8434 4 19.8783 4 22H6C6 20.4087 6.63214 18.8826 7.75736 17.7574C8.88258 16.6321 10.4087 16 12 16C13.5913 16 15.1174 16.6321 16.2426 17.7574C17.3679 18.8826 18 20.4087 18 22H20C20 19.8783 19.1571 17.8434 17.6569 16.3431C16.1566 14.8429 14.1217 14 12 14C9.87827 14 7.84344 14.8429 6.34315 16.3431Z"
-                              fill="currentColor"
-                            ></path>
-                          </svg>
-
-                          <span className="mx-1">view profile</span>
-                        </Link>
+                            <svg
+                              className="w-5 h-5 mx-1"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M7 8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8C17 10.7614 14.7614 13 12 13C9.23858 13 7 10.7614 7 8ZM12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"
+                                fill="currentColor"
+                              ></path>
+                              <path
+                                d="M6.34315 16.3431C4.84285 17.8434 4 19.8783 4 22H6C6 20.4087 6.63214 18.8826 7.75736 17.7574C8.88258 16.6321 10.4087 16 12 16C13.5913 16 15.1174 16.6321 16.2426 17.7574C17.3679 18.8826 18 20.4087 18 22H20C20 19.8783 19.1571 17.8434 17.6569 16.3431C16.1566 14.8429 14.1217 14 12 14C9.87827 14 7.84344 14.8429 6.34315 16.3431Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+                            <span className="mx-1">view profile</span>
+                          </Link>
+                        )}
 
                         <Link
                           href="/create/create-profile"
@@ -623,67 +619,74 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
 
                           <span className="mx-1">Edit Profile</span>
                         </Link>
-
-                        <Link
-                          href="/create/create-project"
-                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
-                        >
-                          <svg
-                            className="w-5 h-5 mx-1"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                        {userId && (
+                          <Link
+                            href="/create/create-project"
+                            className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                           >
-                            <path
-                              d="M21 19H3C1.89543 19 1 18.1046 1 17V16H3V7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V16H23V17C23 18.1046 22.1046 19 21 19ZM5 7V16H19V7H5Z"
-                              fill="currentColor"
-                            ></path>
-                          </svg>
+                            <svg
+                              className="w-5 h-5 mx-1"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M21 19H3C1.89543 19 1 18.1046 1 17V16H3V7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V16H23V17C23 18.1046 22.1046 19 21 19ZM5 7V16H19V7H5Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
 
-                          <span className="mx-1">Create Project</span>
-                        </Link>
+                            <span className="mx-1">Create Project</span>
+                          </Link>
+                        )}
 
-                        <Link
-                          href="/create/create-job"
-                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
-                        >
-                          <svg
-                            className="w-5 h-5 mx-1"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                        {userId && (
+                          <Link
+                            href="/create/create-job"
+                            className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                           >
-                            <path
-                              d="M21 19H3C1.89543 19 1 18.1046 1 17V16H3V7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V16H23V17C23 18.1046 22.1046 19 21 19ZM5 7V16H19V7H5Z"
-                              fill="currentColor"
-                            ></path>
-                          </svg>
+                            <svg
+                              className="w-5 h-5 mx-1"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M21 19H3C1.89543 19 1 18.1046 1 17V16H3V7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V16H23V17C23 18.1046 22.1046 19 21 19ZM5 7V16H19V7H5Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
 
-                          <span className="mx-1">Create Job</span>
-                        </Link>
+                            <span className="mx-1">Create Job</span>
+                          </Link>
+                        )}
 
                         <hr className="border-gray-200 dark:border-gray-700 " />
 
-                        {optedIn ? <Link
-                          href="#"
-                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
-                        >
-                          <svg
-                            className="w-6 h-6"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                        {optedIn && userId ? (
+                          <Link
+                            href="#"
+                            className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                           >
-                            <path
-                              d="M15 17H20L18.5951 15.5951C18.2141 15.2141 18 14.6973 18 14.1585V11C18 8.38757 16.3304 6.16509 14 5.34142V5C14 3.89543 13.1046 3 12 3C10.8954 3 10 3.89543 10 5V5.34142C7.66962 6.16509 6 8.38757 6 11V14.1585C6 14.6973 5.78595 15.2141 5.40493 15.5951L4 17H9M15 17V18C15 19.6569 13.6569 21 12 21C10.3431 21 9 19.6569 9 18V17M15 17H9"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                          <span className="mx-1">Opted For Notifications</span>
-                        </Link> :
+                            <svg
+                              className="w-6 h-6"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M15 17H20L18.5951 15.5951C18.2141 15.2141 18 14.6973 18 14.1585V11C18 8.38757 16.3304 6.16509 14 5.34142V5C14 3.89543 13.1046 3 12 3C10.8954 3 10 3.89543 10 5V5.34142C7.66962 6.16509 6 8.38757 6 11V14.1585C6 14.6973 5.78595 15.2141 5.40493 15.5951L4 17H9M15 17V18C15 19.6569 13.6569 21 12 21C10.3431 21 9 19.6569 9 18V17M15 17H9"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            <span className="mx-1">
+                              Opted For Notifications
+                            </span>
+                          </Link>
+                        ) : (
                           <Link
                             onClick={() => optInToChannel()}
                             href="#"
@@ -705,27 +708,27 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                             </svg>
                             <span className="mx-1">Opt-in Notifications</span>
                           </Link>
-                        }
-
-
-                        <a
-                          href="#"
-                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
-                        >
-                          <svg
-                            className="w-5 h-5 mx-1"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                        )}
+                        {userId && (
+                          <a
+                            href="#"
+                            className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                           >
-                            <path
-                              d="M19 21H10C8.89543 21 8 20.1046 8 19V15H10V19H19V5H10V9H8V5C8 3.89543 8.89543 3 10 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21ZM12 16V13H3V11H12V8L17 12L12 16Z"
-                              fill="currentColor"
-                            ></path>
-                          </svg>
+                            <svg
+                              className="w-5 h-5 mx-1"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M19 21H10C8.89543 21 8 20.1046 8 19V15H10V19H19V5H10V9H8V5C8 3.89543 8.89543 3 10 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21ZM12 16V13H3V11H12V8L17 12L12 16Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
 
-                          <span className="mx-1">Sign Out</span>
-                        </a>
+                            <span className="mx-1">Sign Out</span>
+                          </a>
+                        )}
                       </div>
                     )}
                   </div>
