@@ -39,7 +39,8 @@ const project = ({ userAddress, signer, provider }) => {
 
     // Get Project owner
     const projectOwner = await proposal_info.projectOwner();
-    
+    setProjectOwner(projectOwner);
+
     //Checks the project status if project assigned or not
     const projectStatus = await proposal_info.getProjectStatus();
     setProject_status(projectStatus);
@@ -114,10 +115,13 @@ const project = ({ userAddress, signer, provider }) => {
   const finalizeProject = async () => {
     console.log("finalize project called");
     console.log({ userAddress });
-    console.log({ project_owner: projectInfo.project_owner });
-    if (userAddress !== projectInfo.project_owner) return;
-    const txn = await projectInfo.proposal_provider.finalizeProject();
-    console.log(txn);
+    console.log({ project_owner: project_owner });
+    if (userAddress === project_owner) {
+      const txn = await projectInfo.proposal_provider.finalizeProject();
+      console.log(txn);
+    } else {
+      console.log("you are cannot finalize this project");
+    }
   };
 
   useEffect(() => {

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-const CreateProfile = ({ userAddress }) => {
+import { useRouter } from "next/router";
+const CreateProfile = ({ userAddress, userId }) => {
+  const router = useRouter();
   const [data, setData] = useState({
     username: "",
     email: "",
@@ -21,7 +22,7 @@ const CreateProfile = ({ userAddress }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let prof_data = { ...data };
+
     const res = await axios({
       url: `http://localhost:3000/api/signup`,
       // url: `${process.env.NEXT_PUBLIC_MONGODB_BASE}/api/signup`,
@@ -29,13 +30,13 @@ const CreateProfile = ({ userAddress }) => {
       data: { ...data },
     });
 
-    localStorage.setItem("userInfo", res.data._id);
-
-    console.log(res.data);
+    if (res.status == 200) {
+      localStorage.setItem("userInfo", res.data._id);
+      console.log(res.data);
+    }
   };
 
   useEffect(() => {
-    console.log("wallet");
     setData({ ...data, wallets: [userAddress] });
   }, [userAddress]);
 
@@ -48,7 +49,6 @@ const CreateProfile = ({ userAddress }) => {
               <h1 className="text-2xl font-semibold tracking-wider text-gray-800 capitalize dark:text-white">
                 Create your account
               </h1>
-
               <p className="mt-4 text-gray-500 dark:text-gray-400">
                 Get started on quicklance by creating your account
               </p>

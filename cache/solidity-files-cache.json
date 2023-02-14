@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\shrav\\Desktop\\Quicklance\\quicklance_ethforall\\contracts\\Project.sol": {
-      "lastModificationDate": 1676290477989,
-      "contentHash": "cc277a272a024346267a66eeb43a7ea2",
+      "lastModificationDate": 1676298051853,
+      "contentHash": "da3629e7b59bcd39b39b7ff475d0eb78",
       "sourceName": "contracts/Project.sol",
       "solcConfig": {
         "version": "0.8.17",

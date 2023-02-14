@@ -11,7 +11,7 @@ import { BsChevronDown } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import * as PushAPI from "@pushprotocol/restapi";
 
-const Navbar = ({ connectToContract, userAddress }) => {
+const Navbar = ({ connectToContract, userAddress, userId }) => {
   const [showNotifications, SetShowNotifications] = useState(false);
   const [showProfile, SetShowProfile] = useState(false);
   const [showNetworkPopup, setShowNetworkPopup] = useState(false);

@@ -65,7 +65,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="username"
+                htmlFor="username"
               >
                 Title *
               </label>
@@ -83,7 +83,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="shortDesc"
+                htmlFor="shortDesc"
               >
                 Project Short Description *
               </label>
@@ -100,7 +100,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="longDesc"
+                htmlFor="longDesc"
               >
                 Project Detailed Description *
               </label>
@@ -118,7 +118,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="budget"
+                htmlFor="budget"
               >
                 Enter Budget *
               </label>
@@ -136,7 +136,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="passwordConfirmation"
+                htmlFor="passwordConfirmation"
               >
                 Project Deadline *
               </label>
@@ -152,7 +152,7 @@ const createProject = ({ provider }) => {
             <div>
               <label
                 className="text-gray-700 dark:text-gray-200"
-                htmlhtmlFor="passwordConfirmation"
+                htmlFor="passwordConfirmation"
               >
                 Upload Reference PDF *
               </label>
@@ -168,7 +168,7 @@ const createProject = ({ provider }) => {
           <div className="mt-4">
             <label
               className="text-gray-700 dark:text-gray-200 "
-              htmlhtmlFor="passwordConfirmation"
+              htmlFor="passwordConfirmation"
             >
               Upload Cover Image*
             </label>
