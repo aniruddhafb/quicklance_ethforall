@@ -82,7 +82,9 @@ export default function App({ Component, pageProps }) {
         userAddress={userAddress}
         signer={signer}
       />
-      <Footer />
+      <Footer
+        userAddress={userAddress}
+      />
     </>
   );
 }

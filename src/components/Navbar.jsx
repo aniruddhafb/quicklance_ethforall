@@ -60,22 +60,20 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
       });
   };
 
-  const getUser = () => {
-    PushAPI.user
-      .getFeeds({
-        user: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
-        env: "staging",
-        page: 1,
-        limit: 10,
-      })
-      .then((feeds) => {
-        console.log("user notifications: ", feeds);
-        setNotificationData(feeds);
-      })
-      .catch((err) => {
-        console.error("failed to get user notifications: ", err);
-      });
-  };
+  // const getChats = () => {
+  //   PushAPI.chat.chats({
+  //     user: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
+  //     env: "staging",
+  //     page: 1,
+  //     limit: 10,
+  //   })
+  //     .then((chats) => {
+  //       console.log("user chats: ", chats);
+  //     })
+  //     .catch((err) => {
+  //       console.error("user chats: ", err);
+  //     });
+  // };
 
   const optInToChannel = async () => {
     await PushAPI.channels.subscribe({
@@ -96,6 +94,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
   useEffect(() => {
     connectToWallet();
     getNotifications();
+    // getChats();
   }, [chainIdMain, userAddress]);
 
   // switch or add chain mainnets
