@@ -88,7 +88,9 @@ export default function App({ Component, pageProps }) {
         signer={signer}
         userId={userId}
       />
-      <Footer />
+      <Footer
+        userAddress={userAddress}
+      />
     </>
   );
 }

@@ -52,7 +52,7 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
         limit: 10,
       })
       .then((feeds) => {
-        console.log("user notifications: ", feeds);
+        // console.log("user notifications: ", feeds);
         setNotificationData(feeds);
       })
       .catch((err) => {
@@ -60,20 +60,32 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
       });
   };
 
+  // const getChats = () => {
+  //   PushAPI.chat.chats({
+  //     user: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
+  //     env: "staging",
+  //     page: 1,
+  //     limit: 10,
+  //   })
+  //     .then((chats) => {
+  //       console.log("user chats: ", chats);
+  //     })
+  //     .catch((err) => {
+  //       console.error("user chats: ", err);
+  //     });
+  // };
+
   const getUser = () => {
     PushAPI.user
-      .getFeeds({
+      .get({
         user: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
         env: "staging",
-        page: 1,
-        limit: 10,
       })
-      .then((feeds) => {
-        console.log("user notifications: ", feeds);
-        setNotificationData(feeds);
+      .then((data) => {
+        console.log("user info success: ", data);
       })
       .catch((err) => {
-        console.error("failed to get user notifications: ", err);
+        console.error("user info error: ", err);
       });
   };
 
@@ -84,7 +96,7 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
       channelAddress: `eip155:${chainIdMain}:${QUICKLANCE_CHANNEL_ADDRESS}`, // channel address in CAIP
       userAddress: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
       onSuccess: () => {
-        console.log("opt-in success");
+        // console.log("opt-in success");
         setOptedIn(true);
       },
       onError: (err) => {
@@ -96,6 +108,7 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
   useEffect(() => {
     connectToWallet();
     getNotifications();
+    getUser();
   }, [chainIdMain, userAddress]);
 
   // switch or add chain mainnets

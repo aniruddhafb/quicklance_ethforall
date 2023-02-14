@@ -17,6 +17,9 @@
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
     "@openzeppelin/contracts": "^4.8.1",
     "@pushprotocol/restapi": "^0.4.0",
+    "@pushprotocol/socket": "^0.3.1",
+    "@pushprotocol/uiembed": "^0.2.0",
+    "@pushprotocol/uiweb": "^0.4.1",
     "@reduxjs/toolkit": "^1.9.2",
     "@thirdweb-dev/storage": "^1.0.8",
     "@typechain/ethers-v5": "^10.1.0",
@@ -41,6 +44,7 @@
     "rsuite": "^5.25.0",
     "sharp": "^0.31.3",
     "solidity-coverage": "^0.8.1",
+    "styled-components": "^5.3.6",
     "ts-node": ">=8.0.0",
     "typechain": "^8.1.0",
     "typescript": ">=4.5.0"

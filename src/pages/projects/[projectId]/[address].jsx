@@ -44,7 +44,7 @@ const project = ({ userAddress, signer, provider }) => {
     //Checks the project status if project assigned or not
     const projectStatus = await proposal_info.getProjectStatus();
     setProject_status(projectStatus);
-    
+
     // Checks if project is assigned to anyone
     const isProjectApproved = await proposal_info.isProjectApproved();
     setProjectInfo({ ...projectInfo, isProjectApproved: isProjectApproved });
@@ -59,7 +59,9 @@ const project = ({ userAddress, signer, provider }) => {
     const {
       id,
       title,
+      short_description,
       description,
+      pdf,
       images,
       budget,
       time,
@@ -73,7 +75,9 @@ const project = ({ userAddress, signer, provider }) => {
       project_overview: {
         id,
         title,
+        short_description,
         description,
+        pdf,
         images,
         budget,
         time,
@@ -120,7 +124,7 @@ const project = ({ userAddress, signer, provider }) => {
       const txn = await projectInfo.proposal_provider.finalizeProject();
       console.log(txn);
     } else {
-      console.log("you are cannot finalize this project");
+      console.log("you cannot finalize this project");
     }
   };
 
@@ -137,6 +141,39 @@ const project = ({ userAddress, signer, provider }) => {
     "https://gateway.ipfscdn.io/ipfs/"
   );
 
+  const PK = process.env.PKEY;
+  const Pkey = `0x${PK}`;
+  // const Pksigner = new ethers.Wallet(Pkey);
+
+  // const sendNotification = async () => {
+  //   try {
+  //     const apiResponse = await PushAPI.payloads.sendNotification({
+  //       Pksigner,
+  //       type: 3,
+  //       identityType: 2,
+  //       notification: {
+  //         title: `[SDK-TEST] notification TITLE:`,
+  //         body: `[sdk-test] notification BODY`
+  //       },
+  //       payload: {
+  //         title: `[sdk-test] payload title`,
+  //         body: `sample msg body`,
+  //         cta: '',
+  //         img: ''
+  //       },
+  //       recipients: 'eip155:5:0xCdBE6D076e05c5875D90fa35cc85694E1EAFBBd1',
+  //       channel: 'eip155:5:0xD8634C39BBFd4033c0d3289C4515275102423681',
+  //       env: 'staging'
+  //     });
+
+  //     // apiResponse?.status === 204, if sent successfully!
+  //     console.log('API repsonse: ', apiResponse);
+  //   } catch (err) {
+  //     console.error('Error: ', err);
+  //   }
+  // }
+
+
   return (
     <>
       <section className="text-gray-400 bg-gray-900 body-font overflow-hidden relative">
@@ -144,7 +181,7 @@ const project = ({ userAddress, signer, provider }) => {
           <div className="lg:w-4/5 mx-auto flex flex-wrap">
             <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
               <h2 className="text-sm title-font text-gray-500 tracking-widest">
-                3293993
+                {projectInfo.project_overview.id.toString()}
               </h2>
               <h1 className="text-white text-3xl title-font font-medium mb-4">
                 {projectInfo.project_overview.title}
@@ -153,13 +190,19 @@ const project = ({ userAddress, signer, provider }) => {
                 <a className="flex-grow text-indigo-400 border-b-2 border-indigo-500 py-2 text-lg px-1">
                   Description
                 </a>
-                <a className="flex-grow border-b-2 border-gray-800 py-2 text-lg px-1">
+                {/* <a className="flex-grow border-b-2 border-gray-800 py-2 text-lg px-1">
                   Other Details
-                </a>
+                </a> */}
               </div>
               <p className="leading-relaxed mb-4">
                 {projectInfo.project_overview.description}
               </p>
+              <div className="flex border-t border-gray-800 py-2">
+                <span className="text-gray-500">Project Status</span>
+                <span className="ml-auto text-white">
+                  {project_status}
+                </span>
+              </div>
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Budget</span>
                 <span className="ml-auto text-white">
@@ -175,17 +218,25 @@ const project = ({ userAddress, signer, provider }) => {
               <div className="flex border-t border-b mb-6 border-gray-800 py-2">
                 <span className="text-gray-500">Detailed Info</span>
                 <span className="ml-auto text-white">
-                  <a href="">View PDF</a>
+                  <a href={projectInfo.project_overview.pdf}>View PDF</a>
                 </span>
               </div>
               <div className="flex">
                 {/* <span className="title-font font-medium text-2xl text-white">$58.00</span> */}
-                <button
-                  onClick={() => setIsPropsalBox(true)}
-                  className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+
+                {userAddress === project_owner ? <button
+                  className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                  onClick={finalizeProject}
                 >
-                  Coat your proposal
-                </button>
+                  Finalize Project
+                </button> :
+                  <button
+                    onClick={() => setIsPropsalBox(true)}
+                    className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                  >
+                    Create a proposal
+                  </button>}
+
                 <button className="rounded-full w-10 h-10 bg-gray-800 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                   <svg
                     fill="currentColor"
@@ -205,20 +256,11 @@ const project = ({ userAddress, signer, provider }) => {
 
         {/* all proposals section */}
         <section className="container px-4 mx-auto mb-40">
-          <div className="flex">
-            <h1>Project Status: </h1> <h1>{project_status}</h1>
-          </div>
+
           <div className="flex items-center gap-x-3">
             <h2 className="text-lg font-medium text-gray-800 dark:text-white">
               All Proposals
             </h2>
-            <button
-              className="p-1 bg-green-500 rounded-md text-white"
-              onClick={finalizeProject}
-            >
-              Finalize Project
-            </button>
-
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">
               {projectInfo.proposals.length}
             </span>
