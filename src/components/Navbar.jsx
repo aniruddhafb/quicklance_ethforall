@@ -75,10 +75,10 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
   //     });
   // };
 
-  const getUser = () => {
-    PushAPI.user
+  const getUser = async () => {
+    await PushAPI.user
       .get({
-        user: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
+        account: `${userAddress}`, // user address in CAIP
         env: "staging",
       })
       .then((data) => {

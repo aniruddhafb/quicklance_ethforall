@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ethers } from "ethers";
 import abi from "../../../../artifacts/contracts/Project.sol/Project.json";
-import Image from "next/image";
+import dayjs from "dayjs";
 
 const project = ({ userAddress, signer, provider }) => {
   const router = useRouter();
@@ -14,21 +14,24 @@ const project = ({ userAddress, signer, provider }) => {
   });
   const [project_owner, setProjectOwner] = useState("");
   const [project_status, setProject_status] = useState();
+  const [projectData, setProjectData] = useState({
+    id: "",
+    title: "",
+    short_description: "",
+    description: "",
+    pdf: "",
+    images: "",
+    budget: "",
+    time: "",
+    deadLine: "",
+    owner: "",
+    project: "",
+  });
+
   const [projectInfo, setProjectInfo] = useState({
     isProjectApproved: undefined,
     proposal_provider: "",
     proposals: [],
-    project_overview: {
-      id: "",
-      title: "",
-      description: "",
-      images: "",
-      budget: "",
-      time: "",
-      deadLine: "",
-      owner: "",
-      project: "",
-    },
   });
 
   const { address, projectId } = router.query;
@@ -56,6 +59,7 @@ const project = ({ userAddress, signer, provider }) => {
 
   const fetch_project_by_id = async () => {
     const project_overview = await provider.getProjectbyId(projectId);
+
     const {
       id,
       title,
@@ -70,21 +74,22 @@ const project = ({ userAddress, signer, provider }) => {
       project,
     } = project_overview;
 
-    setProjectInfo({
-      ...projectInfo,
-      project_overview: {
-        id,
-        title,
-        short_description,
-        description,
-        pdf,
-        images,
-        budget,
-        time,
-        deadLine,
-        owner,
-        project,
-      },
+    const parsedBudget = ethers.utils.formatEther(budget.toString());
+    const date = dayjs(parseInt(deadLine));
+    const deadline_date = date.format("DD/MM/YYYY");
+
+    setProjectData({
+      id,
+      title,
+      short_description,
+      description,
+      pdf,
+      images,
+      budget: parsedBudget,
+      time,
+      deadLine: deadline_date,
+      owner,
+      project,
     });
   };
 
@@ -129,13 +134,14 @@ const project = ({ userAddress, signer, provider }) => {
   };
 
   useEffect(() => {
+    console.log("render");
     if (signer && provider && address) {
       fetch_project_info();
       fetch_project_by_id();
     }
   }, [userAddress, signer]);
 
-  let ipfsURL = projectInfo.project_overview.images;
+  let ipfsURL = projectData.images;
   let ipfsNewURL = ipfsURL.replace(
     "ipfs://",
     "https://gateway.ipfscdn.io/ipfs/"
@@ -173,7 +179,6 @@ const project = ({ userAddress, signer, provider }) => {
   //   }
   // }
 
-
   return (
     <>
       <section className="text-gray-400 bg-gray-900 body-font overflow-hidden relative">
@@ -181,10 +186,10 @@ const project = ({ userAddress, signer, provider }) => {
           <div className="lg:w-4/5 mx-auto flex flex-wrap">
             <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
               <h2 className="text-sm title-font text-gray-500 tracking-widest">
-                {projectInfo.project_overview.id.toString()}
+                {projectData.id.toString()}
               </h2>
               <h1 className="text-white text-3xl title-font font-medium mb-4">
-                {projectInfo.project_overview.title}
+                {projectData.title}
               </h1>
               <div className="flex mb-4">
                 <a className="flex-grow text-indigo-400 border-b-2 border-indigo-500 py-2 text-lg px-1">
@@ -195,47 +200,49 @@ const project = ({ userAddress, signer, provider }) => {
                 </a> */}
               </div>
               <p className="leading-relaxed mb-4">
-                {projectInfo.project_overview.description}
+                {projectData.description}
+                {/* {projectData.description} */}
               </p>
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Project Status</span>
-                <span className="ml-auto text-white">
-                  {project_status}
-                </span>
+                <span className="ml-auto text-white">{project_status}</span>
               </div>
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Budget</span>
                 <span className="ml-auto text-white">
-                  {projectInfo.project_overview.budget.toString()}
+                  {projectData.budget} Eth
                 </span>
               </div>
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Deadline</span>
                 <span className="ml-auto text-white">
-                  {projectInfo.project_overview.deadLine.toString()}
+                  {projectData.deadLine.toString()}
                 </span>
               </div>
               <div className="flex border-t border-b mb-6 border-gray-800 py-2">
                 <span className="text-gray-500">Detailed Info</span>
                 <span className="ml-auto text-white">
-                  <a href={projectInfo.project_overview.pdf}>View PDF</a>
+                  <a href={projectData.pdf}>View PDF</a>
                 </span>
               </div>
               <div className="flex">
                 {/* <span className="title-font font-medium text-2xl text-white">$58.00</span> */}
 
-                {userAddress === project_owner ? <button
-                  className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                  onClick={finalizeProject}
-                >
-                  Finalize Project
-                </button> :
+                {userAddress === project_owner ? (
+                  <button
+                    className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                    onClick={finalizeProject}
+                  >
+                    Finalize Project
+                  </button>
+                ) : (
                   <button
                     onClick={() => setIsPropsalBox(true)}
                     className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
                   >
                     Create a proposal
-                  </button>}
+                  </button>
+                )}
 
                 <button className="rounded-full w-10 h-10 bg-gray-800 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                   <svg
@@ -256,7 +263,6 @@ const project = ({ userAddress, signer, provider }) => {
 
         {/* all proposals section */}
         <section className="container px-4 mx-auto mb-40">
-
           <div className="flex items-center gap-x-3">
             <h2 className="text-lg font-medium text-gray-800 dark:text-white">
               All Proposals
