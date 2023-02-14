@@ -5,7 +5,7 @@ import Link from "next/link";
 import testImg from "../../../public/images/fil.png";
 import { BsFillPeopleFill } from "react-icons/bs";
 import polygonPng from "../../../public/images/polygon.png";
-
+import dayjs from "dayjs";
 const projects = ({ provider }) => {
   const [projects, setProjects] = useState([]);
 
@@ -28,14 +28,14 @@ const projects = ({ provider }) => {
         owner,
         project,
       } = e;
-
+      const parsedDate = dayjs(parseInt(deadLine)).format("DD/MM/YYYY");
       projectData.push({
         id,
         title,
         short_description,
         description,
         budget,
-        deadLine: deadLine,
+        deadLine: parsedDate,
         images,
         time: date.toLocaleDateString(time),
         owner,
