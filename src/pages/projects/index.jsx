@@ -19,6 +19,7 @@ const projects = ({ provider }) => {
       const {
         id,
         title,
+        short_description,
         description,
         images,
         budget,
@@ -31,6 +32,7 @@ const projects = ({ provider }) => {
       projectData.push({
         id,
         title,
+        short_description,
         description,
         budget,
         deadLine: deadLine,
@@ -46,6 +48,12 @@ const projects = ({ provider }) => {
   useEffect(() => {
     fetchProjects();
   }, [provider]);
+
+  // let ipfsURL = projects.images;
+  // let ipfsNewURL = ipfsURL.replace(
+  //   "ipfs://",
+  //   "https://gateway.ipfscdn.io/ipfs/"
+  // );
 
   return (
     <div className="h-[100vh] bg-[#111827] pt-6">
@@ -69,7 +77,7 @@ const projects = ({ provider }) => {
                 {e.title}
               </h1>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {e.description}
+                {e.short_description}
               </p>
             </div>
             <div className="flex flex-row px-4">
@@ -93,8 +101,13 @@ const projects = ({ provider }) => {
 
             <Image
               className="object-cover w-full h-48 mt-2"
-              src={testImg}
+              src={e.images.replace(
+                "ipfs://",
+                "https://gateway.ipfscdn.io/ipfs/"
+              )}
               alt="NIKE AIR"
+              height={100}
+              width={100}
             />
 
             <div className="flex items-center justify-between px-4 py-2 bg-gray-600">
