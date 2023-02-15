@@ -27,10 +27,9 @@ const freelancers = () => {
             Hire the people who are best for your jobs
           </p>
 
-          {data.map((e) => {
-            return (
-              <div className="grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 xl:grid-cols-4">
-                {/* freelancer div  */}
+          <div className="grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 xl:grid-cols-4">
+            {data.map((e) => {
+              return (
                 <div className="px-12 py-8 transition-colors duration-300 transform border cursor-pointer rounded-xl hover:border-transparent group dark:border-gray-700 dark:hover:border-blue-700">
                   <div className="flex flex-col sm:-mx-4 sm:flex-row">
                     <img
@@ -89,9 +88,9 @@ const freelancers = () => {
                     </Link>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </section>
     </div>

@@ -57,73 +57,23 @@ export default function Home() {
               Find the best person for your web3 work from experienced and verified freelancers
             </p>
           </div>
+
+
           <div className="grid gap-10 row-gap-8 mx-auto sm:row-gap-10 lg:max-w-screen-lg sm:grid-cols-2 lg:grid-cols-3">
-            <div className="flex">
-              <img
-                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
-                src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=3&amp;h=750&amp;w=1260"
-                alt="Person"
-              />
-              <div className="flex flex-col justify-center">
-                <p className="text-lg font-bold">Oliver Aguilerra</p>
-                <p className="text-sm text-gray-800">React Dev</p>
+
+            <Link href="#">
+              <div className="flex">
+                <img
+                  className="object-cover w-20 h-20 mr-4 rounded-full shadow"
+                  src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=3&amp;h=750&amp;w=1260"
+                  alt="Person"
+                />
+                <div className="flex flex-col justify-center">
+                  <p className="text-lg font-bold">Oliver Aguilerra</p>
+                  <p className="text-sm text-gray-800">React Dev</p>
+                </div>
               </div>
-            </div>
-            <div className="flex">
-              <img
-                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
-                src="https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
-                alt="Person"
-              />
-              <div className="flex flex-col justify-center">
-                <p className="text-lg font-bold">Marta Clermont</p>
-                <p className="text-sm text-gray-800">Design Team Lead</p>
-              </div>
-            </div>
-            <div className="flex">
-              <img
-                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
-                src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
-                alt="Person"
-              />
-              <div className="flex flex-col justify-center">
-                <p className="text-lg font-bold">Anthony Geek</p>
-                <p className="text-sm text-gray-800">CTO, Lorem Inc.</p>
-              </div>
-            </div>
-            <div className="flex">
-              <img
-                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
-                src="https://images.pexels.com/photos/3747435/pexels-photo-3747435.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
-                alt="Person"
-              />
-              <div className="flex flex-col justify-center">
-                <p className="text-lg font-bold">Alice Melbourne</p>
-                <p className="text-sm text-gray-800">Human Resources</p>
-              </div>
-            </div>
-            <div className="flex">
-              <img
-                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
-                src="https://images.pexels.com/photos/3785077/pexels-photo-3785077.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;w=500"
-                alt="Person"
-              />
-              <div className="flex flex-col justify-center">
-                <p className="text-lg font-bold">Martin Garix</p>
-                <p className="text-sm text-gray-800">Bad boy</p>
-              </div>
-            </div>
-            <div className="flex">
-              <img
-                className="object-cover w-20 h-20 mr-4 rounded-full shadow"
-                src="https://images.pexels.com/photos/3931603/pexels-photo-3931603.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
-                alt="Person"
-              />
-              <div className="flex flex-col justify-center">
-                <p className="text-lg font-bold">Andrew Larkin</p>
-                <p className="text-sm text-gray-800">Backend Developer</p>
-              </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
