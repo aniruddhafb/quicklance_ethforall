@@ -81,9 +81,6 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
         account: `${userAddress}`, // user address in CAIP
         env: "staging",
       })
-      .then((data) => {
-        console.log("user info success: ", data);
-      })
       .catch((err) => {
         console.error("user info error: ", err);
       });
