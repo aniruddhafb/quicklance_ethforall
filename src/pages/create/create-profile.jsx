@@ -4,12 +4,13 @@ import { useRouter } from "next/router";
 const CreateProfile = ({ userAddress, userId }) => {
   const router = useRouter();
   const [data, setData] = useState({
+    _id: "",
     username: "",
     email: "",
     fullName: "",
     wallets: [],
     age: "",
-    role: "employer",
+    role: "",
     about: "",
     twitter: "",
     github: "",
@@ -24,9 +25,8 @@ const CreateProfile = ({ userAddress, userId }) => {
     e.preventDefault();
 
     const res = await axios({
-      url: `http://localhost:3000/api/signup`,
-      // url: `${process.env.NEXT_PUBLIC_MONGODB_BASE}/api/signup`,
-      method: "POST",
+      url: `http://localhost:3000/api/users/signup`,
+      method: "post",
       data: { ...data },
     });
 
@@ -36,7 +36,33 @@ const CreateProfile = ({ userAddress, userId }) => {
     }
   };
 
+  const updateUserData = async () => {
+    console.log({ data });
+    const res = await axios({
+      url: `http://localhost:3000/api/users/updateUserProfile`,
+      method: "post",
+      data: { ...data },
+    });
+    console.log(res.data);
+  };
+
+  const fetchUserData = async () => {
+    if (userId) {
+      const res = await axios({
+        url: "http://localhost:3000/api/users/getUserByWalletAddress",
+        method: "post",
+        data: {
+          userId,
+        },
+      });
+
+      console.log(res.data);
+      setData({ ...res.data });
+    }
+  };
+
   useEffect(() => {
+    fetchUserData();
     setData({ ...data, wallets: [userAddress] });
   }, [userAddress]);
 
@@ -63,6 +89,7 @@ const CreateProfile = ({ userAddress, userId }) => {
                   </label>
                   <input
                     onChange={onChange}
+                    value={data.username}
                     type="text"
                     name="username"
                     placeholder="@sonu"
@@ -73,7 +100,9 @@ const CreateProfile = ({ userAddress, userId }) => {
                   <label className="block mb-2 text-sm text-gray-600 dark:text-gray-200">
                     Full Name
                   </label>
+
                   <input
+                    value={data.fullName}
                     onChange={onChange}
                     type="text"
                     name="fullName"
@@ -87,6 +116,7 @@ const CreateProfile = ({ userAddress, userId }) => {
                   </label>
                   <input
                     onChange={onChange}
+                    value={data.email}
                     type="email"
                     name="email"
                     placeholder="Raju Babu"
@@ -100,6 +130,7 @@ const CreateProfile = ({ userAddress, userId }) => {
                   </label>
                   <input
                     onChange={onChange}
+                    value={data.age}
                     type="number"
                     name="age"
                     placeholder="21"
@@ -129,6 +160,7 @@ const CreateProfile = ({ userAddress, userId }) => {
                     About You
                   </label>
                   <textarea
+                    value={data.about}
                     onChange={onChange}
                     name="about"
                     cols="20"
@@ -143,6 +175,7 @@ const CreateProfile = ({ userAddress, userId }) => {
                     Twitter URL
                   </label>
                   <input
+                    value={data.twitter}
                     onChange={onChange}
                     name="twitter"
                     type="text"
@@ -154,6 +187,7 @@ const CreateProfile = ({ userAddress, userId }) => {
                     Github URL
                   </label>
                   <input
+                    value={data.github}
                     onChange={onChange}
                     name="github"
                     type="text"
@@ -165,6 +199,7 @@ const CreateProfile = ({ userAddress, userId }) => {
                     Linkedin URL
                   </label>
                   <input
+                    value={data.linkedin}
                     onChange={onChange}
                     name="linkedin"
                     type="text"
@@ -172,25 +207,48 @@ const CreateProfile = ({ userAddress, userId }) => {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
-                >
-                  <span>Create Profile </span>
-
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5 rtl:-scale-x-100"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                {!data.username ? (
+                  <button
+                    type="submit"
+                    className="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </button>
+                    <span>Create Profile </span>
+
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5 rtl:-scale-x-100"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={updateUserData}
+                    className="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+                  >
+                    <span>Update Profile </span>
+
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5 rtl:-scale-x-100"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                )}
               </form>
             </div>
           </div>

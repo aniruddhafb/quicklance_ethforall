@@ -21,7 +21,7 @@ const UserSchema = Schema(
     about: String,
     role: {
       type: String,
-      enum: ["employee", "employer"],
+      enum: ["freelancer", "employer", "company"],
     },
     twitter: String,
     github: String,
