@@ -36,12 +36,12 @@ const userProfile = ({ provider }) => {
               {" "}
               <div>
                 {" "}
-                <p className="font-bold text-gray-200 text-xl">22</p>{" "}
+                <p className="font-bold text-gray-200 text-xl">0</p>{" "}
                 <p className="text-gray-400">Followers</p>{" "}
               </div>{" "}
               <div>
                 {" "}
-                <p className="font-bold text-gray-200 text-xl">2</p>{" "}
+                <p className="font-bold text-gray-200 text-xl">0</p>{" "}
                 <p className="text-gray-400"> Projects</p>{" "}
               </div>{" "}
               <div>
@@ -85,10 +85,10 @@ const userProfile = ({ provider }) => {
               {data.fullName},{" "}
               <span className="font-light text-gray-400">{data.age}</span>
             </h1>{" "}
-            <p className="font-light text-gray-600 mt-3">Bucharest, Romania</p>{" "}
+            <p className="font-light text-gray-600 mt-3">{data.wallet}</p>{" "}
             <div className="font-light text-gray-600 mt-3 flex flex-row justify-center align-middle">
               <a
-                href="#"
+                href={data.twitter}
                 className="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
                 aria-label="Github"
               >
@@ -101,7 +101,7 @@ const userProfile = ({ provider }) => {
                 </svg>
               </a>
               <a
-                href="#"
+                href={data.github}
                 className="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
                 aria-label="Github"
               >
@@ -116,22 +116,22 @@ const userProfile = ({ provider }) => {
               </a>
             </div>{" "}
             <p className="mt-8 text-gray-500">
-              Solution Manager - Creative Tim Officer
+              {data.about}
             </p>{" "}
           </div>{" "}
-          {/* <div className="mt-12 flex flex-col justify-center">
-                        {" "}
-                        <p className="text-gray-600 text-center font-light lg:px-16">
-                            An artist of considerable range, Ryan — the name taken by
-                            Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs
-                            and records all of his own music, giving it a warm, intimate feel
-                            with a solid groove structure. An artist of considerable range.
-                        </p>{" "}
-                        <button className="text-indigo-500 py-2 px-4  font-medium mt-4">
-                            {" "}
-                            Show more
-                        </button>{" "}
-                    </div> */}
+          <div className="mt-12 flex flex-col justify-center">
+            {" "}
+            {/* <p className="text-gray-600 text-center font-light lg:px-16">
+              An artist of considerable range, Ryan — the name taken by
+              Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs
+              and records all of his own music, giving it a warm, intimate feel
+              with a solid groove structure. An artist of considerable range.
+            </p>{" "} */}
+            <button className="text-indigo-500 py-2 px-4  font-medium mt-4">
+              {" "}
+              No Project History Found
+            </button>{" "}
+          </div>
         </div>
       </div>
     </div>

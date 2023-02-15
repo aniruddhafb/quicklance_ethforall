@@ -231,14 +231,16 @@ const project = ({ userAddress, signer, provider }) => {
               <div className="flex">
                 {/* <span className="title-font font-medium text-2xl text-white">$58.00</span> */}
 
-                {userAddress === project_owner ? (
+                {/* {userAddress === project_owner && (
                   <button
                     className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
                     onClick={finalizeProject}
                   >
                     Finalize Project
                   </button>
-                ) : (
+                )} */}
+
+                {project_status === "Open" && (
                   <button
                     onClick={() => setIsPropsalBox(true)}
                     className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
@@ -246,6 +248,33 @@ const project = ({ userAddress, signer, provider }) => {
                     Create a proposal
                   </button>
                 )}
+
+                {project_status === "In Progress" || project_status === "Marked As Complete" && userAddress === project_owner && (
+                  <>
+                    <button
+                      className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                      onClick={finalizeProject}
+                    >
+                      Finalize Project
+                    </button>
+
+                    <button
+                      className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                    >
+                      Project is occupied
+                    </button>
+                  </>
+                )}
+
+                {project_status === "Completed" && (
+                  <button
+                    className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                  >
+                    Project is closed
+                  </button>
+                )}
+
+
 
                 <button className="rounded-full w-10 h-10 bg-gray-800 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                   <svg
@@ -382,13 +411,22 @@ const project = ({ userAddress, signer, provider }) => {
                               </div>
                             </td>
                             <td className="px-12 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                              {project_status === "Open" &&
+                                <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-orange-500"></span>
+                                  <h2 className="text-sm font-normal text-orange-500">
+                                    Pending
+                                  </h2>
+                                </div>
+                              }
+
                               <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-
                                 <h2 className="text-sm font-normal text-emerald-500">
                                   Active
                                 </h2>
                               </div>
+
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                               {ethers.utils.formatEther(
@@ -402,7 +440,7 @@ const project = ({ userAddress, signer, provider }) => {
 
                             <td className="px-4 py-4 text-sm whitespace-nowrap">
                               <div className="flex items-center gap-x-2">
-                                {!e.isApproved ? (
+                                {!e.isApproved && userAddress ? (
                                   <button onClick={() => accept_proposal(e.id)}>
                                     <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
                                       Accept
