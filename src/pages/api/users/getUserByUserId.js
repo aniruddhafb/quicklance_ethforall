@@ -2,10 +2,10 @@
 import User from "@/models/User";
 
 export default async function handler(req, res) {
-  if (req.method === "POST") {
-    const { wallet } = req.body;
-    let user = await User.findOne({ wallet });
-    if (!user) return res.status(200).json({ error: "Cannot Find User" });
+  if (req.method == "POST") {
+    const { userId } = req.body;
+    const user = await User.findById(userId);
+    if (!user) return res.status(500).json({ error: "Cannot find this user" });
     res.status(200).json(user);
   }
 }
