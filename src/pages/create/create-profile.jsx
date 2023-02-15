@@ -71,10 +71,13 @@ const CreateProfile = ({ userAddress }) => {
         });
         if (res.status == 200) {
           console.log(res.data);
+          setData({ ...res.data });
+          setIsRegistered(true);
         }
       }
     } catch (error) {
       console.log(error.response.data);
+      setIsRegistered(false);
     }
   };
 
