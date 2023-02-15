@@ -16,7 +16,7 @@ const UserSchema = Schema(
       type: String,
       required: true,
     },
-    wallets: [String],
+    wallet: String,
     age: Number,
     about: String,
     role: {

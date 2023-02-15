@@ -59,9 +59,6 @@ export default function App({ Component, pageProps }) {
   };
 
   useEffect(() => {
-    const userId = localStorage.getItem("userInfo");
-    console.log(userId);
-    setUserId(userId);
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", () => {
         window.location.reload();
@@ -78,7 +75,6 @@ export default function App({ Component, pageProps }) {
         userAddress={userAddress}
         provider={provider}
         chainId={chainId}
-        userId={userId}
       />
       <Component
         {...pageProps}
@@ -86,11 +82,8 @@ export default function App({ Component, pageProps }) {
         connectToContract={connectToContract}
         userAddress={userAddress}
         signer={signer}
-        userId={userId}
       />
-      <Footer
-        userAddress={userAddress}
-      />
+      <Footer userAddress={userAddress} />
     </>
   );
 }

@@ -8,7 +8,7 @@ export default async function handler(req, res) {
       username,
       email,
       fullName,
-      wallets,
+      wallet,
       age,
       role,
       about,
@@ -16,25 +16,14 @@ export default async function handler(req, res) {
       github,
       linkedin,
     } = req.body;
-    console.log(
-      username,
-      email,
-      fullName,
-      wallets,
-      age,
-      role,
-      about,
-      twitter,
-      github,
-      linkedin
-    );
+
     let user = await User.findOne({ username });
     if (user) return res.status(500).json({ error: "User Already Exists" });
     let newUser = await User.create({
       username,
       email,
       fullName,
-      wallets,
+      wallet,
       age,
       role,
       about,

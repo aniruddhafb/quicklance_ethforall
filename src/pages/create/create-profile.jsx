@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-const CreateProfile = ({ userAddress, userId }) => {
+const CreateProfile = ({ userAddress }) => {
   const router = useRouter();
   const [data, setData] = useState({
     _id: "",
     username: "",
     email: "",
     fullName: "",
-    wallets: [],
+    wallet: "",
     age: "",
     role: "freelancer",
     about: "",
@@ -37,7 +37,7 @@ const CreateProfile = ({ userAddress, userId }) => {
     console.log(res.data);
     if (res.status == 200) {
       localStorage.setItem("userInfo", res.data._id);
-      router.back();
+      router.replace("/");
     }
   };
 
@@ -58,29 +58,32 @@ const CreateProfile = ({ userAddress, userId }) => {
   };
 
   const fetchUserData = async () => {
-    if (userId) {
-      const res = await axios({
-        url: "http://localhost:3000/api/users/getUserByWalletAddress",
-        method: "post",
-        data: {
-          userId,
-        },
-      });
-      if (res.status == 200) {
-        console.log(res.data);
-        setData({ ...res.data });
+    try {
+      if (userAddress) {
+        const res = await axios({
+          url: "http://localhost:3000/api/users/getUserByWalletAddress",
+          method: "POST",
+          data: {
+            wallet: userAddress,
+          },
+        });
+        if (res.status == 200) {
+          setData({ ...res.data });
+        }
       }
+    } catch (error) {
+      console.log(error.response.data);
     }
   };
 
   useEffect(() => {
     fetchUserData();
-    setData({ ...data, wallets: [userAddress] });
-    console.log("render");
+    setData({ ...data, wallet: userAddress });
   }, [userAddress]);
 
   return (
     <>
+      {error && <div className="w-full bg-green-500 h-10">{error}</div>}
       {success && <div className="w-full bg-green-500 h-10">{success}</div>}
       <div className="h-[100vh] bg-[#111827] pt-6">
         <section className="bg-white dark:bg-gray-900">
@@ -233,8 +236,7 @@ const CreateProfile = ({ userAddress, userId }) => {
                       className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
-
-                  {!userId ? (
+                  {!data.username ? (
                     <button
                       type="submit"
                       className="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
