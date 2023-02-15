@@ -40,7 +40,7 @@ const Footer = ({ userAddress }) => {
           <Chat
             account={userAddress}
             supportAddress="0xe7ac0B19e48D5369db1d70e899A18063E1f19021"
-            apiKey={process.env.PUSH_API_KEY}
+            apiKey="sPli3t5Z1n.p51Nh9IgnaDxpllDIdWuR7UQSmG2xwPvhuvOrxTVCy3628wzgyoxi3rBHa4T7c8O"
             env="staging"
           />
         )}

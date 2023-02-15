@@ -6,7 +6,8 @@ module.exports = {
   defaultNetwork: "mumbai",
   networks: {
     mumbai: {
-      url: "https://rpc.ankr.com/polygon_mumbai",
+      // url: "https://rpc.ankr.com/polygon_mumbai",
+      url: "https://ancient-aged-shape.matic-testnet.discover.quiknode.pro/25acc143004e37c5a080f27d8f925229de983556/",
       chainId: 80001,
       accounts: [
         "edf38e734f43872ad5d9c6a42eab6c265200aa3486241be824601a7fc94575ba",
