@@ -61,6 +61,7 @@ contract Project {
     mapping(address => bool) private is_freelancer_occupied;
     bool public isProjectApproved = false;
     Proposal public selectedProposal;
+    address public approvedFreelancer;
 
     modifier onlyOwner() {
         require(
@@ -134,6 +135,7 @@ contract Project {
         selectedProposal = proposal;
         is_freelancer_occupied[msg.sender] = true;
         currentProjectStatus = project_status.in_progress;
+        approvedFreelancer = proposal.owner;
     }
 
 

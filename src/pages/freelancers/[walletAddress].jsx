@@ -2,11 +2,29 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import * as PushAPI from "@pushprotocol/restapi";
 import { ethers } from "ethers";
-
+import axios from "axios";
 const userProfile = ({ provider }) => {
   const router = useRouter();
   const { walletAddress } = router.query;
+  const [data, setData] = useState({});
 
+  const getFreelancerData = async () => {
+    console.log("walletAddress");
+    if (walletAddress) {
+      const res = await axios({
+        url: "http://localhost:3000/api/users/getUserByWalletAddress",
+        method: "POST",
+        data: {
+          wallet: walletAddress,
+        },
+      });
+      setData({ ...res.data });
+    }
+  };
+
+  useEffect(() => {
+    getFreelancerData();
+  }, [walletAddress]);
   return (
     <div className="h-[100vh] bg-[#111827] pt-6">
       <div className="p-16">
@@ -64,8 +82,8 @@ const userProfile = ({ provider }) => {
           <div className="mt-20 text-center border-b pb-12">
             {" "}
             <h1 className="text-4xl font-medium text-gray-200">
-              Jessica Jones,{" "}
-              <span className="font-light text-gray-400">27</span>
+              {data.fullName},{" "}
+              <span className="font-light text-gray-400">{data.age}</span>
             </h1>{" "}
             <p className="font-light text-gray-600 mt-3">Bucharest, Romania</p>{" "}
             <div className="font-light text-gray-600 mt-3 flex flex-row justify-center align-middle">

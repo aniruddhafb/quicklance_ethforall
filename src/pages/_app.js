@@ -6,7 +6,7 @@ import abi from "../../artifacts/contracts/ProjectFactory.sol/ProjectFactory.jso
 import Footer from "@/components/Footer";
 
 export default function App({ Component, pageProps }) {
-  const contractMumbai = "0x2d8f29c2c21335fcB19f727ed24C0389208A6E66";
+  const contractMumbai = "0x4d5D1469EE0F9C878A87dd18f8A3895c83611194";
   // const contractMumbai = "0x398A4EEfe25b0e4f0Fada6C192Ab0F0d09f10952";
   const contractOptimism = "0xC2aB8fbf39107c1bba09462509E8E206f7074b84";
   const contractFilecoin = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
