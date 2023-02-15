@@ -17,6 +17,20 @@ export default async function handler(req, res) {
       linkedin,
     } = req.body;
 
+    console.log(
+      _id,
+      username,
+      email,
+      fullName,
+      wallets,
+      age,
+      role,
+      about,
+      twitter,
+      github,
+      linkedin
+    );
+
     const user = await User.findByIdAndUpdate(
       _id,
       {
@@ -34,6 +48,6 @@ export default async function handler(req, res) {
       { new: true }
     );
 
-    res.status(200).json({ user });
+    res.status(200).json(user);
   }
 }
