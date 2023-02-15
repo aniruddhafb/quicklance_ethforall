@@ -6,7 +6,9 @@ import testImg from "../../../public/images/fil.png";
 import { BsFillPeopleFill } from "react-icons/bs";
 import polygonPng from "../../../public/images/polygon.png";
 import dayjs from "dayjs";
-const projects = ({ provider }) => {
+
+
+const projects = ({ provider, signer }) => {
   const [projects, setProjects] = useState([]);
 
   const fetchProjects = async () => {
@@ -49,11 +51,7 @@ const projects = ({ provider }) => {
     fetchProjects();
   }, [provider]);
 
-  // let ipfsURL = projects.images;
-  // let ipfsNewURL = ipfsURL.replace(
-  //   "ipfs://",
-  //   "https://gateway.ipfscdn.io/ipfs/"
-  // );
+
 
   return (
     <div className="h-[100vh] bg-[#111827] pt-6">

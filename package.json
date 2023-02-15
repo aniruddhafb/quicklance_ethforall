@@ -16,7 +16,7 @@
     "@nomiclabs/hardhat-ethers": "^2.0.0",
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
     "@openzeppelin/contracts": "^4.8.1",
-    "@pushprotocol/restapi": "^0.4.0",
+    "@pushprotocol/restapi": "^0.5.0",
     "@pushprotocol/socket": "^0.3.1",
     "@pushprotocol/uiembed": "^0.2.0",
     "@pushprotocol/uiweb": "^0.4.1",

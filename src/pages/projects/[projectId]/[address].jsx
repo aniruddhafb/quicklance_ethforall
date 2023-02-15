@@ -3,6 +3,9 @@ import { useRouter } from "next/router";
 import { ethers } from "ethers";
 import abi from "../../../../artifacts/contracts/Project.sol/Project.json";
 import dayjs from "dayjs";
+import Image from "next/image";
+import * as PushAPI from "@pushprotocol/restapi";
+
 
 const project = ({ userAddress, signer, provider }) => {
   const router = useRouter();
@@ -100,6 +103,7 @@ const project = ({ userAddress, signer, provider }) => {
   //Create Proposal
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const project_info = new ethers.Contract(address, abi.abi, signer);
     const date = new Date();
     const date_of_completion = date.getTime(proposalData.completion_date);
@@ -108,8 +112,37 @@ const project = ({ userAddress, signer, provider }) => {
       ethers.utils.parseEther(proposalData.coatation),
       date_of_completion
     );
+
+    sendNotification();
     console.log(txn);
   };
+
+  // sending notification 
+  const sendNotification = async () => {
+    const signer = new ethers.Wallet("236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48");
+    try {
+      const apiResponse = await PushAPI.payloads.sendNotification({
+        signer,
+        type: 3,
+        identityType: 2,
+        notification: {
+          title: `You project recieved a coatation of ${proposalData.coatation}`,
+          body: `Information from ${userAddress}`
+        },
+        payload: {
+          title: `You project recieved a coatation of ${proposalData.coatation}`,
+          body: `Information from ${userAddress} : ${proposalData.description}`,
+          cta: '',
+        },
+        recipients: 'eip155:5:0x392021135a39786167d85a4BFDAa791fea7877Db',
+        channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
+        env: 'staging'
+      });
+      console.log('API response: ', apiResponse);
+    } catch (err) {
+      console.error('Error: ', err);
+    }
+  }
 
   //Accept Proposal
   const accept_proposal = async (proposalId) => {
@@ -147,53 +180,21 @@ const project = ({ userAddress, signer, provider }) => {
     "https://gateway.ipfscdn.io/ipfs/"
   );
 
-  const PK = process.env.PKEY;
-  const Pkey = `0x${PK}`;
-  // const Pksigner = new ethers.Wallet(Pkey);
-
-  // const sendNotification = async () => {
-  //   try {
-  //     const apiResponse = await PushAPI.payloads.sendNotification({
-  //       Pksigner,
-  //       type: 3,
-  //       identityType: 2,
-  //       notification: {
-  //         title: `[SDK-TEST] notification TITLE:`,
-  //         body: `[sdk-test] notification BODY`
-  //       },
-  //       payload: {
-  //         title: `[sdk-test] payload title`,
-  //         body: `sample msg body`,
-  //         cta: '',
-  //         img: ''
-  //       },
-  //       recipients: 'eip155:5:0xCdBE6D076e05c5875D90fa35cc85694E1EAFBBd1',
-  //       channel: 'eip155:5:0xD8634C39BBFd4033c0d3289C4515275102423681',
-  //       env: 'staging'
-  //     });
-
-  //     // apiResponse?.status === 204, if sent successfully!
-  //     console.log('API repsonse: ', apiResponse);
-  //   } catch (err) {
-  //     console.error('Error: ', err);
-  //   }
-  // }
-
   return (
     <>
       <section className="text-gray-400 bg-gray-900 body-font overflow-hidden relative">
         <div className="container px-5 py-24 mx-auto">
           <div className="lg:w-4/5 mx-auto flex flex-wrap">
             <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
-              <h2 className="text-sm title-font text-gray-500 tracking-widest">
-                {projectData.id.toString()}
-              </h2>
-              <h1 className="text-white text-3xl title-font font-medium mb-4">
+              <h1 className="text-white text-3xl title-font font-medium mb-2">
                 {projectData.title}
               </h1>
+              <h2 className="text-sm title-font text-gray-500 tracking-widest">
+                {projectData.short_description}
+              </h2>
               <div className="flex mb-4">
                 <a className="flex-grow text-indigo-400 border-b-2 border-indigo-500 py-2 text-lg px-1">
-                  Description
+                  Project Information
                 </a>
                 {/* <a className="flex-grow border-b-2 border-gray-800 py-2 text-lg px-1">
                   Other Details
@@ -201,7 +202,6 @@ const project = ({ userAddress, signer, provider }) => {
               </div>
               <p className="leading-relaxed mb-4">
                 {projectData.description}
-                {/* {projectData.description} */}
               </p>
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Project Status</span>
@@ -222,7 +222,10 @@ const project = ({ userAddress, signer, provider }) => {
               <div className="flex border-t border-b mb-6 border-gray-800 py-2">
                 <span className="text-gray-500">Detailed Info</span>
                 <span className="ml-auto text-white">
-                  <a href={projectData.pdf}>View PDF</a>
+                  <a href={projectData.pdf.replace(
+                    "ipfs://",
+                    "https://gateway.ipfscdn.io/ipfs/"
+                  )} target="_blank">View PDF</a>
                 </span>
               </div>
               <div className="flex">
@@ -258,6 +261,7 @@ const project = ({ userAddress, signer, provider }) => {
                 </button>
               </div>
             </div>
+            <Image src={ipfsNewURL} height={100} width={100} class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" />
           </div>
         </div>
 
@@ -449,7 +453,7 @@ const project = ({ userAddress, signer, provider }) => {
                 &#8203;
               </span>
 
-              <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-900 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
+              <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
                 <h3
                   className="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white"
                   id="modal-title"
@@ -471,7 +475,7 @@ const project = ({ userAddress, signer, provider }) => {
                       name="coatation"
                       id="coatation"
                       placeholder="enter your coatation"
-                      className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"
+                      className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:focus:border-blue-300"
                     />
                   </label>
 
@@ -484,7 +488,7 @@ const project = ({ userAddress, signer, provider }) => {
                       id="description"
                       cols="10"
                       rows="4"
-                      className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"
+                      className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:focus:border-blue-300"
                     ></textarea>
                   </label>
 
@@ -496,7 +500,7 @@ const project = ({ userAddress, signer, provider }) => {
                       name="completion_date"
                       id="deadline"
                       placeholder="deadline"
-                      className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"
+                      className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:focus:border-blue-300"
                     />
                   </label>
 
@@ -504,14 +508,14 @@ const project = ({ userAddress, signer, provider }) => {
                     <button
                       onClick={() => setIsPropsalBox(false)}
                       type="button"
-                      className="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
+                      className="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 bg-gray-900 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
                     >
                       Cancel
                     </button>
 
                     <button
                       type="submit"
-                      className="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                      className="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-indigo-500 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
                     >
                       Create Proposal
                     </button>

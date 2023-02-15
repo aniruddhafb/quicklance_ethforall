@@ -60,29 +60,30 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
       });
   };
 
-  // const getChats = () => {
-  //   PushAPI.chat.chats({
-  //     user: `eip155:${chainIdMain}:${userAddress}`, // user address in CAIP
-  //     env: "staging",
-  //     page: 1,
-  //     limit: 10,
-  //   })
-  //     .then((chats) => {
-  //       console.log("user chats: ", chats);
-  //     })
-  //     .catch((err) => {
-  //       console.error("user chats: ", err);
-  //     });
-  // };
+  const getChats = () => {
+    PushAPI.chat.chats({
+      account: `${userAddress}`,
+      env: "staging",
+    })
+      .then((chats) => {
+        console.log("user chats: ", chats);
+      })
+      .catch((err) => {
+        console.error("user chats: ", err);
+      });
+  };
 
   const getUser = async () => {
     await PushAPI.user
       .get({
-        account: `${userAddress}`, // user address in CAIP
+        account: `${userAddress}`,
         env: "staging",
       })
+      .then((data) => {
+        console.log("user info: ", data);
+      })
       .catch((err) => {
-        console.error("user info error: ", err);
+        console.error("user info: ", err);
       });
   };
 
@@ -106,6 +107,7 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
     connectToWallet();
     getNotifications();
     getUser();
+    getChats();
   }, [chainIdMain, userAddress]);
 
   // switch or add chain mainnets
