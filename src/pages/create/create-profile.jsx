@@ -28,18 +28,21 @@ const CreateProfile = ({ userAddress }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(data);
+    try {
+      console.log(data);
 
-    const res = await axios({
-      url: `http://localhost:3000/api/users/signup`,
-      method: "post",
-      data: { ...data },
-    });
+      const res = await axios({
+        url: `http://localhost:3000/api/users/signup`,
+        method: "post",
+        data: { ...data },
+      });
 
-    console.log(res.data);
-    if (res.status == 200) {
-      localStorage.setItem("userInfo", res.data._id);
-      router.reload();
+      if (res.status == 200) {
+        localStorage.setItem("userInfo", res.data._id);
+        router.reload();
+      }
+    } catch (error) {
+      setError(error.response.data);
     }
   };
 
@@ -55,7 +58,7 @@ const CreateProfile = ({ userAddress }) => {
         router.reload();
       }, [1000]);
     } catch (error) {
-      setError(error.message);
+      setError(error.response.data);
     }
   };
 

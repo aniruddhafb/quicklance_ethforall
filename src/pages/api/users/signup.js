@@ -17,8 +17,12 @@ export default async function handler(req, res) {
       linkedin,
     } = req.body;
 
-    let user = await User.findOne({ username });
-    if (user) return res.status(500).json({ error: "User Already Exists" });
+    let user_name = await User.findOne({ username });
+    let user_wallet = await User.findOne({ wallet });
+    if (user_name)
+      return res.status(500).json({ error: "Username Already Taken" });
+    if (user_wallet)
+      return res.status(500).json({ error: "Account Already Exists" });
     let newUser = await User.create({
       username,
       email,

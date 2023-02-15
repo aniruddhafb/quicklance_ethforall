@@ -9,14 +9,16 @@ import filPng from "../../public/images/fil.png";
 import mantlePng from "../../public/images/mantle.png";
 import { BsChevronDown } from "react-icons/bs";
 import { useDispatch } from "react-redux";
+import axios from "axios";
 import * as PushAPI from "@pushprotocol/restapi";
 
-const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
+const Navbar = ({ connectToContract, userAddress, provider }) => {
   const [showNotifications, SetShowNotifications] = useState(false);
   const [showProfile, SetShowProfile] = useState(false);
   const [showNetworkPopup, setShowNetworkPopup] = useState(false);
   const [navDropDown, setnavDropDown] = useState(true);
   const [optedIn, setOptedIn] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
 
   const [notificationData, setNotificationData] = useState();
   const [chainIdMain, setChainIdMain] = useState();
@@ -61,10 +63,11 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
   };
 
   const getChats = () => {
-    PushAPI.chat.chats({
-      account: `${userAddress}`,
-      env: "staging",
-    })
+    PushAPI.chat
+      .chats({
+        account: `${userAddress}`,
+        env: "staging",
+      })
       .then((chats) => {
         console.log("user chats: ", chats);
       })
@@ -103,11 +106,33 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
     });
   };
 
+  const fetchUserData = async () => {
+    try {
+      if (userAddress) {
+        const res = await axios({
+          url: "http://localhost:3000/api/users/getUserByWalletAddress",
+          method: "POST",
+          data: {
+            wallet: userAddress,
+          },
+        });
+        if (res.status == 200) {
+          console.log(res.data);
+          setIsRegistered(true);
+        }
+      }
+    } catch (error) {
+      console.log(error.response.data);
+      setIsRegistered(false);
+    }
+  };
+
   useEffect(() => {
     connectToWallet();
     getNotifications();
     getUser();
     getChats();
+    fetchUserData();
   }, [chainIdMain, userAddress]);
 
   // switch or add chain mainnets
@@ -589,29 +614,27 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
                         </a>
 
                         <hr className="border-gray-200 dark:border-gray-700 " />
-                        {userId && (
-                          <Link
-                            href={`/freelancers/${userAddress}`}
-                            className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                        <Link
+                          href={`/freelancers/${userAddress}`}
+                          className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                        >
+                          <svg
+                            className="w-5 h-5 mx-1"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
-                            <svg
-                              className="w-5 h-5 mx-1"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8C17 10.7614 14.7614 13 12 13C9.23858 13 7 10.7614 7 8ZM12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"
-                                fill="currentColor"
-                              ></path>
-                              <path
-                                d="M6.34315 16.3431C4.84285 17.8434 4 19.8783 4 22H6C6 20.4087 6.63214 18.8826 7.75736 17.7574C8.88258 16.6321 10.4087 16 12 16C13.5913 16 15.1174 16.6321 16.2426 17.7574C17.3679 18.8826 18 20.4087 18 22H20C20 19.8783 19.1571 17.8434 17.6569 16.3431C16.1566 14.8429 14.1217 14 12 14C9.87827 14 7.84344 14.8429 6.34315 16.3431Z"
-                                fill="currentColor"
-                              ></path>
-                            </svg>
-                            <span className="mx-1">view profile</span>
-                          </Link>
-                        )}
+                            <path
+                              d="M7 8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8C17 10.7614 14.7614 13 12 13C9.23858 13 7 10.7614 7 8ZM12 11C13.6569 11 15 9.65685 15 8C15 6.34315 13.6569 5 12 5C10.3431 5 9 6.34315 9 8C9 9.65685 10.3431 11 12 11Z"
+                              fill="currentColor"
+                            ></path>
+                            <path
+                              d="M6.34315 16.3431C4.84285 17.8434 4 19.8783 4 22H6C6 20.4087 6.63214 18.8826 7.75736 17.7574C8.88258 16.6321 10.4087 16 12 16C13.5913 16 15.1174 16.6321 16.2426 17.7574C17.3679 18.8826 18 20.4087 18 22H20C20 19.8783 19.1571 17.8434 17.6569 16.3431C16.1566 14.8429 14.1217 14 12 14C9.87827 14 7.84344 14.8429 6.34315 16.3431Z"
+                              fill="currentColor"
+                            ></path>
+                          </svg>
+                          <span className="mx-1">view profile</span>
+                        </Link>
 
                         <Link
                           href="/create/create-profile"
@@ -631,7 +654,7 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
 
                           <span className="mx-1">Edit Profile</span>
                         </Link>
-                        {userId && (
+                        {isRegistered && (
                           <Link
                             href="/create/create-project"
                             className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
@@ -652,7 +675,7 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
                           </Link>
                         )}
 
-                        {userId && (
+                        {isRegistered && (
                           <Link
                             href="/create/create-job"
                             className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
@@ -675,7 +698,7 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
 
                         <hr className="border-gray-200 dark:border-gray-700 " />
 
-                        {optedIn && userId ? (
+                        {optedIn && isRegistered ? (
                           <Link
                             href="#"
                             className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
@@ -721,7 +744,7 @@ const Navbar = ({ connectToContract, userAddress, provider, userId }) => {
                             <span className="mx-1">Opt-in Notifications</span>
                           </Link>
                         )}
-                        {userId && (
+                        {isRegistered && (
                           <a
                             href="#"
                             className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
