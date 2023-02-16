@@ -8,8 +8,6 @@ import polygonPng from "../../public/images/polygon.png";
 import filPng from "../../public/images/fil.png";
 import mantlePng from "../../public/images/mantle.png";
 import optimismPng from "../../public/images/optimism.png";
-import axios from "axios";
-
 
 export default function App({ Component, pageProps }) {
   const contractMumbai = "0x4d5D1469EE0F9C878A87dd18f8A3895c83611194";
