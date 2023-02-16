@@ -7,7 +7,7 @@ import Image from "next/image";
 import * as PushAPI from "@pushprotocol/restapi";
 
 
-const project = ({ userAddress, signer, provider }) => {
+const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   const router = useRouter();
   const [isPropsalBox, setIsPropsalBox] = useState(false);
   const [proposalData, setProposalData] = useState({
@@ -15,6 +15,7 @@ const project = ({ userAddress, signer, provider }) => {
     description: "",
     completion_date: "",
   });
+  const [activeFreelancer, setActiveFreelancer] = useState("");
   const [project_owner, setProjectOwner] = useState("");
   const [project_status, setProject_status] = useState();
   const [projectData, setProjectData] = useState({
@@ -58,6 +59,10 @@ const project = ({ userAddress, signer, provider }) => {
     // Fetches All Proposals
     const proposals = await proposal_info.getProposals();
     setProjectInfo({ ...projectInfo, proposals: proposals });
+
+    // getting active freelancer 
+    const approvedFreelancer = await proposal_info.approvedFreelancer();
+    setActiveFreelancer(approvedFreelancer);
   };
 
   const fetch_project_by_id = async () => {
@@ -209,8 +214,9 @@ const project = ({ userAddress, signer, provider }) => {
               </div>
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Budget</span>
-                <span className="ml-auto text-white">
-                  {projectData.budget} Eth
+                <span className="ml-auto text-white flex flex-row">
+                  <p className="mr-1">{projectData.budget}</p>
+                  <Image src={chainImg} height={20} width={25} />
                 </span>
               </div>
               <div className="flex border-t border-gray-800 py-2">
@@ -219,13 +225,19 @@ const project = ({ userAddress, signer, provider }) => {
                   {projectData.deadLine.toString()}
                 </span>
               </div>
+              <div className="flex border-t border-gray-800 py-2">
+                <span className="text-gray-500">On Chain</span>
+                <span className="ml-auto text-white">
+                  <a href={blockURL + address} target="_blank">View Contract 🔗</a>
+                </span>
+              </div>
               <div className="flex border-t border-b mb-6 border-gray-800 py-2">
                 <span className="text-gray-500">Detailed Info</span>
                 <span className="ml-auto text-white">
                   <a href={projectData.pdf.replace(
                     "ipfs://",
                     "https://gateway.ipfscdn.io/ipfs/"
-                  )} target="_blank">View PDF</a>
+                  )} target="_blank">View PDF 📁</a>
                 </span>
               </div>
               <div className="flex">
@@ -369,13 +381,13 @@ const project = ({ userAddress, signer, provider }) => {
                         >
                           Description
                         </th>
-
-                        <th
-                          scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                        >
-                          Action
-                        </th>
+                        {userAddress === project_owner &&
+                          <th
+                            scope="col"
+                            className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          >
+                            Action
+                          </th>}
                       </tr>
                     </thead>
                     {projectInfo.proposals.map((e) => {
@@ -419,49 +431,59 @@ const project = ({ userAddress, signer, provider }) => {
                                   </h2>
                                 </div>
                               }
-
-                              <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
-                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                                <h2 className="text-sm font-normal text-emerald-500">
-                                  Active
-                                </h2>
-                              </div>
-
+                              {project_status === "In Progress" &&
+                                <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                  <h2 className="text-sm font-normal text-emerald-500">
+                                    Active
+                                  </h2>
+                                </div>
+                              }
                             </td>
-                            <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                              {ethers.utils.formatEther(
-                                e.asked_amount.toString()
-                              )}{" "}
-                              Eth
+                            <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowra flex flex-row mt-3">
+                              <p className=" flex flex-row mr-1">
+                                {ethers.utils.formatEther(
+                                  e.asked_amount.toString()
+                                )}{" "}</p>
+                              <Image src={chainImg} height={20} width={25} />
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                               {e.description}
                             </td>
 
-                            <td className="px-4 py-4 text-sm whitespace-nowrap">
-                              <div className="flex items-center gap-x-2">
-                                {!e.isApproved && userAddress ? (
-                                  <button onClick={() => accept_proposal(e.id)}>
-                                    <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
-                                      Accept
-                                    </p>
-                                  </button>
-                                ) : (
-                                  <button
-                                    onClick={() => {
-                                      if (!e.owner === userAddress) return;
-                                      completeProject();
-                                    }}
-                                  >
-                                    <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
-                                      {e.owner === userAddress
-                                        ? "Complete Project"
-                                        : " Approved"}
-                                    </p>
-                                  </button>
-                                )}
-                              </div>
-                            </td>
+
+
+                            {userAddress === project_owner &&
+                              <td className="px-4 py-4 text-sm whitespace-nowrap">
+                                <div className="flex items-center gap-x-2">
+                                  {!e.isApproved && userAddress === project_owner ? (
+                                    <button onClick={() => accept_proposal(e.id)}>
+                                      <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
+                                        Accept
+                                      </p>
+                                    </button>
+                                  ) : (
+                                    <button>
+                                      <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
+                                        Project Is Live
+                                      </p>
+                                    </button>
+                                    // <button
+                                    //   onClick={() => {
+                                    //     if (!e.owner === userAddress) return;
+                                    //     completeProject();
+                                    //   }}
+                                    // >
+                                    //   <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
+                                    //     {e.owner === userAddress
+                                    //       ? "Complete Project"
+                                    //       : " Approved"}
+                                    //   </p>
+                                    // </button>
+                                  )}
+                                </div>
+                              </td>
+                            }
                           </tr>
                         </tbody>
                       );
