@@ -56,6 +56,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
     }
   };
 
+
   const getNotifications = () => {
     PushAPI.user
       .getFeeds({
@@ -65,7 +66,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         limit: 10,
       })
       .then((feeds) => {
-        // console.log("user notifications: ", feeds);
+        console.log("user notifications: ", feeds);
         setNotificationData(feeds);
       })
       .catch((err) => {
@@ -80,7 +81,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         env: "staging",
       })
       .then((chats) => {
-        // console.log("user chats: ", chats);
+        console.log("user chats: ", chats);
       })
       .catch((err) => {
         console.error("user chats: ", err);
@@ -94,7 +95,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         env: "staging",
       })
       .then((data) => {
-        // console.log("user info: ", data);
+        console.log("user info: ", data);
       })
       .catch((err) => {
         console.error("user info: ", err);
@@ -543,7 +544,8 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                         <div className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800">
                           {notificationData.map((e) => {
                             return (
-                              <div key={e.sid}>
+                              e.app === "Quicklance" &&
+                              < div key={e.sid} >
                                 <a
                                   href="#"
                                   className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
@@ -799,7 +801,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
           )}
         </div>
       </div>
-    </nav>
+    </nav >
   );
 };
 
