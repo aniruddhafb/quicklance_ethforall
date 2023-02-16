@@ -80,6 +80,7 @@ const userProfile = ({ userAddress, provider }) => {
 
   const fetchProjectsByAddress = async () => {
     const txn = await provider.getProjectsByOwner();
+    await txn.wait();
 
     console.log({ txn });
   };

@@ -78,8 +78,8 @@ export default function Home() {
 
 
           <div className="grid gap-10 row-gap-8 mx-auto sm:row-gap-10 lg:max-w-screen-lg sm:grid-cols-2 lg:grid-cols-3">
-            {data.map((e) => {
-              return (
+            {data.map((e, i) => {
+              return i < 9 && (
                 <Link href={`freelancers/${e.wallet}`}>
                   <div className="flex">
                     <Image src={e.image?.replace(

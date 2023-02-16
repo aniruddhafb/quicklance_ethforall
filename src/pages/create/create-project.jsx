@@ -60,13 +60,12 @@ const createProject = ({ provider, userAddress }) => {
       );
 
       await txn.wait();
-      // console.log(txn);
       setTimeout(() => {
         setMessage(
           "Project Successfully Created, redirecting to projects page"
         );
         Router.push("/projects");
-      }, 3000);
+      }, 2000);
     } catch (error) {
       setMessage({ type: "error", message: "Something went wrong" });
     }
@@ -102,9 +101,8 @@ const createProject = ({ provider, userAddress }) => {
     <>
       {message.message && (
         <div
-          className={`w-full h-10 text-center text-white font-bold pt-2 ${
-            message.type === "error" ? "bg-red-500" : "bg-green-500"
-          }`}
+          className={`w-full h-10 text-center text-white font-bold pt-2 ${message.type === "error" ? "bg-red-500" : "bg-green-500"
+            }`}
         >
           {message.message}
         </div>

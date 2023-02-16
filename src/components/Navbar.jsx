@@ -14,14 +14,6 @@ import * as PushAPI from "@pushprotocol/restapi";
 
 const Navbar = ({ connectToContract, userAddress, provider }) => {
   const [userData, setUserData] = useState([]);
-  // const fetchFreelancers = async () => {
-  //   const res = await axios({
-  //     url: "http://localhost:3000/api/freelancers/getAllfreelancers",
-  //     method: "GET",
-  //   });
-  //   console.log({ userdata: res.data });
-  //   setUserData(res.data);
-  // };
 
   const [showNotifications, SetShowNotifications] = useState(false);
   const [showProfile, SetShowProfile] = useState(false);
@@ -544,8 +536,8 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                     {showNotifications && (
                       <div className="relative inline-block">
                         <div className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800">
-                          {notificationData?.map((e) => {
-                            return (
+                          {notificationData?.map((e, i) => {
+                            return i < 6 && (
                               e.app === "Quicklance" && (
                                 <div key={e.sid}>
                                   <a
@@ -607,7 +599,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                       aria-label="toggle profile dropdown"
                       onClick={() => SetShowProfile(!showProfile)}
                     >
-                      <div className="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full">
+                      <div className="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full object-cover">
                         <Image
                           src={userImage?.replace(
                             "ipfs://",
@@ -616,6 +608,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                           height={100}
                           width={100}
                           alt="avatar"
+                          style={{ borderRadius: "50%", width: "40px", height: "33px" }}
                         />
                       </div>
                     </button>
@@ -632,9 +625,10 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                               "ipfs://",
                               "https://gateway.ipfscdn.io/ipfs/"
                             )}
-                            height={40}
-                            width={40}
+                            height={80}
+                            width={50}
                             alt="avatar"
+                            style={{ borderRadius: "50%", width: "40px", height: "33px" }}
                           />
                           <div className="mx-1">
                             {/* <h1 className="text-sm font-semibold text-gray-700 dark:text-gray-200">{userData.username}</h1> */}
