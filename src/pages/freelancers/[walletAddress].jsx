@@ -2,31 +2,41 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import * as PushAPI from "@pushprotocol/restapi";
 import { ethers } from "ethers";
+
 import axios from "axios";
-const userProfile = ({ provider }) => {
+const userProfile = () => {
   const router = useRouter();
   const { walletAddress } = router.query;
   const [data, setData] = useState({});
+  const [error, setError] = useState("");
 
   const getFreelancerData = async () => {
     console.log("walletAddress");
-    if (walletAddress) {
-      const res = await axios({
-        url: "http://localhost:3000/api/users/getUserByWalletAddress",
-        method: "POST",
-        data: {
-          wallet: walletAddress,
-        },
-      });
-      setData({ ...res.data });
+
+    try {
+      if (walletAddress) {
+        const res = await axios({
+          url: "http://localhost:3000/api/users/getUserByWalletAddress",
+          method: "POST",
+          data: {
+            wallet: walletAddress,
+          },
+        });
+        if (res.status == 200) {
+          setData({ ...res.data });
+        }
+      }
+    } catch (error) {
+      setError("Cannot Find This User");
     }
   };
 
   useEffect(() => {
     getFreelancerData();
-  }, [walletAddress]);
+  }, []);
   return (
     <div className="h-[100vh] bg-[#111827] pt-6">
+      <div className={`w-full h-10 ${error && "bg-red-500"}`}>{error}</div>
       <div className="p-16">
         <div className="p-8 shadow mt-24">
           {" "}
@@ -115,9 +125,7 @@ const userProfile = ({ provider }) => {
                 </svg>
               </a>
             </div>{" "}
-            <p className="mt-8 text-gray-500">
-              {data.about}
-            </p>{" "}
+            <p className="mt-8 text-gray-500">{data.about}</p>{" "}
           </div>{" "}
           <div className="mt-12 flex flex-col justify-center">
             {" "}

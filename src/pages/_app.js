@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import abi from "../../artifacts/contracts/ProjectFactory.sol/ProjectFactory.json";
 import Footer from "@/components/Footer";
-import connectDB from "@/middleware/db";
+import axios from "axios";
 
 export default function App({ Component, pageProps }) {
   const contractMumbai = "0x4d5D1469EE0F9C878A87dd18f8A3895c83611194";

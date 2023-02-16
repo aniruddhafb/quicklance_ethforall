@@ -18,6 +18,7 @@ export default async function handler(req, res) {
       twitter,
       github,
       linkedin,
+      image,
     } = req.body;
 
     let user_acc = await User.findById(_id);
@@ -39,6 +40,7 @@ export default async function handler(req, res) {
         twitter,
         github,
         linkedin,
+        image,
       },
       { new: true }
     );

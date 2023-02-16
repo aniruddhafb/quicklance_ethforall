@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     let user = await User.findOne({ wallet });
     if (!user)
       return res
-        .status(400)
+        .status(500)
         .json({ success: false, error: "Cannot Find User" });
     res.status(200).json(user);
   }
