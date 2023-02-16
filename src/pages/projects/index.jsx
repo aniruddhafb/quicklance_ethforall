@@ -53,7 +53,7 @@ const projects = ({ provider, signer }) => {
 
 
   return (
-    <div className="h-[100vh] bg-[#111827] pt-6">
+    <div className=" bg-[#111827] pt-6 min-h-[100vh] max-h-[100%]">
       <div>
         <h1 className="text-2xl font-semibold text-center text-gray-800 capitalize lg:text-3xl dark:text-white">
           Available <span className="text-blue-500">Projects</span>
@@ -63,11 +63,11 @@ const projects = ({ provider, signer }) => {
           Find the best projects which match your profile
         </p>
       </div>
-      <div className="flex flex-wrap m-10 gap-10 h-auto justify-center">
+      <div className="flex flex-wrap gap-30 h-auto justify-around">
         {projects.map((e, index) => (
           <div
             key={index}
-            className="w-[300px] h-[100%] overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 relative"
+            className="w-[300px] h-[100%] overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 relative mt-5 mb-5"
           >
             <div className="px-4 py-2">
               <h1 className="text-xl font-bold text-gray-800 uppercase dark:text-white">

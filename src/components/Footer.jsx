@@ -1,16 +1,9 @@
-import Image from "next/image";
 import React from "react";
-import { Chat } from "@pushprotocol/uiweb";
-
-
 
 const Footer = ({ userAddress }) => {
   return (
     <div className="bg-white dark:bg-gray-900 w-full">
       <div className="container flex flex-col items-center justify-between p-6 mx-auto space-y-4 sm:space-y-0 sm:flex-row">
-        <a href="#">
-          {/* <Image className="w-auto h-7" src="https://merakiui.com/images/full-logo.svg" alt="" /> */}
-        </a>
 
         <p className="text-sm text-gray-600 dark:text-gray-300">
           Copyright © 2023 Quicklance. All Rights Reserved.
@@ -35,16 +28,16 @@ const Footer = ({ userAddress }) => {
         </div>
       </div>
 
-      <div>
+      {/* <div>
         {userAddress && (
           <Chat
             account={userAddress}
             supportAddress="0xe7ac0B19e48D5369db1d70e899A18063E1f19021"
-            apiKey="sPli3t5Z1n.p51Nh9IgnaDxpllDIdWuR7UQSmG2xwPvhuvOrxTVCy3628wzgyoxi3rBHa4T7c8O"
+            apiKey={process.env.PUSH_API_KEY}
             env="staging"
           />
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

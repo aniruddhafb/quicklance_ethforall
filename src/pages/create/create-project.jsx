@@ -66,7 +66,7 @@ const createProject = ({ provider, userAddress }) => {
           "Project Successfully Created, redirecting to projects page"
         );
         router.push("/projects");
-      }, 1000);
+      }, 3000);
     } catch (error) {
       setMessage({ type: "error", message: "Something went wrong" });
     }

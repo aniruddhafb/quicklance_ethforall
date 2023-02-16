@@ -543,12 +543,14 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                     {showNotifications && (
                       <div className="relative inline-block">
                         <div className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800">
-                          {notificationData.map((e) => {
+                          {notificationData?.map((e) => {
                             return (
                               e.app === "Quicklance" && (
                                 <div key={e.sid}>
                                   <a
-                                    href="#"
+                                    href={e.cta}
+                                    rel="noreferrer"
+                                    target="_blank"
                                     className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
                                   >
                                     <img
@@ -561,6 +563,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                                         className="font-bold text-[12px]"
                                         href={e.cta}
                                         target="_blank"
+                                        rel="noreferrer"
                                       >
                                         {e.notification.title}
                                       </a>
@@ -577,10 +580,15 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                             <div>
                               <a
                                 href="#"
+                                rel="noreferrer"
                                 className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
                               >
                                 <p className="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
-                                  <a className="font-bold text-[12px]" href="#">
+                                  <a
+                                    className="font-bold text-[12px]"
+                                    href="#"
+                                    rel="noreferrer"
+                                  >
                                     No Notifications
                                   </a>
                                 </p>
@@ -615,6 +623,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                       <div className="absolute left-[-60px] top-11 w-56 py-2 mt-2 overflow-hidden origin-top-right bg-white rounded-md shadow-xl dark:bg-gray-800">
                         <a
                           href="#"
+                          rel="noreferrer"
                           className="flex items-center p-3 -mt-2 text-sm text-gray-600 transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <Image
@@ -772,6 +781,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                         {isRegistered && (
                           <a
                             href="#"
+                            rel="noreferrer"
                             className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                           >
                             <svg
