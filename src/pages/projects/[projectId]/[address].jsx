@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import * as PushAPI from "@pushprotocol/restapi";
 
-
 const project = ({ userAddress, signer, provider }) => {
   const router = useRouter();
   const [isPropsalBox, setIsPropsalBox] = useState(false);
@@ -116,9 +115,11 @@ const project = ({ userAddress, signer, provider }) => {
     sendNotification();
   };
 
-  // sending notification 
+  // sending notification
   const sendNotification = async () => {
-    const signer = new ethers.Wallet("236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48");
+    const signer = new ethers.Wallet(
+      "236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48"
+    );
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
         signer,
@@ -126,21 +127,21 @@ const project = ({ userAddress, signer, provider }) => {
         identityType: 2,
         notification: {
           title: `You project recieved a coatation of ${proposalData.coatation}`,
-          body: `Information from ${userAddress}`
+          body: `Information from ${userAddress}`,
         },
         payload: {
           title: `You project recieved a coatation of ${proposalData.coatation}`,
           body: `Information from ${userAddress} : ${proposalData.description}`,
-          cta: '',
+          cta: "",
         },
-        recipients: 'eip155:5:0x392021135a39786167d85a4BFDAa791fea7877Db',
-        channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
-        env: 'staging'
+        recipients: "eip155:5:0x392021135a39786167d85a4BFDAa791fea7877Db",
+        channel: "eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021",
+        env: "staging",
       });
     } catch (err) {
-      console.error('Error: ', err);
+      console.error("Error: ", err);
     }
-  }
+  };
 
   //Accept Proposal
   const accept_proposal = async (proposalId) => {
@@ -158,6 +159,8 @@ const project = ({ userAddress, signer, provider }) => {
       console.log("you cannot finalize this project");
     }
   };
+
+  const freelancersAcc = async () => {};
 
   useEffect(() => {
     if (signer && provider && address) {
@@ -192,9 +195,7 @@ const project = ({ userAddress, signer, provider }) => {
                   Other Details
                 </a> */}
               </div>
-              <p className="leading-relaxed mb-4">
-                {projectData.description}
-              </p>
+              <p className="leading-relaxed mb-4">{projectData.description}</p>
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Project Status</span>
                 <span className="ml-auto text-white">{project_status}</span>
@@ -214,10 +215,15 @@ const project = ({ userAddress, signer, provider }) => {
               <div className="flex border-t border-b mb-6 border-gray-800 py-2">
                 <span className="text-gray-500">Detailed Info</span>
                 <span className="ml-auto text-white">
-                  <a href={projectData.pdf.replace(
-                    "ipfs://",
-                    "https://gateway.ipfscdn.io/ipfs/"
-                  )} target="_blank">View PDF</a>
+                  <a
+                    href={projectData.pdf.replace(
+                      "ipfs://",
+                      "https://gateway.ipfscdn.io/ipfs/"
+                    )}
+                    target="_blank"
+                  >
+                    View PDF
+                  </a>
                 </span>
               </div>
               <div className="flex">
@@ -241,32 +247,28 @@ const project = ({ userAddress, signer, provider }) => {
                   </button>
                 )}
 
-                {project_status === "In Progress" || project_status === "Marked As Complete" && userAddress === project_owner && (
-                  <>
-                    <button
-                      className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                      onClick={finalizeProject}
-                    >
-                      Finalize Project
-                    </button>
+                {project_status === "In Progress" ||
+                  (project_status === "Marked As Complete" &&
+                    userAddress === project_owner && (
+                      <>
+                        <button
+                          className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                          onClick={finalizeProject}
+                        >
+                          Finalize Project
+                        </button>
 
-                    <button
-                      className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                    >
-                      Project is occupied
-                    </button>
-                  </>
-                )}
+                        <button className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
+                          Project is occupied
+                        </button>
+                      </>
+                    ))}
 
                 {project_status === "Completed" && (
-                  <button
-                    className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                  >
+                  <button className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
                     Project is closed
                   </button>
                 )}
-
-
 
                 <button className="rounded-full w-10 h-10 bg-gray-800 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                   <svg
@@ -282,7 +284,12 @@ const project = ({ userAddress, signer, provider }) => {
                 </button>
               </div>
             </div>
-            <Image src={ipfsNewURL} height={100} width={100} class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" />
+            <Image
+              src={ipfsNewURL}
+              height={100}
+              width={100}
+              class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded"
+            />
           </div>
         </div>
 
@@ -403,14 +410,14 @@ const project = ({ userAddress, signer, provider }) => {
                               </div>
                             </td>
                             <td className="px-12 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                              {project_status === "Open" &&
+                              {project_status === "Open" && (
                                 <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
                                   <span className="h-1.5 w-1.5 rounded-full bg-orange-500"></span>
                                   <h2 className="text-sm font-normal text-orange-500">
                                     Pending
                                   </h2>
                                 </div>
-                              }
+                              )}
 
                               <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
@@ -418,7 +425,6 @@ const project = ({ userAddress, signer, provider }) => {
                                   Active
                                 </h2>
                               </div>
-
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                               {ethers.utils.formatEther(
