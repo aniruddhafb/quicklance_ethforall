@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import * as PushAPI from "@pushprotocol/restapi";
 import Link from "next/link";
-
+import axios from "axios";
 const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   const router = useRouter();
   const [isPropsalBox, setIsPropsalBox] = useState(false);
@@ -32,6 +32,12 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
     deadLine: "",
     owner: "",
     project: "",
+  });
+  const [isRegistered, setIsRegistered] = useState(false);
+
+  const [descriptionLength, setDescriptionLength] = useState({
+    expand_project_description: false,
+    expand_proposal_description: false,
   });
 
   const [projectInfo, setProjectInfo] = useState({
@@ -60,7 +66,36 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
 
     // Fetches All Proposals
     const proposals = await proposal_info.getProposals();
-    setProjectInfo({ ...projectInfo, proposals: proposals });
+    let proposalData = [];
+    proposals.map(async (e) => {
+      try {
+        const res = await axios({
+          url: "http://localhost:3000/api/users/getUserByWalletAddress",
+          method: "POST",
+          data: {
+            wallet: e.owner,
+          },
+        });
+        const { username, image } = res.data;
+        proposalData.push({
+          username,
+          image,
+          approvalDate: e.approvalDate,
+          asked_amount: e.asked_amount,
+          description: e.description,
+          id: e.id,
+          isApproved: e.isApproved,
+          isCompleted: e.isCompleted,
+          isFinalized: e.isFinalized,
+          owner: e.owner,
+          time_of_completion: e.time_of_completion,
+        });
+      } catch (error) {
+        console.log(`cannot find user with wallet ${e.owner}`);
+      }
+    });
+
+    setProjectInfo({ ...projectInfo, proposals: proposalData });
 
     // getting active freelancer
     const approvedFreelancer = await proposal_info.approvedFreelancer();
@@ -110,16 +145,25 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   //Create Proposal
   const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      if (!isRegistered) {
+        alert("Please Create Your Account To Create Proposal");
+        router.push("/create/create-profile");
+        return;
+      }
 
-    const project_info = new ethers.Contract(address, abi.abi, signer);
-    const date = new Date();
-    const date_of_completion = date.getTime(proposalData.completion_date);
-    const txn = await project_info.createProposal(
-      proposalData.description,
-      ethers.utils.parseEther(proposalData.coatation),
-      date_of_completion
-    );
-    sendProposalNoti();
+      const project_info = new ethers.Contract(address, abi.abi, signer);
+      const date = new Date();
+      const date_of_completion = date.getTime(proposalData.completion_date);
+      const txn = await project_info.createProposal(
+        proposalData.description,
+        ethers.utils.parseEther(proposalData.coatation),
+        date_of_completion
+      );
+      sendProposalNoti();
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   // sending notification
@@ -258,10 +302,31 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
     }
   };
 
+  const fetchUserData = async () => {
+    try {
+      if (userAddress) {
+        const res = await axios({
+          url: "http://localhost:3000/api/users/getUserByWalletAddress",
+          method: "POST",
+          data: {
+            wallet: userAddress,
+          },
+        });
+        if (res.status == 200) {
+          setIsRegistered(true);
+        }
+      }
+    } catch (error) {
+      console.log(error.response.data);
+      setIsRegistered(false);
+    }
+  };
+
   useEffect(() => {
-    if (signer && provider && address) {
+    if (signer && provider && address && userAddress) {
       fetch_project_info();
       fetch_project_by_id();
+      fetchUserData();
     }
   }, [userAddress, signer]);
 
@@ -306,11 +371,29 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                 <a className="flex-grow text-indigo-400 border-b-2 border-indigo-500 py-2 text-lg px-1">
                   Project Information
                 </a>
-                {/* <a className="flex-grow border-b-2 border-gray-800 py-2 text-lg px-1">
-                  Other Details
-                </a> */}
               </div>
-              <p className="leading-relaxed mb-4">{projectData.description}</p>
+              <div className="leading-relaxed mb-4">
+                {!descriptionLength.expand_project_description
+                  ? projectData.description.slice(0, 100) + "..."
+                  : projectData.description}
+                <span
+                  className="cursor-pointer"
+                  onClick={() =>
+                    setDescriptionLength({
+                      expand_project_description:
+                        !descriptionLength.expand_project_description,
+                    })
+                  }
+                >
+                  {descriptionLength.expand_project_description ? (
+                    <span className="text-blue-500"> view less</span>
+                  ) : (
+                    projectData.description.length > 50 && (
+                      <span className="text-blue-500"> view more</span>
+                    )
+                  )}
+                </span>
+              </div>
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Project Status</span>
                 <span className="ml-auto text-white">{project_status}</span>
@@ -562,12 +645,15 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                                 <div className="flex items-center gap-x-2">
                                   <img
                                     className="object-cover w-10 h-10 rounded-full"
-                                    src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+                                    src={e.image?.replace(
+                                      "ipfs://",
+                                      "https://gateway.ipfscdn.io/ipfs/"
+                                    )}
                                     alt=""
                                   />
                                   <div>
                                     <h2 className="font-medium text-gray-800 dark:text-white ">
-                                      shravan
+                                      {e.username}
                                     </h2>
                                     <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
                                       {e.owner.slice(0, 5) +
@@ -644,8 +730,40 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                               </p>
                               <Image src={chainImg} height={20} width={25} />
                             </td>
-                            <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
-                              {e.description}
+                            <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 ">
+                              {descriptionLength.expand_project_description ? (
+                                <div>
+                                  {e.description}{" "}
+                                  <span
+                                    className="text-blue-500 cursor-pointer"
+                                    onClick={() =>
+                                      setDescriptionLength({
+                                        expand_project_description:
+                                          !descriptionLength.expand_project_description,
+                                      })
+                                    }
+                                  >
+                                    view less
+                                  </span>
+                                </div>
+                              ) : (
+                                <div>
+                                  {e.description.slice(0, 100)}{" "}
+                                  {e.description.length > 50 && (
+                                    <span
+                                      className="text-blue-500 cursor-pointer"
+                                      onClick={() =>
+                                        setDescriptionLength({
+                                          expand_project_description:
+                                            !descriptionLength.expand_project_description,
+                                        })
+                                      }
+                                    >
+                                      view more
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                             </td>
 
                             {userAddress === project_owner && (

@@ -11,9 +11,17 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "cannot find user" });
 
     if (to_follow_user.followers.includes(user_wallet)) {
-      return res.status(200).json({ isFollowing: true });
+      return res.status(200).json({
+        isFollowing: true,
+        followers_length: to_follow_user.followers.length,
+      });
     } else {
-      return res.status(200).json({ isFollowing: false });
+      return res
+        .status(200)
+        .json({
+          isFollowing: false,
+          followers_length: to_follow_user.followers.length,
+        });
     }
   }
 }

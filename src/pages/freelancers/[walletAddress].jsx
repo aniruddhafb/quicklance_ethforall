@@ -2,15 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import * as PushAPI from "@pushprotocol/restapi";
 import { ethers } from "ethers";
-
+import abi from "../../../artifacts/contracts/ProjectFactory.sol/ProjectFactory.json";
 import axios from "axios";
 import Image from "next/image";
-const userProfile = ({ userAddress }) => {
+const userProfile = ({ userAddress, provider }) => {
   const router = useRouter();
   const { walletAddress } = router.query;
   const [data, setData] = useState({});
   const [error, setError] = useState("");
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [followData, setFollowData] = useState({
+    isFollowing: undefined,
+    followers_length: 0,
+  });
 
   const getFreelancerData = async () => {
     try {
@@ -60,71 +63,77 @@ const userProfile = ({ userAddress }) => {
         },
       });
       if (res.status == 200) {
-        // console.log(res.data.isFollowing);
-        setIsFollowing(res.data.isFollowing);
+        setFollowData({ ...res.data });
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  const fetchProjectsByAddress = async () => {
+    const txn = await provider.getProjectsByOwner();
+
+    console.log({ txn });
+  };
+
   useEffect(() => {
-    if (userAddress && walletAddress) {
+    if (userAddress && provider) {
       getFreelancerData();
       check_follow_status();
+      // fetchProjectsByAddress();
     }
-  }, [userAddress, isFollowing]);
+  }, [userAddress, followData.isFollowing]);
   return (
     <div className="h-[100vh] bg-[#111827] pt-6">
       <div className={`w-full h-10 ${error && "bg-red-500"}`}>{error}</div>
       <div className="p-16">
         <div className="p-8 shadow mt-24">
-
           <div className="grid grid-cols-1 md:grid-cols-3">
-
             <div className="grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0">
-
               <div>
-
-                <p className="font-bold text-gray-200 text-xl">0</p>
+                <p className="font-bold text-gray-200 text-xl">
+                  {followData.followers_length}
+                </p>
                 <p className="text-gray-400">Followers</p>
               </div>
               <div>
-
                 <p className="font-bold text-gray-200 text-xl">0</p>
                 <p className="text-gray-400"> Projects</p>
               </div>
               <div>
-
                 <p className="font-bold text-gray-200 text-xl">0</p>
                 <p className="text-gray-400">Penalties</p>
               </div>
             </div>
             <div className="relative">
-
               <div className="w-36 h-36 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500">
-                <Image src={data.image?.replace(
-                  "ipfs://",
-                  "https://gateway.ipfscdn.io/ipfs/"
-                )} height={100} width={100} className="flex-shrink-0 object-cover w-36 h-36 rounded-full sm:mx-4 ring-4 ring-gray-300" />
+                <Image
+                  src={data.image?.replace(
+                    "ipfs://",
+                    "https://gateway.ipfscdn.io/ipfs/"
+                  )}
+                  height={100}
+                  width={100}
+                  className="flex-shrink-0 object-cover w-36 h-36 rounded-full sm:mx-4 ring-4 ring-gray-300"
+                />
               </div>
             </div>
-            <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-              <button
-                onClick={followUser}
-                className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-              >
+            {userAddress !== walletAddress && (
+              <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
+                <button
+                  onClick={followUser}
+                  className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                >
+                  {!followData.isFollowing ? "Follow" : "Unfollow"}
+                </button>
 
-                {!isFollowing ? "Follow" : "Unfollow"}
-              </button>
-              <button className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
-
-                Chat
-              </button>
-            </div>
+                <button className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
+                  Chat
+                </button>
+              </div>
+            )}
           </div>
           <div className="mt-20 text-center border-b pb-12">
-
             <h1 className="text-4xl font-medium text-gray-200">
               {data.fullName},
               <span className="font-light text-gray-400">{data.age}</span>
@@ -162,7 +171,6 @@ const userProfile = ({ userAddress }) => {
             <p className="mt-8 text-gray-500">{data.about}</p>
           </div>
           <div className="mt-12 flex flex-col justify-center">
-
             {/* <p className="text-gray-600 text-center font-light lg:px-16">
               An artist of considerable range, Ryan — the name taken by
               Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs
@@ -170,7 +178,6 @@ const userProfile = ({ userAddress }) => {
               with a solid groove structure. An artist of considerable range.
             </p> */}
             <button className="text-indigo-500 py-2 px-4  font-medium mt-4">
-
               No Project History Found
             </button>
           </div>

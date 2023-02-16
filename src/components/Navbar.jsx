@@ -13,7 +13,6 @@ import axios from "axios";
 import * as PushAPI from "@pushprotocol/restapi";
 
 const Navbar = ({ connectToContract, userAddress, provider }) => {
-
   const [userData, setUserData] = useState([]);
   // const fetchFreelancers = async () => {
   //   const res = await axios({
@@ -34,6 +33,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
   const [notificationData, setNotificationData] = useState();
   const [chainIdMain, setChainIdMain] = useState();
   const [trueSigner, setTrueSigner] = useState();
+  const [userImage, setUserImage] = useState("");
 
   const QUICKLANCE_CHANNEL_ADDRESS =
     "0xe7ac0B19e48D5369db1d70e899A18063E1f19021";
@@ -55,7 +55,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
       message.warn("Please install Metamask or any other web3 enabled browser");
     }
   };
-
 
   const getNotifications = () => {
     PushAPI.user
@@ -129,6 +128,8 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
           },
         });
         if (res.status == 200) {
+          const { image } = res.data;
+          setUserImage(image);
           setIsRegistered(true);
         }
       }
@@ -544,31 +545,32 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                         <div className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800">
                           {notificationData.map((e) => {
                             return (
-                              e.app === "Quicklance" &&
-                              < div key={e.sid} >
-                                <a
-                                  href="#"
-                                  className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
-                                >
-                                  <img
-                                    className="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full"
-                                    src={e.image}
-                                    alt="avatar"
-                                  />
-                                  <p className="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
-                                    <a
-                                      className="font-bold text-[12px]"
-                                      href={e.cta}
-                                      target="_blank"
-                                    >
-                                      {e.notification.title}
-                                    </a>
-                                    <span className="font-mono text-[10px]">
-                                      {e.notification.body}
-                                    </span>
-                                  </p>
-                                </a>
-                              </div>
+                              e.app === "Quicklance" && (
+                                <div key={e.sid}>
+                                  <a
+                                    href="#"
+                                    className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
+                                  >
+                                    <img
+                                      className="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full"
+                                      src={e.image}
+                                      alt="avatar"
+                                    />
+                                    <p className="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
+                                      <a
+                                        className="font-bold text-[12px]"
+                                        href={e.cta}
+                                        target="_blank"
+                                      >
+                                        {e.notification.title}
+                                      </a>
+                                      <span className="font-mono text-[10px]">
+                                        {e.notification.body}
+                                      </span>
+                                    </p>
+                                  </a>
+                                </div>
+                              )
                             );
                           })}
                           {notificationData.length === 0 && (
@@ -598,7 +600,10 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                     >
                       <div className="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full">
                         <Image
-                          src={profileImg}
+                          src={userImage?.replace(
+                            "ipfs://",
+                            "https://gateway.ipfscdn.io/ipfs/"
+                          )}
                           height={100}
                           width={100}
                           alt="avatar"
@@ -613,7 +618,10 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                           className="flex items-center p-3 -mt-2 text-sm text-gray-600 transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <Image
-                            src={profileImg}
+                            src={userImage?.replace(
+                              "ipfs://",
+                              "https://gateway.ipfscdn.io/ipfs/"
+                            )}
                             height={40}
                             width={40}
                             alt="avatar"
@@ -801,7 +809,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
           )}
         </div>
       </div>
-    </nav >
+    </nav>
   );
 };
 
