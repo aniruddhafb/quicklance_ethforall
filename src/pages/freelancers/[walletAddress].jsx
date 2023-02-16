@@ -4,15 +4,14 @@ import * as PushAPI from "@pushprotocol/restapi";
 import { ethers } from "ethers";
 
 import axios from "axios";
-const userProfile = () => {
+const userProfile = ({ userAddress }) => {
   const router = useRouter();
   const { walletAddress } = router.query;
   const [data, setData] = useState({});
   const [error, setError] = useState("");
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const getFreelancerData = async () => {
-    console.log("walletAddress");
-
     try {
       if (walletAddress) {
         const res = await axios({
@@ -31,9 +30,49 @@ const userProfile = () => {
     }
   };
 
+  const followUser = async () => {
+    try {
+      const res = await axios({
+        url: "http://localhost:3000/api/users/toggleFollow",
+        method: "POST",
+        data: {
+          to_follow_wallet: walletAddress,
+          user_wallet: userAddress,
+        },
+      });
+      if (res.status == 200) {
+        check_follow_status();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const check_follow_status = async () => {
+    try {
+      const res = await axios({
+        url: "http://localhost:3000/api/users/get_follow_status",
+        method: "POST",
+        data: {
+          to_follow_wallet: walletAddress,
+          user_wallet: userAddress,
+        },
+      });
+      if (res.status == 200) {
+        console.log(res.data.isFollowing);
+        setIsFollowing(res.data.isFollowing);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    getFreelancerData();
-  }, []);
+    if (userAddress && walletAddress) {
+      getFreelancerData();
+      check_follow_status();
+    }
+  }, [userAddress, isFollowing]);
   return (
     <div className="h-[100vh] bg-[#111827] pt-6">
       <div className={`w-full h-10 ${error && "bg-red-500"}`}>{error}</div>
@@ -79,9 +118,12 @@ const userProfile = () => {
               </div>{" "}
             </div>{" "}
             <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-              <button className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
+              <button
+                onClick={followUser}
+                className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+              >
                 {" "}
-                Follow
+                {!isFollowing ? "Follow" : "Unfollow"}
               </button>{" "}
               <button className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
                 {" "}

@@ -69,7 +69,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         env: "staging",
       })
       .then((chats) => {
-        console.log("user chats: ", chats);
+        // console.log("user chats: ", chats);
       })
       .catch((err) => {
         console.error("user chats: ", err);
@@ -83,7 +83,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         env: "staging",
       })
       .then((data) => {
-        console.log("user info: ", data);
+        // console.log("user info: ", data);
       })
       .catch((err) => {
         console.error("user info: ", err);
@@ -117,7 +117,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
           },
         });
         if (res.status == 200) {
-          console.log(res.data);
           setIsRegistered(true);
         }
       }

@@ -114,7 +114,6 @@ const project = ({ userAddress, signer, provider }) => {
     );
 
     sendNotification();
-    console.log(txn);
   };
 
   // sending notification 
@@ -138,7 +137,6 @@ const project = ({ userAddress, signer, provider }) => {
         channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
         env: 'staging'
       });
-      console.log('API response: ', apiResponse);
     } catch (err) {
       console.error('Error: ', err);
     }
@@ -151,23 +149,17 @@ const project = ({ userAddress, signer, provider }) => {
 
   const completeProject = async () => {
     const txn = await projectInfo.proposal_provider.markProjectAsComplete();
-    console.log(txn);
   };
 
   const finalizeProject = async () => {
-    console.log("finalize project called");
-    console.log({ userAddress });
-    console.log({ project_owner: project_owner });
     if (userAddress === project_owner) {
       const txn = await projectInfo.proposal_provider.finalizeProject();
-      console.log(txn);
     } else {
       console.log("you cannot finalize this project");
     }
   };
 
   useEffect(() => {
-    console.log("render");
     if (signer && provider && address) {
       fetch_project_info();
       fetch_project_by_id();

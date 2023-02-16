@@ -82,12 +82,10 @@ const createProject = ({ provider, userAddress }) => {
           },
         });
         if (res.status == 200) {
-          console.log({ createProj: res.data });
           setIsRegistered(true);
         }
       }
     } catch (error) {
-      console.log(error.response.data);
       setIsRegistered(false);
       alert("Please Create Your Account");
       router.push("/create/create-profile");

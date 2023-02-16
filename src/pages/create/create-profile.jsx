@@ -80,7 +80,6 @@ const CreateProfile = ({ userAddress }) => {
         }
       }
     } catch (error) {
-      console.log(data);
       setError("something went wrong");
     }
     setLoading(false);
@@ -98,13 +97,11 @@ const CreateProfile = ({ userAddress }) => {
           },
         });
         if (res.status == 200) {
-          console.log(res.data);
           setData({ ...res.data });
           setIsRegistered(true);
         }
       }
     } catch (error) {
-      console.log(error.response.data);
       setIsRegistered(false);
     }
     setLoading(false);
