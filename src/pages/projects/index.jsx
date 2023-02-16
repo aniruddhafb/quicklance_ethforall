@@ -14,7 +14,6 @@ const projects = ({ provider, signer }) => {
   const fetchProjects = async () => {
     if (!provider) return;
     const projects = await provider.getAllProjects();
-    console.log(projects);
     const date = new Date();
     let projectData = [];
     projects.map((e) => {

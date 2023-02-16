@@ -122,7 +122,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
     );
 
     sendProposalNoti();
-    console.log(txn);
+    sendNotification();
   };
 
   // sending notification 
@@ -227,7 +227,6 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
         channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
         env: 'staging'
       });
-      console.log('API response: ', apiResponse);
     } catch (err) {
       console.error('Error: ', err);
     }
@@ -246,20 +245,15 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   };
 
   const finalizeProject = async () => {
-    console.log("finalize project called");
-    console.log({ userAddress });
-    console.log({ project_owner: project_owner });
     if (userAddress === project_owner) {
       const txn = await projectInfo.proposal_provider.finalizeProject();
       sendFinalizedNoti();
-      console.log(txn);
     } else {
       console.log("you cannot finalize this project");
     }
   };
 
   useEffect(() => {
-    console.log("render");
     if (signer && provider && address) {
       fetch_project_info();
       fetch_project_by_id();
