@@ -114,7 +114,7 @@ const CreateProfile = ({ userAddress }) => {
   useEffect(() => {
     fetchUserData();
     setData({ ...data, wallet: userAddress });
-  }, [userAddress, isRegistered]);
+  }, [userAddress, isRegistered, data, fetchUserData]);
 
   return (
     <>
