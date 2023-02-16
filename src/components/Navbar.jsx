@@ -129,6 +129,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         });
         if (res.status == 200) {
           const { image } = res.data;
+          console.log({ image });
           setUserImage(image);
           setIsRegistered(true);
         }
