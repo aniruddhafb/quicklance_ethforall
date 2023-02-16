@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 
 const createProject = ({ provider, userAddress }) => {
-  const router = useRouter();
+  const Router = useRouter();
   const [data, setData] = useState({
     title: "",
     short_desc: "",
@@ -63,7 +63,7 @@ const createProject = ({ provider, userAddress }) => {
         setMessage(
           "Project Successfully Created, redirecting to projects page"
         );
-        router.push("/projects");
+        Router.push("/projects");
       }, 3000);
     } catch (error) {
       setMessage({ type: "error", message: "Something went wrong" });
@@ -88,7 +88,7 @@ const createProject = ({ provider, userAddress }) => {
     } catch (error) {
       setIsRegistered(false);
       alert("Please Create Your Account");
-      router.push("/create/create-profile");
+      Router.push("/create/create-profile");
     }
   };
 
