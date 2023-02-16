@@ -4,7 +4,12 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import abi from "../../artifacts/contracts/ProjectFactory.sol/ProjectFactory.json";
 import Footer from "@/components/Footer";
+import polygonPng from "../../public/images/polygon.png";
+import filPng from "../../public/images/fil.png";
+import mantlePng from "../../public/images/mantle.png";
+import optimismPng from "../../public/images/optimism.png";
 import axios from "axios";
+
 
 export default function App({ Component, pageProps }) {
   const contractMumbai = "0x4d5D1469EE0F9C878A87dd18f8A3895c83611194";
@@ -18,6 +23,9 @@ export default function App({ Component, pageProps }) {
   const [userAddress, setUserAddress] = useState("");
   const [chainId, setChainId] = useState("");
   const [signer, setSigner] = useState();
+
+  const [chainImg, setChainImg] = useState();
+  const [blockURL, setBlockURL] = useState("");
 
   const connectToContract = async () => {
     if (window?.ethereum) {
@@ -39,12 +47,20 @@ export default function App({ Component, pageProps }) {
       setChainId(chainIdMain);
       if (chainIdMain == 420) {
         contractAddress = contractOptimism;
+        setChainImg(optimismPng);
+        setBlockURL("https://goerli-optimism.etherscan.io/address/");
       } else if (chainIdMain == 3141) {
         contractAddress = contractFilecoin;
+        setChainImg(filPng);
+        setBlockURL("https://hyperspace.filfox.info/en/address/");
       } else if (chainIdMain == 5001) {
         contractAddress = contractMantle;
+        setChainImg(mantlePng);
+        setBlockURL("https://explorer.testnet.mantle.xyz/address/");
       } else {
         contractAddress = contractMumbai;
+        setChainImg(polygonPng);
+        setBlockURL("https://mumbai.polygonscan.com/address/");
       }
 
       const ProjectFactoryContract = new ethers.Contract(
@@ -83,6 +99,8 @@ export default function App({ Component, pageProps }) {
         connectToContract={connectToContract}
         userAddress={userAddress}
         signer={signer}
+        chainImg={chainImg}
+        blockURL={blockURL}
       />
       <Footer userAddress={userAddress} />
     </>

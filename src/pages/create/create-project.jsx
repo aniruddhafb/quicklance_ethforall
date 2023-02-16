@@ -100,14 +100,15 @@ const createProject = ({ provider, userAddress }) => {
     <>
       {message.message && (
         <div
-          className={`w-full h-10 ${
-            message.type === "error" ? "bg-red-500" : "bg-green-500"
-          }`}
+          className={`w-full h-10 text-center text-white font-bold pt-2 ${message.type === "error" ? "bg-red-500" : "bg-green-500"
+            }`}
         >
           {message.message}
         </div>
       )}
-      {loading && <div>Loading...</div>}
+      {loading && <div className="w-full bg-green-500 h-10 text-center text-white font-bold pt-2">
+        Please wait while we process..
+      </div>}
       <div className="h-[100vh] bg-[#111827] pt-6">
         <section className="max-w-4xl p-6 mx-auto my-20 rounded-md shadow-md ">
           <h2 className="text-lg font-semibold text-gray-700 capitalize dark:text-white">
