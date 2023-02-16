@@ -65,8 +65,10 @@ const CreateProfile = ({ userAddress }) => {
           data: { ...data, image: user_image },
         });
         if (res.status == 200) {
-          setSuccess("Profile Successfully Updated");
-          router.push(`/freelancers/${userAddress}`);
+          setSuccess("Profile Successfully Updated, redirecting...");
+          setTimeout(() => {
+            router.push(`/freelancers/${userAddress}`);
+          }, 1000);
         }
       } else {
         const res = await axios({
@@ -75,8 +77,10 @@ const CreateProfile = ({ userAddress }) => {
           data: { ...data },
         });
         if (res.status == 200) {
-          setSuccess("Profile Successfully Updated");
-          router.push(`/freelancers/${userAddress}`);
+          setSuccess("Profile Successfully Updated, redirecting...");
+          setTimeout(() => {
+            router.push(`/freelancers/${userAddress}`);
+          }, 1000);
         }
       }
     } catch (error) {
@@ -118,9 +122,13 @@ const CreateProfile = ({ userAddress }) => {
   return (
     <>
       {loading && (
-        <div className="h-full w-full absolute bg-gray-500 ">Loading</div>
+        <div className="w-full bg-green-500 h-10 text-center text-white font-bold pt-2">
+          Please wait while we process..
+        </div>
       )}
-      {error && <div className="w-full bg-green-500 h-10">{error}</div>}
+      {error && <div className="w-full bg-red-500 h-10 text-center text-white font-bold pt-2">
+        {error}
+      </div>}
       {success && (
         <div className="w-full bg-green-500 h-10 text-center text-white font-bold pt-2">
           {success}

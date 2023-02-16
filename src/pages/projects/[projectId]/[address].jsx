@@ -5,11 +5,14 @@ import abi from "../../../../artifacts/contracts/Project.sol/Project.json";
 import dayjs from "dayjs";
 import Image from "next/image";
 import * as PushAPI from "@pushprotocol/restapi";
+import Link from "next/link";
 
 
 const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   const router = useRouter();
   const [isPropsalBox, setIsPropsalBox] = useState(false);
+  const [isPropsalForOwner, setIsPropsalForOwner] = useState(false);
+  const [isMarkedComplete, setIsMarkedComplete] = useState(false);
   const [proposalData, setProposalData] = useState({
     coatation: "",
     description: "",
@@ -118,12 +121,12 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
       date_of_completion
     );
 
-    sendNotification();
+    sendProposalNoti();
     console.log(txn);
   };
 
   // sending notification 
-  const sendNotification = async () => {
+  const sendProposalNoti = async () => {
     const signer = new ethers.Wallet("236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48");
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
@@ -137,9 +140,90 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
         payload: {
           title: `You project recieved a coatation of ${proposalData.coatation}`,
           body: `Information from ${userAddress} : ${proposalData.description}`,
-          cta: '',
+          cta: `${blockURL} ${address}`,
         },
-        recipients: 'eip155:5:0x392021135a39786167d85a4BFDAa791fea7877Db',
+        recipients: `eip155:5:${project_owner}`,
+        channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
+        env: 'staging'
+      });
+      console.log('API response: ', apiResponse);
+    } catch (err) {
+      console.error('Error: ', err);
+    }
+  }
+
+  // sending notification 
+  const sendMarkedCompleteNoti = async () => {
+    const signer = new ethers.Wallet("236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48");
+    try {
+      const apiResponse = await PushAPI.payloads.sendNotification({
+        signer,
+        type: 3,
+        identityType: 2,
+        notification: {
+          title: `You project is completed`,
+          body: `Your project ${address} is marked as completed from ${activeFreelancer}`
+        },
+        payload: {
+          title: `You project is completed`,
+          body: `Your project ${address} is marked as completed from ${activeFreelancer}`,
+          cta: `${blockURL} ${address}`,
+        },
+        recipients: `eip155:5:${project_owner}`,
+        channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
+        env: 'staging'
+      });
+      console.log('API response: ', apiResponse);
+    } catch (err) {
+      console.error('Error: ', err);
+    }
+  }
+
+  // sending notification 
+  const sendFinalizedNoti = async () => {
+    const signer = new ethers.Wallet("236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48");
+    try {
+      const apiResponse = await PushAPI.payloads.sendNotification({
+        signer,
+        type: 3,
+        identityType: 2,
+        notification: {
+          title: `Congratulations! Your project is completed`,
+          body: `You received a payment from ${project_owner} for compeleting ${address}`
+        },
+        payload: {
+          title: `Congratulations! Your project is completed`,
+          body: `You received a payment from ${project_owner} for compeleting ${address}`,
+          cta: `${blockURL} ${address}`,
+        },
+        recipients: `eip155:5:${activeFreelancer}`,
+        channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
+        env: 'staging'
+      });
+      console.log('API response: ', apiResponse);
+    } catch (err) {
+      console.error('Error: ', err);
+    }
+  }
+
+  // sending notification 
+  const sendAcceptNoti = async () => {
+    const signer = new ethers.Wallet("236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48");
+    try {
+      const apiResponse = await PushAPI.payloads.sendNotification({
+        signer,
+        type: 3,
+        identityType: 2,
+        notification: {
+          title: `Congratulations! Your proposal is accepted`,
+          body: `Your proposal for project : ${address} is accepted, you can start working asap`
+        },
+        payload: {
+          title: `Congratulations! Your proposal is accepted`,
+          body: `Your proposal for project : ${address} is accepted, you can start working asap`,
+          cta: `${blockURL} ${address}`,
+        },
+        recipients: `eip155:5:${activeFreelancer}`,
         channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
         env: 'staging'
       });
@@ -152,10 +236,12 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   //Accept Proposal
   const accept_proposal = async (proposalId) => {
     const txn = await projectInfo.proposal_provider.approveProposal(proposalId);
+    sendAcceptNoti();
   };
 
   const completeProject = async () => {
     const txn = await projectInfo.proposal_provider.markProjectAsComplete();
+    sendMarkedCompleteNoti();
     console.log(txn);
   };
 
@@ -165,6 +251,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
     console.log({ project_owner: project_owner });
     if (userAddress === project_owner) {
       const txn = await projectInfo.proposal_provider.finalizeProject();
+      sendFinalizedNoti();
       console.log(txn);
     } else {
       console.log("you cannot finalize this project");
@@ -191,6 +278,25 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
         <div className="container px-5 py-24 mx-auto">
           <div className="lg:w-4/5 mx-auto flex flex-wrap">
             <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
+              <div className="inline-flex items-center gap-x-3">
+                <Link href="#">
+                  <div className="flex items-center gap-x-2">
+                    <img
+                      className="object-cover w-10 h-10 rounded-full"
+                      src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+                      alt=""
+                    />
+                    <div>
+                      <h2 className="font-medium text-gray-800 dark:text-white ">
+                        shravan
+                      </h2>
+                      <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
+                        EMPLOYER
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
               <h1 className="text-white text-3xl title-font font-medium mb-2">
                 {projectData.title}
               </h1>
@@ -243,46 +349,88 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
               <div className="flex">
                 {/* <span className="title-font font-medium text-2xl text-white">$58.00</span> */}
 
-                {/* {userAddress === project_owner && (
+                {/* when project status is open  */}
+                {project_status === "Open" && (
+                  project_owner === userAddress ?
+                    (<button
+                      onClick={() => setIsPropsalForOwner(true)}
+                      className="flex ml-auto text-white bg-gray-700 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                    >
+                      Create a proposal 🔒
+                    </button>) :
+                    (<button
+                      onClick={() => setIsPropsalBox(true)}
+                      className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                    >
+                      Create a proposal
+                    </button>)
+                )}
+
+                {/* when project status is in progress  */}
+                {project_status === "In Progress" && userAddress === project_owner && (
+                  project_status === "Marked As Complete" ?
+                    (<button
+                      className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                      onClick={finalizeProject}
+                    >
+                      Finalize Project
+                    </button>) :
+                    (<button
+                      className="flex ml-auto text-white bg-gray-700 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                      onClick={() => setIsMarkedComplete(true)}
+                    >
+                      Finalize Project 🔒
+                    </button>)
+                )}
+                {project_status === "In Progress" && userAddress === activeFreelancer && (
+                  <button
+                    onClick={completeProject}
+                    className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                  >
+                    Complete Project
+                  </button>
+                )}
+                {project_status === "In Progress" && userAddress != activeFreelancer && userAddress != project_owner && (
+                  <button
+                    className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                  >
+                    Project is occupied
+                  </button>
+                )}
+
+                {/* when project status is marked as coemplete to project owner  */}
+                {project_status === "Marked As Complete" && userAddress === project_owner && (
                   <button
                     className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
                     onClick={finalizeProject}
                   >
                     Finalize Project
                   </button>
-                )} */}
-
-                {project_status === "Open" && (
-                  <button
-                    onClick={() => setIsPropsalBox(true)}
-                    className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                  >
-                    Create a proposal
-                  </button>
                 )}
 
-                {project_status === "In Progress" || project_status === "Marked As Complete" && userAddress === project_owner && (
-                  <>
+                {/* when project status is marked as coemplete from freelancer */}
+                {project_status === "Marked As Complete" && (
+                  userAddress === activeFreelancer ?
                     <button
                       className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                      onClick={finalizeProject}
-                    >
-                      Finalize Project
-                    </button>
 
+                    >
+                      Marked As Completed
+                    </button> :
+                    userAddress != project_owner &&
                     <button
-                      className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                      className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
                     >
                       Project is occupied
                     </button>
-                  </>
                 )}
 
+                {/* when project status is compeleted  */}
                 {project_status === "Completed" && (
                   <button
-                    className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                    className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
                   >
-                    Project is closed
+                    Project is completed
                   </button>
                 )}
 
@@ -431,11 +579,48 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                                   </h2>
                                 </div>
                               }
-                              {project_status === "In Progress" &&
+                              {project_status === "In Progress" && (
+                                e.owner === activeFreelancer ?
+                                  <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                    <h2 className="text-sm font-normal text-emerald-500">
+                                      Active
+                                    </h2>
+                                  </div> :
+                                  <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+                                    <h2 className="text-sm font-normal text-red-500">
+                                      Rejected
+                                    </h2>
+                                  </div>
+                              )}
+                              {project_status === "Marked As Complete" && (
+                                e.owner === activeFreelancer ?
+                                  <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                    <h2 className="text-sm font-normal text-emerald-500">
+                                      Active
+                                    </h2>
+                                  </div> :
+                                  <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+                                    <h2 className="text-sm font-normal text-red-500">
+                                      Rejected
+                                    </h2>
+                                  </div>
+                              )}
+                              {project_status === "Completed" &&
+                                e.owner === activeFreelancer ?
                                 <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
                                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                                   <h2 className="text-sm font-normal text-emerald-500">
-                                    Active
+                                    Completed
+                                  </h2>
+                                </div> :
+                                <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+                                  <h2 className="text-sm font-normal text-red-500">
+                                    Rejected
                                   </h2>
                                 </div>
                               }
@@ -457,30 +642,29 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                               <td className="px-4 py-4 text-sm whitespace-nowrap">
                                 <div className="flex items-center gap-x-2">
                                   {!e.isApproved && userAddress === project_owner ? (
+                                    project_status === "Open" &&
                                     <button onClick={() => accept_proposal(e.id)}>
                                       <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
                                         Accept
                                       </p>
                                     </button>
                                   ) : (
+                                    project_status === "In Progress" && project_status === "Marked As Complete" &&
                                     <button>
-                                      <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
+                                      <p className="px-3 py-1 text-xs text-orange-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
                                         Project Is Live
                                       </p>
                                     </button>
-                                    // <button
-                                    //   onClick={() => {
-                                    //     if (!e.owner === userAddress) return;
-                                    //     completeProject();
-                                    //   }}
-                                    // >
-                                    //   <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
-                                    //     {e.owner === userAddress
-                                    //       ? "Complete Project"
-                                    //       : " Approved"}
-                                    //   </p>
-                                    // </button>
                                   )}
+
+                                  {project_status === "Completed" && (
+                                    <button>
+                                      <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
+                                        Project Is Completed
+                                      </p>
+                                    </button>
+                                  )}
+
                                 </div>
                               </td>
                             }
@@ -488,6 +672,13 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                         </tbody>
                       );
                     })}
+                    {projectInfo.proposals.length === "0" &&
+                      <tbody
+                        className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900"
+                      >
+                        <tr>No proposals yet!</tr>
+                      </tbody>
+                    }
                   </table>
                 </div>
               </div>
@@ -578,6 +769,97 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                       className="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-indigo-500 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
                     >
                       Create Proposal
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* create proposal box for owner */}
+      {isPropsalForOwner && (
+        <div>
+          <div
+            className="fixed inset-0 z-10 overflow-y-auto"
+            aria-labelledby="modal-title"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+              <span
+                className="hidden sm:inline-block sm:h-screen sm:align-middle"
+                aria-hidden="true"
+              >
+                &#8203;
+              </span>
+
+              <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
+                <h3
+                  className="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white"
+                  id="modal-title"
+                >
+                  Oops !!
+                </h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                  You are the owner of the project, you cannot create a proposal for your own project
+                </p>
+
+                <form className="mt-4" action="#" onSubmit={handleSubmit}>
+                  <div className="mt-4 sm:flex sm:items-center sm:-mx-2">
+                    <button
+                      onClick={() => setIsPropsalForOwner(false)}
+                      type="button"
+                      className="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 bg-gray-900 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
+                    >
+                      Ok
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* finalize box when project is not marked comeplete by freelancer */}
+      {isMarkedComplete && (
+        <div>
+          <div
+            className="fixed inset-0 z-10 overflow-y-auto"
+            aria-labelledby="modal-title"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+              <span
+                className="hidden sm:inline-block sm:h-screen sm:align-middle"
+                aria-hidden="true"
+              >
+                &#8203;
+              </span>
+
+              <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
+                <h3
+                  className="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white"
+                  id="modal-title"
+                >
+                  Oops !!
+                </h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                  Freelancer has not marked the project to completed from his side
+                </p>
+
+                <form className="mt-4" action="#" onSubmit={handleSubmit}>
+                  <div className="mt-4 sm:flex sm:items-center sm:-mx-2">
+                    <button
+                      onClick={() => setIsMarkedComplete(false)}
+                      type="button"
+                      className="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 bg-gray-900 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
+                    >
+                      Ok
                     </button>
                   </div>
                 </form>

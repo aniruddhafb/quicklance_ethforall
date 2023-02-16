@@ -68,7 +68,7 @@ const projects = ({ provider, signer }) => {
         {projects.map((e, index) => (
           <div
             key={index}
-            className="w-[300px] overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 relative"
+            className="w-[300px] h-[100%] overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 relative"
           >
             <div className="px-4 py-2">
               <h1 className="text-xl font-bold text-gray-800 uppercase dark:text-white">
@@ -112,7 +112,7 @@ const projects = ({ provider, signer }) => {
               <div className="text-sm w-full font-bold text-white flex flex-col">
                 <p>Coatations</p>
                 <span className="flex flex-row align-middle text-center">
-                  20 <BsFillPeopleFill className="mt-1 ml-2" />
+                  0 <BsFillPeopleFill className="mt-1 ml-2" />
                 </span>
               </div>
               <Link

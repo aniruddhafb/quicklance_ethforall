@@ -13,6 +13,17 @@ import axios from "axios";
 import * as PushAPI from "@pushprotocol/restapi";
 
 const Navbar = ({ connectToContract, userAddress, provider }) => {
+
+  const [userData, setUserData] = useState([]);
+  // const fetchFreelancers = async () => {
+  //   const res = await axios({
+  //     url: "http://localhost:3000/api/freelancers/getAllfreelancers",
+  //     method: "GET",
+  //   });
+  //   console.log({ userdata: res.data });
+  //   setUserData(res.data);
+  // };
+
   const [showNotifications, SetShowNotifications] = useState(false);
   const [showProfile, SetShowProfile] = useState(false);
   const [showNetworkPopup, setShowNetworkPopup] = useState(false);
@@ -133,6 +144,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
     getUser();
     getChats();
     fetchUserData();
+    // fetchFreelancers();
   }, [chainIdMain, userAddress]);
 
   // switch or add chain mainnets
@@ -358,12 +370,12 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                 >
                   Hire Freelancers
                 </Link>
-                <Link
+                {/* <Link
                   href="/web3jobs"
                   className="px-3 py-2 mx-3 mt-2 text-gray-700 transition-colors duration-300 transform rounded-md lg:mt-0 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Web3 Jobs
-                </Link>
+                </Link> */}
               </div>
 
               {userAddress ? (
@@ -606,9 +618,11 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                             alt="avatar"
                           />
                           <div className="mx-1">
-                            {/* <h1 className="text-sm font-semibold text-gray-700 dark:text-gray-200">Jane Doe</h1> */}
+                            {/* <h1 className="text-sm font-semibold text-gray-700 dark:text-gray-200">{userData.username}</h1> */}
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                              {userAddress}
+                              {userAddress.slice(0, 5) +
+                                "..." +
+                                userAddress.slice(38)}
                             </p>
                           </div>
                         </a>
@@ -677,7 +691,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                           </Link>
                         )}
 
-                        {isRegistered && (
+                        {/* {isRegistered && (
                           <Link
                             href="/create/create-job"
                             className="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
@@ -696,7 +710,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
 
                             <span className="mx-1">Create Job</span>
                           </Link>
-                        )}
+                        )} */}
 
                         <hr className="border-gray-200 dark:border-gray-700 " />
 
