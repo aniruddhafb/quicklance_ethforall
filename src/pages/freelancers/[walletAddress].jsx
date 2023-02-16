@@ -1,11 +1,19 @@
+import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import * as PushAPI from "@pushprotocol/restapi";
-import { ethers } from "ethers";
-
+import { Chat, ITheme } from "@pushprotocol/uiweb";
 import axios from "axios";
 import Image from "next/image";
+
 const userProfile = ({ userAddress }) => {
+
+  const theme = {
+    btnColorPrimary: '#3e89e6',
+    bgColorSecondary: '#3e89e6',
+    moduleColor: '#f0f0f0',
+  };
+
   const router = useRouter();
   const { walletAddress } = router.query;
   const [data, setData] = useState({});
@@ -112,14 +120,13 @@ const userProfile = ({ userAddress }) => {
             <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
               <button
                 onClick={followUser}
-                className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                className={`text-white py-2 px-4 uppercase rounded ${!isFollowing ? "bg-blue-400" : "bg-red-400"}  shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5`}
               >
-
                 {!isFollowing ? "Follow" : "Unfollow"}
               </button>
               <button className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
 
-                Chat
+                Tip Freelancer
               </button>
             </div>
           </div>
@@ -129,7 +136,7 @@ const userProfile = ({ userAddress }) => {
               {data.fullName},
               <span className="font-light text-gray-400">{data.age}</span>
             </h1>
-            <p className="font-light text-gray-600 mt-3">{data.wallet}</p>
+            <p className="font-light text-gray-600 mt-3 text-[12px]">{data.wallet}</p>
             <div className="font-light text-gray-600 mt-3 flex flex-row justify-center align-middle">
               <a
                 href={data.twitter}
@@ -162,18 +169,23 @@ const userProfile = ({ userAddress }) => {
             <p className="mt-8 text-gray-500">{data.about}</p>
           </div>
           <div className="mt-12 flex flex-col justify-center">
-
-            {/* <p className="text-gray-600 text-center font-light lg:px-16">
-              An artist of considerable range, Ryan — the name taken by
-              Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs
-              and records all of his own music, giving it a warm, intimate feel
-              with a solid groove structure. An artist of considerable range.
-            </p> */}
             <button className="text-indigo-500 py-2 px-4  font-medium mt-4">
-
               No Project History Found
             </button>
           </div>
+        </div>
+        <div>
+          {userAddress && (
+            <Chat
+              account={userAddress}
+              supportAddress={data.wallet}
+              apiKey={process.env.PUSH_API_KEY}
+              env="staging"
+              greetingMsg={`Myself ${data.fullName} and I am a freelancer on quicklance`}
+              modalTitle={`chat with ${data.username}`}
+              theme={theme}
+            />
+          )}
         </div>
       </div>
     </div>

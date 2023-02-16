@@ -17,7 +17,7 @@ const createProject = ({ provider, userAddress }) => {
   });
   const [isRegistered, setIsRegistered] = useState(false);
   const [message, setMessage] = useState({ type: "", message: "" });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const storage = new ThirdwebStorage();
 
@@ -64,7 +64,7 @@ const createProject = ({ provider, userAddress }) => {
           "Project Successfully Created, redirecting to projects page"
         );
         router.push("/projects");
-      }, 1000);
+      }, 3000);
     } catch (error) {
       setMessage({ type: "error", message: "Something went wrong" });
     }

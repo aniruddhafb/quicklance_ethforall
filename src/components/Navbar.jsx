@@ -542,12 +542,13 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                     {showNotifications && (
                       <div className="relative inline-block">
                         <div className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800">
-                          {notificationData.map((e) => {
+                          {notificationData?.map((e) => {
                             return (
                               e.app === "Quicklance" &&
                               < div key={e.sid} >
                                 <a
-                                  href="#"
+                                  href={e.cta}
+                                  target="_blank"
                                   className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
                                 >
                                   <img

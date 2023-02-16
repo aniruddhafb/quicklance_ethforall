@@ -12,6 +12,8 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   const [isPropsalBox, setIsPropsalBox] = useState(false);
   const [isPropsalForOwner, setIsPropsalForOwner] = useState(false);
   const [isMarkedComplete, setIsMarkedComplete] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [proposalData, setProposalData] = useState({
     coatation: "",
     description: "",
@@ -110,7 +112,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   //Create Proposal
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     const project_info = new ethers.Contract(address, abi.abi, signer);
     const date = new Date();
     const date_of_completion = date.getTime(proposalData.completion_date);
@@ -120,6 +122,11 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
       date_of_completion
     );
     sendProposalNoti();
+    setTimeout(() => {
+      setLoading(false);
+      setIsPropsalBox(false);
+      router.reload();
+    }, 2000);
   };
 
   // sending notification
@@ -134,12 +141,12 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
         identityType: 2,
         notification: {
           title: `You project recieved a coatation of ${proposalData.coatation}`,
-          body: `Information from ${userAddress}`,
+          body: `Got a coatation from ${userAddress} for the project : ${address}`,
         },
         payload: {
           title: `You project recieved a coatation of ${proposalData.coatation}`,
-          body: `Information from ${userAddress} : ${proposalData.description}`,
-          cta: `${blockURL} ${address}`,
+          body: `Got a coatation from ${userAddress} for the project : ${address}`,
+          cta: `${blockURL}${address}`,
         },
         recipients: `eip155:5:${project_owner}`,
         channel: "eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021",
@@ -168,7 +175,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
         payload: {
           title: `You project is completed`,
           body: `Your project ${address} is marked as completed from ${activeFreelancer}`,
-          cta: `${blockURL} ${address}`,
+          cta: `${blockURL}${address}`,
         },
         recipients: `eip155:5:${project_owner}`,
         channel: "eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021",
@@ -191,13 +198,13 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
         type: 3,
         identityType: 2,
         notification: {
-          title: `Congratulations! Your project is completed`,
-          body: `You received a payment from ${project_owner} for compeleting ${address}`,
+          title: `Congratulations! Your freelance work is completed`,
+          body: `You received a payment from ${project_owner} for compeleting your work on ${address}`,
         },
         payload: {
-          title: `Congratulations! Your project is completed`,
-          body: `You received a payment from ${project_owner} for compeleting ${address}`,
-          cta: `${blockURL} ${address}`,
+          title: `Congratulations! Your freelance work is completed`,
+          body: `You received a payment from ${project_owner} for compeleting your work on ${address}`,
+          cta: `${blockURL}${address}`,
         },
         recipients: `eip155:5:${activeFreelancer}`,
         channel: "eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021",
@@ -226,7 +233,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
         payload: {
           title: `Congratulations! Your proposal is accepted`,
           body: `Your proposal for project : ${address} is accepted, you can start working asap`,
-          cta: `${blockURL} ${address}`,
+          cta: `${blockURL}${address}`,
         },
         recipients: `eip155:5:${activeFreelancer}`,
         channel: "eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021",
@@ -239,22 +246,27 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
 
   //Accept Proposal
   const accept_proposal = async (proposalId) => {
+    setLoading(true);
     const txn = await projectInfo.proposal_provider.approveProposal(proposalId);
     sendAcceptNoti();
+    setLoading(false);
   };
 
   const completeProject = async () => {
+    setLoading(true);
     const txn = await projectInfo.proposal_provider.markProjectAsComplete();
     sendMarkedCompleteNoti();
-    // console.log(txn);
+    setLoading(false);
   };
 
   const finalizeProject = async () => {
     if (userAddress === project_owner) {
+      setLoading(true);
       const txn = await projectInfo.proposal_provider.finalizeProject();
       sendFinalizedNoti();
+      setLoading(false);
     } else {
-      console.log("you cannot finalize this project");
+      console.log("you cannot finalize this project, you are not the owner");
     }
   };
 
@@ -273,6 +285,9 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
 
   return (
     <>
+      {loading && <div className="w-full bg-green-500 h-10 text-center text-white font-bold pt-2">
+        Please wait while we process..
+      </div>}
       <section className="text-gray-400 bg-gray-900 body-font overflow-hidden relative">
         <div className="container px-5 py-24 mx-auto">
           <div className="lg:w-4/5 mx-auto flex flex-wrap">
@@ -391,12 +406,21 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                   ))}
                 {project_status === "In Progress" &&
                   userAddress === activeFreelancer && (
-                    <button
-                      onClick={completeProject}
-                      className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                    >
-                      Complete Project
-                    </button>
+                    (!loading ?
+                      <button
+                        onClick={completeProject}
+                        className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                      >
+                        Complete Project
+                      </button> :
+                      <button className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
+                        Completing
+                        <svg aria-hidden="true" class="w-6 h-6 ml-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                          <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                        </svg>
+                      </button>
+                    )
                   )}
                 {project_status === "In Progress" &&
                   userAddress != activeFreelancer &&
@@ -409,12 +433,25 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                 {/* when project status is marked as coemplete to project owner  */}
                 {project_status === "Marked As Complete" &&
                   userAddress === project_owner && (
-                    <button
-                      className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                      onClick={finalizeProject}
-                    >
-                      Finalize Project
-                    </button>
+                    (loading ?
+                      <button
+                        className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                        onClick={finalizeProject}
+                      >
+                        Finalizing
+                        <svg aria-hidden="true" class="w-6 h-6 ml-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                          <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                        </svg>
+                      </button>
+                      :
+                      <button
+                        className="flex ml-auto text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                        onClick={finalizeProject}
+                      >
+                        Finalize Project
+                      </button>
+                    )
                   )}
 
                 {/* when project status is marked as coemplete from freelancer */}
@@ -620,21 +657,21 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                                   </div>
                                 ))}
                               {project_status === "Completed" &&
-                              e.owner === activeFreelancer ? (
-                                <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
-                                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                                  <h2 className="text-sm font-normal text-emerald-500">
-                                    Completed
-                                  </h2>
-                                </div>
-                              ) : (
-                                <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
-                                  <span className="h-1.5 w-1.5 rounded-full bg-red-500"></span>
-                                  <h2 className="text-sm font-normal text-red-500">
-                                    Rejected
-                                  </h2>
-                                </div>
-                              )}
+                                (e.owner === activeFreelancer ? (
+                                  <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                    <h2 className="text-sm font-normal text-emerald-500">
+                                      Completed
+                                    </h2>
+                                  </div>
+                                ) : (
+                                  <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+                                    <h2 className="text-sm font-normal text-red-500">
+                                      Rejected
+                                    </h2>
+                                  </div>
+                                ))}
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowra flex flex-row mt-3">
                               <p className=" flex flex-row mr-1">
@@ -652,25 +689,37 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                               <td className="px-4 py-4 text-sm whitespace-nowrap">
                                 <div className="flex items-center gap-x-2">
                                   {!e.isApproved &&
-                                  userAddress === project_owner
+                                    userAddress === project_owner
                                     ? project_status === "Open" && (
-                                        <button
-                                          onClick={() => accept_proposal(e.id)}
-                                        >
+                                      <button
+                                        onClick={() => accept_proposal(e.id)}
+                                      >
+                                        {loading ?
+                                          <svg aria-hidden="true" class="w-6 h-6 ml-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                                          </svg>
+                                          :
                                           <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
                                             Accept
-                                          </p>
-                                        </button>
-                                      )
-                                    : project_status === "In Progress" &&
-                                      project_status ===
-                                        "Marked As Complete" && (
-                                        <button>
-                                          <p className="px-3 py-1 text-xs text-orange-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
-                                            Project Is Live
-                                          </p>
-                                        </button>
-                                      )}
+                                          </p>}
+                                      </button>
+                                    )
+                                    : (project_status === "In Progress" && (
+                                      <button>
+                                        <p className="px-3 py-1 text-xs text-orange-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
+                                          Project Is Live
+                                        </p>
+                                      </button>
+                                    ))}
+
+                                  {project_status === "Marked As Complete" && (
+                                    <button>
+                                      <p className="px-3 py-1 text-xs text-blue-500 rounded-full dark:bg-gray-800 bg-blue-100/60">
+                                        Project Marked Completed
+                                      </p>
+                                    </button>
+                                  )}
 
                                   {project_status === "Completed" && (
                                     <button>
@@ -715,8 +764,10 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
               >
                 &#8203;
               </span>
-
               <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
+                {loading && <div className="w-full text-center text-green-500 font-bold mb-2">
+                  Please wait while we process..
+                </div>}
                 <h3
                   className="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white"
                   id="modal-title"
@@ -776,13 +827,25 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                     >
                       Cancel
                     </button>
+                    {loading ?
+                      <button
+                        disabled
+                        className=" flex flex-row justify-center w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-indigo-500 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                      >
+                        <span>Creating </span>
+                        <svg aria-hidden="true" class="w-6 h-6 ml-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                          <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                        </svg>
+                      </button> :
+                      <button
+                        type="submit"
+                        className="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-indigo-500 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                      >
+                        Create Proposal
+                      </button>
+                    }
 
-                    <button
-                      type="submit"
-                      className="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-indigo-500 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
-                    >
-                      Create Proposal
-                    </button>
                   </div>
                 </form>
               </div>
