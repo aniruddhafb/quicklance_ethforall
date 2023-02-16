@@ -7,7 +7,6 @@ import { Chat, ITheme } from "@pushprotocol/uiweb";
 import axios from "axios";
 import Image from "next/image";
 
-
 const userProfile = ({ userAddress, provider }) => {
   const theme = {
     btnColorPrimary: "#3e89e6",
@@ -19,7 +18,6 @@ const userProfile = ({ userAddress, provider }) => {
   const { walletAddress } = router.query;
   const [data, setData] = useState({});
   const [error, setError] = useState("");
-  const [isFollowing, setIsFollowing] = useState(false);
   const [followData, setFollowData] = useState({
     isFollowing: undefined,
     followers_length: 0,
@@ -87,7 +85,7 @@ const userProfile = ({ userAddress, provider }) => {
   };
 
   useEffect(() => {
-    if (userAddress && provider) {
+    if (userAddress) {
       getFreelancerData();
       check_follow_status();
       // fetchProjectsByAddress();
@@ -132,9 +130,10 @@ const userProfile = ({ userAddress, provider }) => {
               <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
                 <button
                   onClick={followUser}
-                  className={`text-white py-2 px-4 uppercase rounded ${!isFollowing ? "bg-blue-400" : "bg-red-400"}  shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5`}
+                  className={`text-white py-2 px-4 uppercase rounded ${!followData.isFollowing ? "bg-blue-400" : "bg-red-400"
+                    }  shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5`}
                 >
-                  {!isFollowing ? "Follow" : "Unfollow"}
+                  {!followData.isFollowing ? "Follow" : "Unfollow"}
                 </button>
                 <button className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
                   Tip Freelancer
