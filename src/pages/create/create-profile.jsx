@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { ThirdwebStorage } from "@thirdweb-dev/storage";
+
 const CreateProfile = ({ userAddress }) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     _id: "",
     username: "",
@@ -15,12 +18,14 @@ const CreateProfile = ({ userAddress }) => {
     twitter: "",
     github: "",
     linkedin: "",
+    image: "",
   });
 
   const [isRegistered, setIsRegistered] = useState(false);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const storage = new ThirdwebStorage();
 
   const onChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -28,41 +33,61 @@ const CreateProfile = ({ userAddress }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      console.log(data);
+    setLoading(true);
 
+    try {
+      let user_image = await storage.upload(data.image);
       const res = await axios({
         url: `http://localhost:3000/api/users/signup`,
         method: "post",
-        data: { ...data },
+        data: { ...data, image: user_image },
       });
 
       if (res.status == 200) {
         localStorage.setItem("userInfo", res.data._id);
-        router.reload();
+        router.push(`/freelancers/${userAddress}`);
       }
     } catch (error) {
       setError(error.response.data);
     }
+    setLoading(false);
   };
 
   const updateUserData = async () => {
+    setLoading(true);
+
     try {
-      const res = await axios({
-        url: `http://localhost:3000/api/users/updateUserProfile`,
-        method: "post",
-        data: { ...data },
-      });
-      setSuccess("Profile Successfully Updated");
-      setTimeout(() => {
-        router.reload();
-      }, [1000]);
+      if (typeof data.image == "object") {
+        let user_image = await storage.upload(data.image);
+        const res = await axios({
+          url: `http://localhost:3000/api/users/updateUserProfile`,
+          method: "post",
+          data: { ...data, image: user_image },
+        });
+        if (res.status == 200) {
+          setSuccess("Profile Successfully Updated");
+          router.push(`/freelancers/${userAddress}`);
+        }
+      } else {
+        const res = await axios({
+          url: `http://localhost:3000/api/users/updateUserProfile`,
+          method: "post",
+          data: { ...data },
+        });
+        if (res.status == 200) {
+          setSuccess("Profile Successfully Updated");
+          router.push(`/freelancers/${userAddress}`);
+        }
+      }
     } catch (error) {
-      setError(error.response.data);
+      console.log(data);
+      setError("something went wrong");
     }
+    setLoading(false);
   };
 
   const fetchUserData = async () => {
+    setLoading(true);
     try {
       if (userAddress) {
         const res = await axios({
@@ -82,17 +107,25 @@ const CreateProfile = ({ userAddress }) => {
       console.log(error.response.data);
       setIsRegistered(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchUserData();
     setData({ ...data, wallet: userAddress });
-  }, [userAddress]);
+  }, [userAddress, isRegistered]);
 
   return (
     <>
+      {loading && (
+        <div className="h-full w-full absolute bg-gray-500 ">Loading</div>
+      )}
       {error && <div className="w-full bg-green-500 h-10">{error}</div>}
-      {success && <div className="w-full bg-green-500 h-10 text-center text-white font-bold pt-2">{success}</div>}
+      {success && (
+        <div className="w-full bg-green-500 h-10 text-center text-white font-bold pt-2">
+          {success}
+        </div>
+      )}
       <div className="h-[100vh] bg-[#111827] pt-6">
         <section className="bg-white dark:bg-gray-900">
           <div className="flex justify-center min-h-screen">
@@ -142,8 +175,9 @@ const CreateProfile = ({ userAddress }) => {
                     </label>
 
                     <input
-                      // value={data.profileImage}
-                      // onChange={onChange}
+                      onChange={(e) => {
+                        setData({ ...data, image: e.target.files[0] });
+                      }}
                       type="file"
                       name="profileimage"
                       className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -260,6 +294,7 @@ const CreateProfile = ({ userAddress }) => {
                   {!isRegistered ? (
                     <button
                       type="submit"
+                      disabled={loading}
                       className="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
                     >
                       <span>Create Profile </span>
@@ -280,6 +315,7 @@ const CreateProfile = ({ userAddress }) => {
                   ) : (
                     <button
                       type="button"
+                      disabled={loading}
                       onClick={updateUserData}
                       className="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
                     >

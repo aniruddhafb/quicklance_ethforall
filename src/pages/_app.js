@@ -8,6 +8,7 @@ import polygonPng from "../../public/images/polygon.png";
 import filPng from "../../public/images/fil.png";
 import mantlePng from "../../public/images/mantle.png";
 import optimismPng from "../../public/images/optimism.png";
+import axios from "axios";
 
 
 export default function App({ Component, pageProps }) {

@@ -15,6 +15,7 @@ export default async function handler(req, res) {
       twitter,
       github,
       linkedin,
+      image,
     } = req.body;
 
     let user_name = await User.findOne({ username });
@@ -34,6 +35,7 @@ export default async function handler(req, res) {
       twitter,
       github,
       linkedin,
+      image,
     });
 
     res.status(200).json(newUser);
