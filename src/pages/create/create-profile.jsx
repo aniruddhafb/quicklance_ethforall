@@ -252,6 +252,7 @@ const CreateProfile = ({ userAddress }) => {
                     <textarea
                       value={data.about}
                       onChange={onChange}
+                      maxLength={100}
                       name="about"
                       cols="20"
                       rows="1"

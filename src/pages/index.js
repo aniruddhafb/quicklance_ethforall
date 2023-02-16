@@ -19,7 +19,7 @@ export default function Home() {
       url: "http://localhost:3000/api/freelancers/getAllfreelancers",
       method: "GET",
     });
-    console.log(res.data);
+    // console.log(res.data);
     setData(res.data);
   };
 

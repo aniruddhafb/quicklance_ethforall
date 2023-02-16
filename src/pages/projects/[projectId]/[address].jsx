@@ -120,9 +120,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
       ethers.utils.parseEther(proposalData.coatation),
       date_of_completion
     );
-
     sendProposalNoti();
-    sendNotification();
   };
 
   // sending notification 
@@ -146,7 +144,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
         channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
         env: 'staging'
       });
-      console.log('API response: ', apiResponse);
+      // console.log('API response: ', apiResponse);
     } catch (err) {
       console.error('Error: ', err);
     }
@@ -173,7 +171,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
         channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
         env: 'staging'
       });
-      console.log('API response: ', apiResponse);
+      // console.log('API response: ', apiResponse);
     } catch (err) {
       console.error('Error: ', err);
     }
@@ -200,7 +198,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
         channel: 'eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021',
         env: 'staging'
       });
-      console.log('API response: ', apiResponse);
+      // console.log('API response: ', apiResponse);
     } catch (err) {
       console.error('Error: ', err);
     }
@@ -241,7 +239,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   const completeProject = async () => {
     const txn = await projectInfo.proposal_provider.markProjectAsComplete();
     sendMarkedCompleteNoti();
-    console.log(txn);
+    // console.log(txn);
   };
 
   const finalizeProject = async () => {
@@ -728,6 +726,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                     <textarea
                       required
                       onChange={onChangeProposal}
+                      maxLength={300}
                       name="description"
                       placeholder="Mention your tech stack and other requirements"
                       id="description"
