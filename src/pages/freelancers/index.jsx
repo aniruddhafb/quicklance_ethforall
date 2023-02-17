@@ -6,7 +6,7 @@ const freelancers = ({ userAddress }) => {
   const [data, setData] = useState([]);
   const fetchFreelancers = async () => {
     const res = await axios({
-      url: "http://localhost:3000/api/freelancers/getAllfreelancers",
+      url: `${process.env.SERVER_URL}api/freelancers/getAllfreelancers`,
       method: "GET",
     });
     setData(res.data);
