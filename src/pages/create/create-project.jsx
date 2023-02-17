@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 
 const createProject = ({ provider, userAddress }) => {
-  const router = useRouter();
+  const Router = useRouter();
   const [data, setData] = useState({
     title: "",
     short_desc: "",
@@ -60,13 +60,12 @@ const createProject = ({ provider, userAddress }) => {
       );
 
       await txn.wait();
-      // console.log(txn);
       setTimeout(() => {
         setMessage(
           "Project Successfully Created, redirecting to projects page"
         );
-        router.push("/projects");
-      }, 3000);
+        Router.push("/projects");
+      }, 2000);
     } catch (error) {
       setMessage({ type: "error", message: "Something went wrong" });
     }
@@ -90,7 +89,7 @@ const createProject = ({ provider, userAddress }) => {
     } catch (error) {
       setIsRegistered(false);
       alert("Please Create Your Account");
-      router.push("/create/create-profile");
+      Router.push("/create/create-profile");
     }
   };
 
@@ -102,9 +101,8 @@ const createProject = ({ provider, userAddress }) => {
     <>
       {message.message && (
         <div
-          className={`w-full h-10 text-center text-white font-bold pt-2 ${
-            message.type === "error" ? "bg-red-500" : "bg-green-500"
-          }`}
+          className={`w-full h-10 text-center text-white font-bold pt-2 ${message.type === "error" ? "bg-red-500" : "bg-green-500"
+            }`}
         >
           {message.message}
         </div>

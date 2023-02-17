@@ -80,6 +80,7 @@ const userProfile = ({ userAddress, provider }) => {
 
   const fetchProjectsByAddress = async () => {
     const txn = await provider.getProjectsByOwner();
+    await txn.wait();
 
     console.log({ txn });
   };
@@ -130,9 +131,8 @@ const userProfile = ({ userAddress, provider }) => {
               <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
                 <button
                   onClick={followUser}
-                  className={`text-white py-2 px-4 uppercase rounded ${
-                    !followData.isFollowing ? "bg-blue-400" : "bg-red-400"
-                  }  shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5`}
+                  className={`text-white py-2 px-4 uppercase rounded ${!followData.isFollowing ? "bg-blue-400" : "bg-red-400"
+                    }  shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5`}
                 >
                   {!followData.isFollowing ? "Follow" : "Unfollow"}
                 </button>

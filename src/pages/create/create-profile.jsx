@@ -90,7 +90,6 @@ const CreateProfile = ({ userAddress }) => {
   };
 
   const fetchUserData = async () => {
-    setLoading(true);
     try {
       if (userAddress) {
         const res = await axios({
@@ -108,13 +107,12 @@ const CreateProfile = ({ userAddress }) => {
     } catch (error) {
       setIsRegistered(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchUserData();
     setData({ ...data, wallet: userAddress });
-  }, [userAddress, isRegistered, data, fetchUserData]);
+  }, [userAddress, isRegistered]);
 
   return (
     <>
