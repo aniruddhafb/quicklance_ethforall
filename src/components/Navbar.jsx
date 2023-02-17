@@ -26,7 +26,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
   const [notificationData, setNotificationData] = useState();
   const [chainIdMain, setChainIdMain] = useState();
   const [trueSigner, setTrueSigner] = useState();
-  const [userImage, setUserImage] = useState("");
+  const [userInfo, setUserInfo] = useState({ image: "", username: "" });
 
   const QUICKLANCE_CHANNEL_ADDRESS =
     "0xe7ac0B19e48D5369db1d70e899A18063E1f19021";
@@ -48,7 +48,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
       alert("Please install Metamask or any other web3 enabled browser");
     }
   };
-
   const getNotifications = () => {
     PushAPI.user
       .getFeeds({
@@ -65,7 +64,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         console.error("failed to get user notifications: ", err);
       });
   };
-
   const getChats = () => {
     PushAPI.chat
       .chats({
@@ -79,7 +77,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         console.error("user chats: ", err);
       });
   };
-
   const getUser = async () => {
     await PushAPI.user
       .get({
@@ -93,7 +90,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         console.error("user info: ", err);
       });
   };
-
   const optInToChannel = async () => {
     await PushAPI.channels.subscribe({
       env: "staging",
@@ -109,7 +105,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
       },
     });
   };
-
   const fetchUserData = async () => {
     try {
       if (userAddress) {
@@ -121,8 +116,9 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
           },
         });
         if (res.status == 200) {
-          const { image } = res.data;
-          setUserImage(image);
+          const { image, username } = res.data;
+          console.log({ image });
+          setUserInfo({ image, username });
           setIsRegistered(true);
         }
       }
@@ -575,7 +571,8 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                       <div className="relative inline-block">
                         <div className="absolute right-0 z-20 w-64 mt-8 overflow-hidden origin-top-right bg-white rounded-md shadow-lg sm:w-80 dark:bg-gray-800">
                           {notificationData?.map((e, i) => {
-                            return i < 6 && (
+                            return (
+                              i < 6 &&
                               e.app === "Quicklance" && (
                                 <div key={e.sid}>
                                   <a
@@ -641,14 +638,18 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                     >
                       <div className="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full object-cover">
                         <Image
-                          src={userImage?.replace(
+                          src={userInfo.image?.replace(
                             "ipfs://",
                             "https://gateway.ipfscdn.io/ipfs/"
                           )}
                           height={100}
                           width={100}
                           alt="avatar"
-                          style={{ borderRadius: "50%", width: "40px", height: "33px" }}
+                          style={{
+                            borderRadius: "50%",
+                            width: "40px",
+                            height: "33px",
+                          }}
                         />
                       </div>
                     </button>
@@ -661,17 +662,22 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                           className="flex items-center p-3 -mt-2 text-sm text-gray-600 transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                           <Image
-                            src={userImage?.replace(
+                            src={userInfo.image?.replace(
                               "ipfs://",
                               "https://gateway.ipfscdn.io/ipfs/"
                             )}
                             height={80}
                             width={50}
                             alt="avatar"
-                            style={{ borderRadius: "50%", width: "40px", height: "33px" }}
+                            style={{
+                              borderRadius: "50%",
+                              width: "40px",
+                              height: "33px",
+                            }}
                           />
                           <div className="mx-1">
                             {/* <h1 className="text-sm font-semibold text-gray-700 dark:text-gray-200">{userData.username}</h1> */}
+                            {userInfo.username}
                             <p className="text-sm text-gray-500 dark:text-gray-400">
                               {userAddress.slice(0, 5) +
                                 "..." +

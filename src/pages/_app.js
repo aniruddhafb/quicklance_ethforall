@@ -13,7 +13,7 @@ import { Framework } from "@superfluid-finance/sdk-core";
 
 
 export default function App({ Component, pageProps }) {
-  const contractMumbai = "0x4d5D1469EE0F9C878A87dd18f8A3895c83611194";
+  const contractMumbai = "0xD45d53B9bfdF95631426C802A1BfBC1F7a3F04ca";
   const contractOptimism = "0xC2aB8fbf39107c1bba09462509E8E206f7074b84";
   const contractFilecoin = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
   const contractMantle = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
