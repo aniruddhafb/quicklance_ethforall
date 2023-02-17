@@ -6,7 +6,7 @@ const freelancers = ({ userAddress }) => {
   const [data, setData] = useState([]);
   const fetchFreelancers = async () => {
     const res = await axios({
-      url: `${process.env.SERVER_URL}api/freelancers/getAllfreelancers`,
+      url: `https://quicklance-ethforall.vercel.app/api/freelancers/getAllfreelancers`,
       method: "GET",
     });
     setData(res.data);

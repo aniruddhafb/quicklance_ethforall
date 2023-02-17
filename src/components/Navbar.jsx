@@ -109,7 +109,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `${process.env.SERVER_URL}api/users/getUserByWalletAddress`,
+          url: `https://quicklance-ethforall.vercel.app/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,

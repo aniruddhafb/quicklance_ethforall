@@ -38,7 +38,7 @@ const CreateProfile = ({ userAddress }) => {
     try {
       let user_image = await storage.upload(data.image);
       const res = await axios({
-        url: `${process.env.SERVER_URL}api/users/signup`,
+        url: `https://quicklance-ethforall.vercel.app/api/users/signup`,
         method: "post",
         data: { ...data, image: user_image },
       });
@@ -60,7 +60,7 @@ const CreateProfile = ({ userAddress }) => {
       if (typeof data.image == "object") {
         let user_image = await storage.upload(data.image);
         const res = await axios({
-          url: `${process.env.SERVER_URL}api/users/updateUserProfile`,
+          url: `https://quicklance-ethforall.vercel.app/api/users/updateUserProfile`,
           method: "post",
           data: { ...data, image: user_image },
         });
@@ -72,7 +72,7 @@ const CreateProfile = ({ userAddress }) => {
         }
       } else {
         const res = await axios({
-          url: `${process.env.SERVER_URL}api/users/updateUserProfile`,
+          url: `https://quicklance-ethforall.vercel.app/api/users/updateUserProfile`,
           method: "post",
           data: { ...data },
         });
@@ -93,7 +93,7 @@ const CreateProfile = ({ userAddress }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `${process.env.SERVER_URL}api/users/getUserByWalletAddress`,
+          url: `https://quicklance-ethforall.vercel.app/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,
