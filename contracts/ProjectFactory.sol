@@ -2,13 +2,19 @@
 pragma solidity ^0.8;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import './Project.sol';
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+
 contract ProjectFactory {
     using Counters for Counters.Counter;
     Counters.Counter private _projectId;
     address payable public admin;
-
+    AggregatorV3Interface internal priceFeed;
+    
     constructor() {
         admin = payable(msg.sender);
+        priceFeed = AggregatorV3Interface(
+            0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada
+        );
     }
 
     struct ProjectInfo {
@@ -144,6 +150,19 @@ contract ProjectFactory {
         );
 
         project.deadLine = new_deadline;
+    }
+
+      function getLatestPriceMatic() public view returns (int) {
+        
+        // prettier-ignore
+        (
+            /* uint80 roundID */,
+            int price,
+            /*uint startedAt*/,
+            /*uint timeStamp*/,
+            /*uint80 answeredInRound*/
+        ) = priceFeed.latestRoundData();
+        return price;
     }
 
     receive() external payable {}

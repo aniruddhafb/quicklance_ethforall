@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { ThirdwebStorage } from "@thirdweb-dev/storage";
 import { useRouter } from "next/router";
 import axios from "axios";
-
+import dayjs from "dayjs";
 const createProject = ({ provider, userAddress }) => {
   const Router = useRouter();
   const [data, setData] = useState({
@@ -27,6 +27,7 @@ const createProject = ({ provider, userAddress }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
     try {
       if (
@@ -37,8 +38,9 @@ const createProject = ({ provider, userAddress }) => {
         !data.image
       )
         return alert("Please Fill Out The Complete Form");
+
       let date = new Date();
-      let deadline_date = date.getTime(data.budget);
+      let deadline_date = dayjs(data.deadline).unix();
 
       const ipfs_pdf = storage.upload(data.pdf);
       const ipfs_image = storage.upload(data.image);
@@ -101,8 +103,9 @@ const createProject = ({ provider, userAddress }) => {
     <>
       {message.message && (
         <div
-          className={`w-full h-10 text-center text-white font-bold pt-2 ${message.type === "error" ? "bg-red-500" : "bg-green-500"
-            }`}
+          className={`w-full h-10 text-center text-white font-bold pt-2 ${
+            message.type === "error" ? "bg-red-500" : "bg-green-500"
+          }`}
         >
           {message.message}
         </div>
