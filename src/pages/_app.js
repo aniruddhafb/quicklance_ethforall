@@ -8,13 +8,16 @@ import polygonPng from "../../public/images/polygon.png";
 import filPng from "../../public/images/fil.png";
 import mantlePng from "../../public/images/mantle.png";
 import optimismPng from "../../public/images/optimism.png";
+import goerliImg from "../../public/images/ethereumOG.png";
+import { Framework } from "@superfluid-finance/sdk-core";
+
 
 export default function App({ Component, pageProps }) {
   const contractMumbai = "0x4d5D1469EE0F9C878A87dd18f8A3895c83611194";
-  // const contractMumbai = "0x398A4EEfe25b0e4f0Fada6C192Ab0F0d09f10952";
   const contractOptimism = "0xC2aB8fbf39107c1bba09462509E8E206f7074b84";
   const contractFilecoin = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
   const contractMantle = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
+  const contractGoerli = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
 
   const [userId, setUserId] = useState("");
   const [provider, setProvider] = useState(null);
@@ -40,8 +43,10 @@ export default function App({ Component, pageProps }) {
       setUserAddress(_user_address);
 
       const network = await provider.getNetwork();
+
       let contractAddress;
       let chainIdMain = network.chainId;
+
       setChainId(chainIdMain);
       if (chainIdMain == 420) {
         contractAddress = contractOptimism;
@@ -55,6 +60,10 @@ export default function App({ Component, pageProps }) {
         contractAddress = contractMantle;
         setChainImg(mantlePng);
         setBlockURL("https://explorer.testnet.mantle.xyz/address/");
+      } else if (chainIdMain == 5) {
+        contractAddress = contractGoerli;
+        setChainImg(goerliImg);
+        setBlockURL("https://goerli.etherscan.io/address/");
       } else {
         contractAddress = contractMumbai;
         setChainImg(polygonPng);
@@ -69,7 +78,7 @@ export default function App({ Component, pageProps }) {
 
       setProvider(ProjectFactoryContract);
     } else {
-      message.warn("Please install Metamask or any other web3 enabled browser");
+      alert("Please install Metamask or any other web3 enabled browser");
     }
   };
 
@@ -99,6 +108,7 @@ export default function App({ Component, pageProps }) {
         signer={signer}
         chainImg={chainImg}
         blockURL={blockURL}
+        chainId={chainId}
       />
       <Footer userAddress={userAddress} />
     </>

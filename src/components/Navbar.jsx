@@ -7,6 +7,7 @@ import polygonPng from "../../public/images/polygon.png";
 import optimismPng from "../../public/images/optimism.png";
 import filPng from "../../public/images/fil.png";
 import mantlePng from "../../public/images/mantle.png";
+import goerliImg from "../../public/images/ethereumOG.png";
 import { BsChevronDown } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import axios from "axios";
@@ -44,7 +45,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
       const { chainId } = await provider.getNetwork();
       setChainIdMain(chainId);
     } else {
-      message.warn("Please install Metamask or any other web3 enabled browser");
+      alert("Please install Metamask or any other web3 enabled browser");
     }
   };
 
@@ -57,7 +58,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         limit: 10,
       })
       .then((feeds) => {
-        console.log("user notifications: ", feeds);
+        // console.log("user notifications: ", feeds);
         setNotificationData(feeds);
       })
       .catch((err) => {
@@ -72,7 +73,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         env: "staging",
       })
       .then((chats) => {
-        console.log("user chats: ", chats);
+        // console.log("user chats: ", chats);
       })
       .catch((err) => {
         console.error("user chats: ", err);
@@ -86,7 +87,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         env: "staging",
       })
       .then((data) => {
-        console.log("user info: ", data);
+        // console.log("user info: ", data);
       })
       .catch((err) => {
         console.error("user info: ", err);
@@ -121,7 +122,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
         });
         if (res.status == 200) {
           const { image } = res.data;
-          console.log({ image });
           setUserImage(image);
           setIsRegistered(true);
         }
@@ -328,22 +328,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                     d="M4 8h16M4 16h16"
                   />
                 </svg>
-
-                {/* <svg
-                  x-show="isOpen"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg> */}
               </button>
             </div>
           </div>
@@ -433,6 +417,60 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                             />
                             <p className="pl-1 pr-2 mt-1 font-bold text-white">
                               Mantle
+                            </p>
+                            <BsChevronDown className="h-3 w-3 2xl:h-3 2xl:w-3 mt-[10px] hover:text-blue-400 text-white" />
+                          </>
+                        )}
+                        {chainIdMain == 5 && (
+                          <>
+                            <Image
+                              src={goerliImg}
+                              height={25}
+                              width={35}
+                              alt="filPng"
+                            />
+                            <p className="pl-1 pr-2 mt-1 font-bold text-white">
+                              Goerli
+                            </p>
+                            <BsChevronDown className="h-3 w-3 2xl:h-3 2xl:w-3 mt-[10px] hover:text-blue-400 text-white" />
+                          </>
+                        )}
+                        {chainIdMain == 1 && (
+                          <>
+                            <p className="pl-1 pr-2 mt-1 font-bold text-white">
+                              Unsupported Chain
+                            </p>
+                            <BsChevronDown className="h-3 w-3 2xl:h-3 2xl:w-3 mt-[10px] hover:text-blue-400 text-white" />
+                          </>
+                        )}
+                        {chainIdMain == 56 && (
+                          <>
+                            <p className="pl-1 pr-2 mt-1 font-bold text-white">
+                              Unsupported Chain
+                            </p>
+                            <BsChevronDown className="h-3 w-3 2xl:h-3 2xl:w-3 mt-[10px] hover:text-blue-400 text-white" />
+                          </>
+                        )}
+                        {chainIdMain == 137 && (
+                          <>
+                            <p className="pl-1 pr-2 mt-1 font-bold text-white">
+                              Unsupported Chain
+                            </p>
+                            <BsChevronDown className="h-3 w-3 2xl:h-3 2xl:w-3 mt-[10px] hover:text-blue-400 text-white" />
+                          </>
+                        )}
+                        {chainIdMain == 43114 && (
+                          <>
+                            <p className="pl-1 pr-2 mt-1 font-bold text-white">
+                              Unsupported Chain
+                            </p>
+                            <BsChevronDown className="h-3 w-3 2xl:h-3 2xl:w-3 mt-[10px] hover:text-blue-400 text-white" />
+                          </>
+                        )}
+                        {chainIdMain == 97 && (
+                          <>
+                            <p className="pl-1 pr-2 mt-1 font-bold text-white">
+                              Unsupported Chain
                             </p>
                             <BsChevronDown className="h-3 w-3 2xl:h-3 2xl:w-3 mt-[10px] hover:text-blue-400 text-white" />
                           </>
@@ -546,10 +584,12 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                                     target="_blank"
                                     className="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700"
                                   >
-                                    <img
+                                    <Image
                                       className="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full"
                                       src={e.image}
                                       alt="avatar"
+                                      height={100}
+                                      width={100}
                                     />
                                     <p className="mx-2 text-sm text-gray-600 dark:text-white flex flex-col">
                                       <a

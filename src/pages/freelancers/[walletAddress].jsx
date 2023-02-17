@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { providers, ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import * as PushAPI from "@pushprotocol/restapi";
@@ -6,22 +6,55 @@ import abi from "../../../artifacts/contracts/ProjectFactory.sol/ProjectFactory.
 import { Chat, ITheme } from "@pushprotocol/uiweb";
 import axios from "axios";
 import Image from "next/image";
+import { Framework } from "@superfluid-finance/sdk-core";
+import { GraphQLClient, gql } from "graphql-request";
+import {
+  InputNumber
+} from "antd";
 
-const userProfile = ({ userAddress, provider }) => {
+const userProfile = ({ userAddress, chainImg, chainId }) => {
+  const tokens = [
+    {
+      name: "fDAIx",
+      symbol: "fDAIx",
+      address: "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00",
+      icon:
+        "https://raw.githubusercontent.com/superfluid-finance/assets/master/public//tokens/dai/icon.svg"
+    }
+  ];
+
+  const router = useRouter();
+  const { walletAddress } = router.query;
+  const [data, setData] = useState({});
+  const [error, setError] = useState("");
+  const [provider, setProvider] = useState(null);
+
+  const [useStreamBox, setUseStreamBox] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [superfluidSdk, setSuperfluidSdk] = useState(null);
+
+  const [followData, setFollowData] = useState({
+    isFollowing: undefined,
+    followers_length: 0,
+  });
+
+  const [userInfo, setUserInfo] = useState();
+  const [streamInput, setStreamInput] = useState({ token: tokens[0].address, flowRate: 0.1 });
+
   const theme = {
     btnColorPrimary: "#3e89e6",
     bgColorSecondary: "#3e89e6",
     moduleColor: "#f0f0f0",
   };
 
-  const router = useRouter();
-  const { walletAddress } = router.query;
-  const [data, setData] = useState({});
-  const [error, setError] = useState("");
-  const [followData, setFollowData] = useState({
-    isFollowing: undefined,
-    followers_length: 0,
-  });
+  const connectSF = async () => {
+    const provider = new ethers.providers.Web3Provider(
+      window.ethereum,
+      "any"
+    );
+    await provider.send("eth_requestAccounts", []);
+    setProvider(provider);
+  }
 
   const getFreelancerData = async () => {
     try {
@@ -85,10 +118,92 @@ const userProfile = ({ userAddress, provider }) => {
     console.log({ txn });
   };
 
+  const calculateFlowRate = (amount) => {
+    if (amount) {
+      return (ethers.utils.formatEther(amount) * 60 * 60 * 24 * 30).toFixed(2);
+    }
+    return 0;
+  };
+
+  const calculateFlowRateInWeiPerSecond = (amount) => {
+    const flowRateInWeiPerSecond = ethers.utils
+      .parseEther(amount.toString())
+      .div(2592000)
+      .toString();
+    return flowRateInWeiPerSecond;
+  };
+
+  const handleCreateStream = async ({
+    token,
+    sender = userAddress,
+    receiver = data.wallet,
+    flowRate
+  }) => {
+    console.log({ token, sender, receiver, flowRate })
+    if (chainId != 5) {
+      alert("To create a stream you need to switch to goerli chain")
+    }
+    try {
+      setLoading(true);
+      const { chainId } = await provider.getNetwork();
+      const sf = await Framework.create({
+        chainId,
+        provider
+      });
+      setSuperfluidSdk(sf);
+      const superToken = await superfluidSdk.loadSuperToken(token);
+      const flowRateInWeiPerSecond = calculateFlowRateInWeiPerSecond(flowRate);
+      console.log("flowRateInWeiPerSecond: ", flowRateInWeiPerSecond);
+      let flowOp = superToken.createFlow({
+        sender,
+        receiver,
+        flowRate: flowRateInWeiPerSecond
+      });
+
+      await flowOp.exec(provider.getSigner());
+      alert("Stream created successfully");
+      setLoading(false);
+      setUseStreamBox(false);
+    } catch (err) {
+      setLoading(false);
+      console.error("failed to create stream: ", err);
+    }
+  };
+
+  const fetchStreams = async () => {
+    const provider = new ethers.providers.Web3Provider(
+      window.ethereum,
+      "any"
+    );
+    await provider.send("eth_requestAccounts", []);
+    setProvider(provider);
+    const { chainId } = await provider.getNetwork();
+    const sf = await Framework.create({
+      chainId,
+      provider
+    });
+
+    const daix = await sf.loadSuperToken("fDAIx");
+
+    let res = await daix.getFlow({
+      sender: userAddress,
+      receiver: walletAddress,
+      providerOrSigner: provider
+    });
+
+    // let earningData = await daix.getAccountFlowInfo({
+    //   account: walletAddress,
+    //   providerOrSigner: provider
+    // });
+    setUserInfo(res);
+  }
+
   useEffect(() => {
     if (userAddress) {
+      connectSF();
       getFreelancerData();
       check_follow_status();
+      fetchStreams();
       // fetchProjectsByAddress();
     }
   }, [userAddress, followData.isFollowing]);
@@ -123,6 +238,7 @@ const userProfile = ({ userAddress, provider }) => {
                   )}
                   height={100}
                   width={100}
+                  alt="profileImage"
                   className="flex-shrink-0 object-cover w-36 h-36 rounded-full sm:mx-4 ring-4 ring-gray-300"
                 />
               </div>
@@ -136,8 +252,8 @@ const userProfile = ({ userAddress, provider }) => {
                 >
                   {!followData.isFollowing ? "Follow" : "Unfollow"}
                 </button>
-                <button className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
-                  Tip Freelancer
+                <button onClick={() => setUseStreamBox(true)} className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
+                  Support Via Stream
                 </button>
               </div>
             )}
@@ -187,12 +303,15 @@ const userProfile = ({ userAddress, provider }) => {
             </button>
           </div>
         </div>
+
+        {/* chat area  */}
         <div>
           {userAddress && (
             <Chat
               account={userAddress}
               supportAddress={data.wallet}
-              apiKey={process.env.PUSH_API_KEY}
+              // apiKey={process.env.PUSH_API_KEY}
+              apiKey="sPli3t5Z1n.p51Nh9IgnaDxpllDIdWuR7UQSmG2xwPvhuvOrxTVCy3628wzgyoxi3rBHa4T7c8O" //chat only working when passing api manually, if you see our api key just ignore :)
               env="staging"
               greetingMsg={`Myself ${data.fullName} and I am a freelancer on quicklance`}
               modalTitle={`chat with ${data.username}`}
@@ -200,8 +319,117 @@ const userProfile = ({ userAddress, provider }) => {
             />
           )}
         </div>
-      </div>
-    </div>
+
+        {/* send stream area  */}
+        {useStreamBox &&
+          <div>
+            <div
+              className="fixed inset-0 z-10 overflow-y-auto"
+              aria-labelledby="modal-title"
+              role="dialog"
+              aria-modal="true"
+            >
+              <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                <span
+                  className="hidden sm:inline-block sm:h-screen sm:align-middle"
+                  aria-hidden="true"
+                >
+                  &#8203;
+                </span>
+                <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-800 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
+                  {loading && (
+                    <div className="w-full text-center text-green-500 font-bold mb-2">
+                      Please wait while we process..
+                    </div>
+                  )}
+                  <h3
+                    className="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white"
+                    id="modal-title"
+                  >
+                    Create a monthly stream
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    Support freelancers by sending a monthly stream/tip.
+                  </p>
+
+                  <form className="mt-4" action="#">
+
+                    <div className="flex flex-row">
+                      <InputNumber
+                        name="flowRate"
+                        placeholder="Flow Rate"
+                        value={streamInput?.flowRate || 0}
+                        onChange={(val) =>
+                          setStreamInput({ ...streamInput, flowRate: val })
+                        }
+                        style={{
+                          borderRadius: 5,
+                          marginBottom: 10,
+                          width: "100%",
+                          border: "1px solid gray",
+                          padding: "4px 0",
+                          color: "white",
+                        }}
+                        className="border-gray-100 dark:bg-gray-700 dark:text-gray-100 text-white"
+                      />
+                      {/* <Image src={chainImg} height={100} width={100} style={{ height: "40px", width: "auto", marginLeft: "3px" }} /> */}
+                    </div>
+
+                    <label className="block mt-3" htmlFor="amount">
+                      <select name="token" onChange={(val) => setStreamInput({ ...streamInput, token: val })} id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option defaultValue value={tokens[0].address}> {tokens[0].symbol} </option>
+                      </select>
+                    </label>
+
+                    <div className="mt-4 sm:flex sm:items-center sm:-mx-2">
+                      <button
+                        onClick={() => setUseStreamBox(false)}
+                        type="button"
+                        className="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 bg-gray-900 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
+                      >
+                        Cancel
+                      </button>
+                      {loading ? (
+                        <button
+                          disabled
+                          className=" flex flex-row justify-center w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-indigo-500 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                        >
+                          <span>Creating </span>
+                          <svg
+                            aria-hidden="true"
+                            className="w-6 h-6 ml-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="currentFill"
+                            />
+                          </svg>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleCreateStream(streamInput)}
+                          className="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-indigo-500 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                        >
+                          Create Stream
+                        </button>
+                      )}
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div >
+    </div >
   );
 };
 
