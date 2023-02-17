@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chainlink/contracts": "^0.6.1",
     "@graphprotocol/graph-cli": "^0.40.0",
     "@graphprotocol/graph-ts": "^0.29.3",
     "@heroicons/react": "^2.0.14",

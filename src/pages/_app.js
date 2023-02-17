@@ -11,9 +11,8 @@ import optimismPng from "../../public/images/optimism.png";
 import goerliImg from "../../public/images/ethereumOG.png";
 import { Framework } from "@superfluid-finance/sdk-core";
 
-
 export default function App({ Component, pageProps }) {
-  const contractMumbai = "0xD45d53B9bfdF95631426C802A1BfBC1F7a3F04ca";
+  const contractMumbai = "0x2B38061f4F0Ef5f9444dA5D727Bff14275D30a35";
   const contractOptimism = "0xC2aB8fbf39107c1bba09462509E8E206f7074b84";
   const contractFilecoin = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
   const contractMantle = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
