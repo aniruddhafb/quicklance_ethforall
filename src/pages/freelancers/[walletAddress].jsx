@@ -85,7 +85,7 @@ const userProfile = ({ userAddress, provider }) => {
   };
 
   useEffect(() => {
-    if (userAddress``) {
+    if (userAddress) {
       getFreelancerData();
       check_follow_status();
       // fetchProjectsByAddress();
