@@ -24,6 +24,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   const [activeFreelancer, setActiveFreelancer] = useState("");
   const [project_owner, setProjectOwner] = useState("");
   const [project_status, setProject_status] = useState();
+  const [priceInUSD, setPriceInUSD] = useState("");
   const [projectData, setProjectData] = useState({
     id: "",
     title: "",
@@ -108,48 +109,60 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
 
   const fetch_project_by_id = async () => {
     const project_overview = await provider.getProjectbyId(projectId);
+    try {
+      const {
+        id,
+        title,
+        short_description,
+        description,
+        pdf,
+        images,
+        budget,
+        time,
+        deadLine,
+        owner,
+        project,
+      } = project_overview;
 
-    const {
-      id,
-      title,
-      short_description,
-      description,
-      pdf,
-      images,
-      budget,
-      time,
-      deadLine,
-      owner,
-      project,
-    } = project_overview;
+      const { image, username } = await fetchUserData(owner);
+      console.log({ image, username });
+      setEmployerData({ image, username });
 
-    const { image, username } = await fetchUserData(owner);
-    console.log({ image, username });
-    setEmployerData({ image, username });
+      const parsedBudget = ethers.utils.formatEther(budget.toString());
+      const d = new Date();
+      const diff = parseInt(deadLine) - dayjs().unix();
 
-    const parsedBudget = ethers.utils.formatEther(budget.toString());
-    const d = new Date();
-    const diff = parseInt(deadLine) - dayjs().unix();
+      const deadline_date =
+        dayjs()
+          .second(diff)
+          .get("date") -
+        d.getDate() +
+        " Days Left";
 
-    const deadline_date =
-      dayjs().second(diff).get("date") - d.getDate() + " Days Left";
+      setProjectData({
+        id,
+        title,
+        short_description,
+        description,
+        pdf,
+        images,
+        budget: parsedBudget,
+        time,
+        deadLine: deadline_date,
+        owner,
+        project,
+      });
 
-    setProjectData({
-      id,
-      title,
-      short_description,
-      description,
-      pdf,
-      images,
-      budget: parsedBudget,
-      time,
-      deadLine: deadline_date,
-      owner,
-      project,
-    });
+      const conversion = await provider.getLatestPriceMatic(1);
+      const parsedUSD =
+        ((parseInt(conversion) / 10 ** 8).toFixed(2) *
+          parseInt(project_overview.budget)) /
+        10 ** 18;
 
-    const conversion = await provider.getLatestPriceMatic();
-    console.log({ conversion: parseInt(conversion) * 10 ** 8 });
+      setPriceInUSD(parsedUSD);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const onChangeProposal = (e) => {
@@ -418,8 +431,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                   className="cursor-pointer"
                   onClick={() =>
                     setDescriptionLength({
-                      expand_project_description:
-                        !descriptionLength.expand_project_description,
+                      expand_project_description: !descriptionLength.expand_project_description,
                     })
                   }
                 >
@@ -439,7 +451,10 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
               <div className="flex border-t border-gray-800 py-2">
                 <span className="text-gray-500">Budget</span>
                 <span className="ml-auto text-white flex flex-row">
-                  <p className="mr-1">{projectData.budget}</p>
+                  <div>
+                    <p className="mr-1">{projectData.budget}</p>
+                    <p className="mr-1">${priceInUSD.toString()}</p>
+                  </div>
                   <Image src={chainImg} height={20} width={25} />
                 </span>
               </div>
@@ -825,8 +840,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                                     className="text-blue-500 cursor-pointer"
                                     onClick={() =>
                                       setDescriptionLength({
-                                        expand_project_description:
-                                          !descriptionLength.expand_project_description,
+                                        expand_project_description: !descriptionLength.expand_project_description,
                                       })
                                     }
                                   >
@@ -841,8 +855,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                                       className="text-blue-500 cursor-pointer"
                                       onClick={() =>
                                         setDescriptionLength({
-                                          expand_project_description:
-                                            !descriptionLength.expand_project_description,
+                                          expand_project_description: !descriptionLength.expand_project_description,
                                         })
                                       }
                                     >
