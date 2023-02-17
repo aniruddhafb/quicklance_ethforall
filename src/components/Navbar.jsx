@@ -109,7 +109,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: "http://localhost:3000/api/users/getUserByWalletAddress",
+          url: `${process.env.SERVER_URL}api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,
