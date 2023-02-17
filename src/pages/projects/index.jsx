@@ -63,11 +63,11 @@ const projects = ({ provider, signer }) => {
           Find the best projects which match your profile
         </p>
       </div>
-      <div className="flex flex-wrap gap-30 h-auto justify-evenly">
+      <div className="flex flex-wrap gap-30  h-auto justify-center">
         {projects.map((e, index) => (
           <div
             key={index}
-            className="w-[300px] h-[100%] overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 relative mt-5 mb-5"
+            className="w-[300px] h-[100%] overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 relative mt-5 mb-5 mr-6"
           >
             <div className="px-4 py-2">
               <h1 className="text-xl font-bold text-gray-800 uppercase dark:text-white">

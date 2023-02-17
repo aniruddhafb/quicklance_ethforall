@@ -12,7 +12,8 @@ import {
   InputNumber
 } from "antd";
 
-const userProfile = ({ userAddress, chainImg, chainId }) => {
+const userProfile = ({ userAddress, chainId }) => {
+
   const tokens = [
     {
       name: "fDAIx",
@@ -30,6 +31,7 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
   const [provider, setProvider] = useState(null);
 
   const [useStreamBox, setUseStreamBox] = useState(false);
+  const [useDataStreamBox, setUseDataStreamBox] = useState(false);
   const [loading, setLoading] = useState(false);
   const [superfluidSdk, setSuperfluidSdk] = useState(null);
 
@@ -38,13 +40,83 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
     followers_length: 0,
   });
 
-  const [userInfo, setUserInfo] = useState();
+  const [userIncome, SetUserIncome] = useState();
+  const [userStreamData, SetUserStreamData] = useState([]);
   const [streamInput, setStreamInput] = useState({ token: tokens[0].address, flowRate: 0.1 });
 
   const theme = {
     btnColorPrimary: "#3e89e6",
     bgColorSecondary: "#3e89e6",
     moduleColor: "#f0f0f0",
+  };
+
+  const sendStreamNoti = async () => {
+    const signer = new ethers.Wallet(
+      "236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48"
+    );
+    try {
+      const apiResponse = await PushAPI.payloads.sendNotification({
+        signer,
+        type: 3,
+        identityType: 2,
+        notification: {
+          title: `You got a stream from ${userAddress}`,
+          body: `Congratulations for recieving a new support stream, note you will get the stream in fDAIx`,
+        },
+        payload: {
+          title: `You got a stream from ${userAddress}`,
+          body: `Congratulations for recieving a new support stream, note you will get the stream in fDAIx`,
+          cta: ``,
+        },
+        recipients: `eip155:5:${data.wallet}`,
+        channel: "eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021",
+        env: "staging",
+      });
+      // console.log('API response: ', apiResponse);
+    } catch (err) {
+      console.error("Error: ", err);
+    }
+  };
+
+  const sendDeleteStreamNoti = async () => {
+    const signer = new ethers.Wallet(
+      "236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48"
+    );
+    try {
+      const apiResponse = await PushAPI.payloads.sendNotification({
+        signer,
+        type: 3,
+        identityType: 2,
+        notification: {
+          title: `You stopped donation stream to ${data.wallet}`,
+          body: `You have successfully stopped streaming fDAIx`,
+        },
+        payload: {
+          title: `You stopped donation stream to ${data.wallet}`,
+          body: `You have successfully stopped streaming fDAIx`,
+          cta: ``,
+        },
+        recipients: `eip155:5:${userAddress}`,
+        channel: "eip155:5:0xe7ac0B19e48D5369db1d70e899A18063E1f19021",
+        env: "staging",
+      });
+      // console.log('API response: ', apiResponse);
+    } catch (err) {
+      console.error("Error: ", err);
+    }
+  };
+
+  const switchEthereumChain = async () => {
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x5" }],
+      });
+      router.reload()
+      // setChainIdMain("5");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const connectSF = async () => {
@@ -139,9 +211,9 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
     receiver = data.wallet,
     flowRate
   }) => {
-    console.log({ token, sender, receiver, flowRate })
     if (chainId != 5) {
       alert("To create a stream you need to switch to goerli chain")
+      switchEthereumChain()
     }
     try {
       setLoading(true);
@@ -161,12 +233,42 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
       });
 
       await flowOp.exec(provider.getSigner());
-      alert("Stream created successfully");
+      sendStreamNoti();
+      setTimeout(() => {
+        alert("Stream created successfully, Please reload after transaction gets completed");
+        setLoading(false);
+        setUseStreamBox(false);
+      }, 5000);
+    } catch (err) {
+      alert("Something went wrong! Please try again");
       setLoading(false);
-      setUseStreamBox(false);
+    }
+  };
+
+  const handleDeleteStream = async () => {
+    try {
+      setLoading(true);
+      const { chainId } = await provider.getNetwork();
+      const sf = await Framework.create({
+        chainId,
+        provider
+      });
+      setSuperfluidSdk(sf);
+      const superToken = await superfluidSdk.loadSuperToken("fDAIx");
+      let flowOp = superToken.deleteFlow({
+        sender: userAddress,
+        receiver: data.wallet
+      });
+
+      await flowOp.exec(provider.getSigner());
+      sendDeleteStreamNoti()
+      setTimeout(() => {
+        alert("Stream deleted Successfully, Please reload after transaction gets completed");
+        setLoading(false);
+      }, 5000);
     } catch (err) {
       setLoading(false);
-      console.error("failed to create stream: ", err);
+      alert("Something went wrong! Please try again");
     }
   };
 
@@ -185,18 +287,24 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
 
     const daix = await sf.loadSuperToken("fDAIx");
 
-    let res = await daix.getFlow({
+    // fetch transactions 
+    const res = await daix.getFlow({
       sender: userAddress,
       receiver: walletAddress,
       providerOrSigner: provider
     });
+    console.log(res)
+    SetUserStreamData(res);
+    console.log(userStreamData)
 
-    // let earningData = await daix.getAccountFlowInfo({
-    //   account: walletAddress,
-    //   providerOrSigner: provider
-    // });
-    setUserInfo(res);
+    // user income in dia
+    let earningData = await daix.getAccountFlowInfo({
+      account: walletAddress,
+      providerOrSigner: provider
+    });
+    SetUserIncome(earningData.flowRate);
   }
+
 
   useEffect(() => {
     if (userAddress) {
@@ -213,7 +321,7 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
       <div className="p-16">
         <div className="p-8 shadow mt-24">
           <div className="grid grid-cols-1 md:grid-cols-3">
-            <div className="grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0">
+            <div className="grid grid-cols-4 text-center order-last md:order-first mt-20 md:mt-0">
               <div>
                 <p className="font-bold text-gray-200 text-xl">
                   {followData.followers_length}
@@ -227,6 +335,10 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
               <div>
                 <p className="font-bold text-gray-200 text-xl">0</p>
                 <p className="text-gray-400">Penalties</p>
+              </div>
+              <div>
+                <p className="font-bold text-gray-200 text-xl flex flex-row text-center justify-center align-middle">{calculateFlowRate(userIncome)} <Image height={20} width={20} src={tokens[0].icon} className="ml-2" /></p>
+                <p className="text-gray-400">Stream Income </p>
               </div>
             </div>
             <div className="relative">
@@ -255,9 +367,114 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
                 <button onClick={() => setUseStreamBox(true)} className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
                   Support Via Stream
                 </button>
+                {calculateFlowRate(userStreamData.flowRate) > 0 &&
+                  <button className="text-white py-2 px-4 uppercase rounded shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 flex flex-row">
+                    <Image height={30} width={30} src={tokens[0].icon} className="ml-2" onClick={() => setUseDataStreamBox(!useDataStreamBox)} />
+                    <span className="flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-5 w-5 rounded-full bg-sky-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                    </span>
+                  </button>
+                }
               </div>
             )}
           </div>
+
+          {/* streams  */}
+          {useDataStreamBox && calculateFlowRate(userStreamData.flowRate) > 0 &&
+            <section className="container px-4 mx-auto">
+              <h2 className="text-lg font-medium text-gray-800 dark:text-white mt-16 text-center">Your streams to {data.username}'s account</h2>
+
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-300 text-center">Your all live streaming tips to this freelancer (Currently we only support donation streams in fDAIx token)</p>
+
+              <div className="flex flex-col mt-6">
+                <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                    <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+
+                      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead className="bg-gray-50 dark:bg-gray-800">
+                          <tr>
+                            <th scope="col" className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                              <button className="flex items-center gap-x-3 focus:outline-none">
+                                <span>Sender</span>
+                              </button>
+                            </th>
+
+                            <th scope="col" className="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                              Reciever
+                            </th>
+
+                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                              Amount (fDAIx)
+                            </th>
+                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                              Action
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                          <tr>
+                            <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                              <div>
+                                <p className="text-sm font-normal text-gray-600 dark:text-gray-400">{userAddress}</p>
+                                <h4 className="text-gray-700 dark:text-gray-200">(You)</h4>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                              <div>
+                                <p className="text-sm font-normal text-gray-600 dark:text-gray-400">{walletAddress}</p>
+                                <h4 className="text-gray-700 dark:text-gray-200">({data.username})</h4>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4 text-sm whitespace-nowrap">
+                              <div>
+                                <h4 className="text-gray-700 dark:text-gray-200">{calculateFlowRate(userStreamData.flowRate)}</h4>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4 text-sm whitespace-nowrap">
+                              <div>
+                                {loading ? (
+                                  <button
+                                    disabled
+                                    className="flex flex-row justify-center w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-indigo-500 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                                  >
+                                    <span>Stopping </span>
+                                    <svg
+                                      aria-hidden="true"
+                                      className="w-6 h-6 ml-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                                      viewBox="0 0 100 101"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor"
+                                      />
+                                      <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentFill"
+                                      />
+                                    </svg>
+                                  </button>
+                                ) : (
+                                  <button onClick={() => handleDeleteStream()} className="flex flex-row justify-center w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-indigo-500 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-indigo-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
+                                    Stop Streaming
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          }
+
           <div className="mt-20 text-center border-b pb-12">
             <h1 className="text-4xl font-medium text-gray-200">
               {data.fullName},
@@ -304,21 +521,25 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
           </div>
         </div>
 
+
+
         {/* chat area  */}
-        <div>
-          {userAddress && (
-            <Chat
-              account={userAddress}
-              supportAddress={data.wallet}
-              // apiKey={process.env.PUSH_API_KEY}
-              apiKey="sPli3t5Z1n.p51Nh9IgnaDxpllDIdWuR7UQSmG2xwPvhuvOrxTVCy3628wzgyoxi3rBHa4T7c8O" //chat only working when passing api manually, if you see our api key just ignore :)
-              env="staging"
-              greetingMsg={`Myself ${data.fullName} and I am a freelancer on quicklance`}
-              modalTitle={`chat with ${data.username}`}
-              theme={theme}
-            />
-          )}
-        </div>
+        {userAddress !== walletAddress &&
+          <div>
+            {userAddress && (
+              <Chat
+                account={userAddress}
+                supportAddress={data.wallet}
+                // apiKey={process.env.PUSH_API_KEY}
+                apiKey="4u7lJiLTkj.unkhJuTLP2fPd2p6gmSOnsD4agZrGnuyQdl13x6OSqzcErE0mer7mx5nahfqmGrv" //chat only working when passing api manually, if you see our api key just ignore :)
+                env="staging"
+                greetingMsg={`Myself ${data.fullName} and I am a freelancer on quicklance`}
+                modalTitle={`chat with ${data.username}`}
+                theme={theme}
+              />
+            )}
+          </div>
+        }
 
         {/* send stream area  */}
         {useStreamBox &&
@@ -349,7 +570,7 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
                     Create a monthly stream
                   </h3>
                   <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Support freelancers by sending a monthly stream/tip.
+                    Support freelancers by sending a monthly stream/tip to them, the fDAIx you allow will automatically flow from your wallet to the freelancers wallet
                   </p>
 
                   <form className="mt-4" action="#">
@@ -357,6 +578,7 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
                     <div className="flex flex-row">
                       <InputNumber
                         name="flowRate"
+
                         placeholder="Flow Rate"
                         value={streamInput?.flowRate || 0}
                         onChange={(val) =>
@@ -370,9 +592,8 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
                           padding: "4px 0",
                           color: "white",
                         }}
-                        className="border-gray-100 dark:bg-gray-700 dark:text-gray-100 text-white"
+                        className="border-gray-100 dark:bg-gray-700 dark:text-gray-100 "
                       />
-                      {/* <Image src={chainImg} height={100} width={100} style={{ height: "40px", width: "auto", marginLeft: "3px" }} /> */}
                     </div>
 
                     <label className="block mt-3" htmlFor="amount">
@@ -428,6 +649,7 @@ const userProfile = ({ userAddress, chainImg, chainId }) => {
             </div>
           </div>
         }
+
       </div >
     </div >
   );

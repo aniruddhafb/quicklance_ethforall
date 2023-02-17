@@ -286,6 +286,8 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
     }
   };
 
+
+
   return (
     <nav
       x-data="{ isOpen: false }"
