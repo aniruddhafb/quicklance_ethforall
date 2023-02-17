@@ -36,7 +36,7 @@ const freelancers = ({ userAddress }) => {
                       <Image src={e.image?.replace(
                         "ipfs://",
                         "https://gateway.ipfscdn.io/ipfs/"
-                      )} height={100} width={100} className="flex-shrink-0 object-cover w-24 h-24 rounded-full sm:mx-4 ring-4 ring-gray-300" />
+                      )} height={100} width={100} className="flex-shrink-0 object-cover w-24 h-24 rounded-full sm:mx-4 ring-4 ring-gray-300" alt="ipfs" />
 
                       <div className="mt-4 sm:mx-4 sm:mt-0">
                         <h1 className="text-xl font-semibold text-gray-700 capitalize md:text-2xl dark:text-white group-hover:text-white">
@@ -56,6 +56,7 @@ const freelancers = ({ userAddress }) => {
                       <a
                         href={e.twitter}
                         target="_blank"
+                        rel="noreferrer"
                         className="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
                         aria-label="Github"
                       >
