@@ -78,7 +78,7 @@ const createProject = ({ provider, userAddress }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `http://localhost:3000/api/users/getUserByWalletAddress`,
+          url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,

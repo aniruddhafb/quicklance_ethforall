@@ -16,7 +16,7 @@ export default function Home() {
   const [data, setData] = useState([]);
   const fetchFreelancers = async () => {
     const res = await axios({
-      url: `http://localhost:3000/api/freelancers/getAllfreelancers`,
+      url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/freelancers/getAllfreelancers`,
       method: "GET",
     });
     // console.log(res.data);

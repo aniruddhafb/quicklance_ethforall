@@ -12,16 +12,17 @@ import goerliImg from "../../public/images/ethereumOG.png";
 import { Framework } from "@superfluid-finance/sdk-core";
 
 export default function App({ Component, pageProps }) {
-  const contractMumbai = "0x2B38061f4F0Ef5f9444dA5D727Bff14275D30a35";
-  const contractOptimism = "0xC2aB8fbf39107c1bba09462509E8E206f7074b84";
-  const contractFilecoin = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
-  const contractMantle = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
-  const contractGoerli = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167";
+  const contractMumbai = "0x4ee660E20ED169AECF027E480F79D785cf54c581";
+  const contractOptimism = "0xC2aB8fbf39107c1bba09462509E8E206f7074b84"; //pending
+  const contractFilecoin = "0x60E5aABd492a9c6479D74dCec24B0dAa78a89b0B";
+  const contractMantle = "0xF53F0bFbd8Ed9217f673B61271d5C2e2eA9D1167"; //pending
+  const contractGoerli = "0xCe1552ecab7b39EC44aC5d84102ba9dA1C780F93";
 
   const [userId, setUserId] = useState("");
   const [provider, setProvider] = useState(null);
   const [userAddress, setUserAddress] = useState("");
   const [chainId, setChainId] = useState("");
+  const [currentContract, setCurrentContract] = useState();
   const [signer, setSigner] = useState();
 
   const [chainImg, setChainImg] = useState();
@@ -69,6 +70,8 @@ export default function App({ Component, pageProps }) {
         setBlockURL("https://mumbai.polygonscan.com/address/");
       }
 
+      setCurrentContract(contractAddress);
+
       const ProjectFactoryContract = new ethers.Contract(
         contractAddress,
         abi.abi,
@@ -108,6 +111,7 @@ export default function App({ Component, pageProps }) {
         chainImg={chainImg}
         blockURL={blockURL}
         chainId={chainId}
+        currentContract={currentContract}
       />
       <Footer userAddress={userAddress} />
     </>

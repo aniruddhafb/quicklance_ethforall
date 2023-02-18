@@ -40,10 +40,8 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   });
   const [isRegistered, setIsRegistered] = useState(false);
 
-  const [descriptionLength, setDescriptionLength] = useState({
-    expand_project_description: false,
-    expand_proposal_description: false,
-  });
+  const [proposalDesc, setProposalDesc] = useState(false);
+  const [projectDesc, setProjectDesc] = useState(false);
 
   const [projectInfo, setProjectInfo] = useState({
     isProjectApproved: undefined,
@@ -75,7 +73,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
     proposals.map(async (e) => {
       try {
         const res = await axios({
-          url: `http://localhost:3000/api/users/getUserByWalletAddress`,
+          url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: e.owner,
@@ -125,7 +123,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
       } = project_overview;
 
       const { image, username } = await fetchUserData(owner);
-      console.log({ image, username });
+      // console.log({ image, username });
       setEmployerData({ image, username });
 
       const parsedBudget = ethers.utils.formatEther(budget.toString());
@@ -202,7 +200,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   // sending notification
   const sendProposalNoti = async () => {
     const signer = new ethers.Wallet(
-      "236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48"
+      "process.env.NEXT_PUBLIC_PKEY"
     );
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
@@ -231,7 +229,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   // sending notification
   const sendMarkedCompleteNoti = async () => {
     const signer = new ethers.Wallet(
-      "236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48"
+      "process.env.NEXT_PUBLIC_PKEY"
     );
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
@@ -260,7 +258,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   // sending notification
   const sendFinalizedNoti = async () => {
     const signer = new ethers.Wallet(
-      "236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48"
+      "process.env.NEXT_PUBLIC_PKEY"
     );
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
@@ -288,9 +286,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
 
   // sending notification
   const sendAcceptNoti = async () => {
-    const signer = new ethers.Wallet(
-      "236f1df78499017b1e172e8a28c5636a8676bfec50f661ab2b741fedf2b1ac48"
-    );
+    const signer = new ethers.Wallet(process.env.NEXT_PUBLIC_PKEY);
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
         signer,
@@ -347,7 +343,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `http://localhost:3000/api/users/getUserByWalletAddress`,
+          url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,
@@ -426,18 +422,14 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                 </a>
               </div>
               <div className="leading-relaxed mb-4">
-                {!descriptionLength.expand_project_description
+                {!projectDesc
                   ? projectData.description.slice(0, 100) + "..."
                   : projectData.description}
                 <span
                   className="cursor-pointer"
-                  onClick={() =>
-                    setDescriptionLength({
-                      expand_project_description: !descriptionLength.expand_project_description,
-                    })
-                  }
+                  onClick={() => setProjectDesc(!projectDesc)}
                 >
-                  {descriptionLength.expand_project_description ? (
+                  {projectDesc ? (
                     <span className="text-blue-500"> view less</span>
                   ) : (
                     projectData.description.length > 50 && (
@@ -836,16 +828,12 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                               <Image src={chainImg} height={20} width={25} />
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 ">
-                              {descriptionLength.expand_project_description ? (
+                              {proposalDesc ? (
                                 <div>
                                   {e.description}{" "}
                                   <span
                                     className="text-blue-500 cursor-pointer"
-                                    onClick={() =>
-                                      setDescriptionLength({
-                                        expand_project_description: !descriptionLength.expand_project_description,
-                                      })
-                                    }
+                                    onClick={() => setProposalDesc(false)}
                                   >
                                     view less
                                   </span>
@@ -856,11 +844,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                                   {e.description.length > 50 && (
                                     <span
                                       className="text-blue-500 cursor-pointer"
-                                      onClick={() =>
-                                        setDescriptionLength({
-                                          expand_project_description: !descriptionLength.expand_project_description,
-                                        })
-                                      }
+                                      onClick={() => setProposalDesc(true)}
                                     >
                                       view more
                                     </span>

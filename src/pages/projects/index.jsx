@@ -7,7 +7,6 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import polygonPng from "../../../public/images/polygon.png";
 import dayjs from "dayjs";
 
-
 const projects = ({ provider, signer }) => {
   const [projects, setProjects] = useState([]);
 
@@ -29,14 +28,24 @@ const projects = ({ provider, signer }) => {
         owner,
         project,
       } = e;
-      const parsedDate = dayjs(parseInt(deadLine)).format("DD/MM/YYYY");
+
+      const d = new Date();
+      const diff = parseInt(deadLine) - dayjs().unix();
+
+      const deadline_date =
+        dayjs()
+          .second(diff)
+          .get("date") -
+        d.getDate() +
+        " Days Left";
+
       projectData.push({
         id,
         title,
         short_description,
         description,
         budget,
-        deadLine: parsedDate,
+        deadLine: deadline_date,
         images,
         time: date.toLocaleDateString(time),
         owner,
@@ -49,8 +58,6 @@ const projects = ({ provider, signer }) => {
   useEffect(() => {
     fetchProjects();
   }, [provider]);
-
-
 
   return (
     <div className=" bg-[#111827] pt-6 min-h-[100vh] max-h-[100%]">

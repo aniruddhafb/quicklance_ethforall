@@ -8,6 +8,7 @@ import optimismPng from "../../public/images/optimism.png";
 import filPng from "../../public/images/fil.png";
 import mantlePng from "../../public/images/mantle.png";
 import goerliImg from "../../public/images/ethereumOG.png";
+import defaultAvatar from "../../public/images/avatar.png";
 import { BsChevronDown } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import axios from "axios";
@@ -109,15 +110,17 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `http://localhost:3000/api/users/getUserByWalletAddress`,
+          url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,
           },
         });
+
+        console.log({ navabr: res.data });
         if (res.status == 200) {
           const { image, username } = res.data;
-          console.log({ image });
+          // console.log({ image });
           setUserInfo({ image, username });
           setIsRegistered(true);
         }
@@ -285,8 +288,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
       }
     }
   };
-
-
 
   return (
     <nav
@@ -639,20 +640,33 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                       onClick={() => SetShowProfile(!showProfile)}
                     >
                       <div className="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full object-cover">
-                        <Image
-                          src={userInfo.image?.replace(
-                            "ipfs://",
-                            "https://gateway.ipfscdn.io/ipfs/"
-                          )}
-                          height={100}
-                          width={100}
-                          alt="avatar"
-                          style={{
-                            borderRadius: "50%",
-                            width: "40px",
-                            height: "33px",
-                          }}
-                        />
+                        {userInfo.image ?
+                          <Image
+                            src={userInfo.image.replace(
+                              "ipfs://",
+                              "https://gateway.ipfscdn.io/ipfs/"
+                            )}
+                            height={100}
+                            width={100}
+                            alt="avatar"
+                            style={{
+                              borderRadius: "50%",
+                              width: "40px",
+                              height: "33px",
+                            }}
+                          /> :
+                          <Image
+                            src={defaultAvatar}
+                            height={100}
+                            width={100}
+                            alt="avatar"
+                            style={{
+                              borderRadius: "50%",
+                              width: "40px",
+                              height: "33px",
+                            }}
+                          />
+                        }
                       </div>
                     </button>
 
@@ -663,20 +677,34 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                           rel="noreferrer"
                           className="flex items-center p-3 -mt-2 text-sm text-gray-600 transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
-                          <Image
-                            src={userInfo.image?.replace(
-                              "ipfs://",
-                              "https://gateway.ipfscdn.io/ipfs/"
-                            )}
-                            height={80}
-                            width={50}
-                            alt="avatar"
-                            style={{
-                              borderRadius: "50%",
-                              width: "40px",
-                              height: "33px",
-                            }}
-                          />
+                          {userInfo.image ?
+                            <Image
+                              src={userInfo.image.replace(
+                                "ipfs://",
+                                "https://gateway.ipfscdn.io/ipfs/"
+                              )}
+                              height={80}
+                              width={50}
+                              alt="avatar"
+                              style={{
+                                borderRadius: "50%",
+                                width: "40px",
+                                height: "33px",
+                              }}
+                            />
+                            :
+                            <Image
+                              src={defaultAvatar}
+                              height={80}
+                              width={50}
+                              alt="avatar"
+                              style={{
+                                borderRadius: "50%",
+                                width: "40px",
+                                height: "33px",
+                              }}
+                            />
+                          }
                           <div className="mx-1">
                             {/* <h1 className="text-sm font-semibold text-gray-700 dark:text-gray-200">{userData.username}</h1> */}
                             {userInfo.username}
