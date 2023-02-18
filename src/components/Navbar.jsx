@@ -109,12 +109,14 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `https://quicklance-ethforall.vercel.app/api/users/getUserByWalletAddress`,
+          url: `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,
           },
         });
+
+        console.log({ navabr: res.data });
         if (res.status == 200) {
           const { image, username } = res.data;
           console.log({ image });
@@ -285,8 +287,6 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
       }
     }
   };
-
-
 
   return (
     <nav
