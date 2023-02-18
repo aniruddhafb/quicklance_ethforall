@@ -3,9 +3,10 @@
 Quicklance is a platform where freelancers can work on projects alloted by employers on quicklance and work on them with blockchain security.
 Freelancers can earn by working on projects or getting direct tips every month from other people on our platform.
 
-## Getting Started
+## Open Source Contribution
 
-If you want to test this project in you localhost follow this :
+If you want to test this project in you localhost or contribute to this project
+follow the following :
 ```bash
 # first run to install dependencies
 yarn install
@@ -14,6 +15,8 @@ yarn dev
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 You need to create a .env and hardat.config.js file to run the project
+
+You can contribute to this project and make pull requests
 
 ## Technologies used
 
