@@ -1,38 +1,32 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Introduction
+
+Quicklance is a platform where freelancers can work on projects alloted by employers on quicklance and work on them with blockchain security.
+Freelancers can earn by working on projects or getting direct tips every month from other people on our platform.
 
 ## Getting Started
 
-First, run the development server:
-
+If you want to test this project in you localhost follow this :
 ```bash
-npm run dev
-# or
+# first run to install dependencies
+yarn install
+# and then to start server
 yarn dev
-# or
-pnpm dev
 ```
-
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+You need to create a .env and hardat.config.js file to run the project
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Technologies used
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [\${process.env.NEXT_PUBLIC_PROD_SERVER}/api/hello](${process.env.NEXT_PUBLIC_PROD_SERVER}/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+We have used many technologies to make our platform work good and add amaizing features.
+1) We have used push notifications to notify employers whenever their projects get coatations, to notify freelancers with their coatation status, donation/tipping streaming incoming in their wallets.
+2) We have integrated push chat, every user on our platform can communicate with each other.
+3) We have used superfluid streams to manage tips/donations to the freelancers. Every user can support hardworking and under rated freelancers by sending a monthly tip to their account.
+4) We have used chainlink to trigger automatic functions like finalize project after deadline ends.
+5) We have deployed our contracts on polygon, filecoin, optisim, goerli, mantle to make it crosschain.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Future Plans
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1) We will be adding penalty system to make our platform more robust
+2) We will also introduce web3 jobs on our platform where employers can hire freelancers for longer period work and payments will be automatically managed by superfluid.
+3) We also want to focus on things which can make us revenue like commissions on every successful projects, commission on donation/tipping streams, etc. 
+As we will be aiming for a production product in the coming future and we have many plans with quicklance
