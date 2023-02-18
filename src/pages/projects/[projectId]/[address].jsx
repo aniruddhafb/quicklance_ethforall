@@ -40,10 +40,8 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
   });
   const [isRegistered, setIsRegistered] = useState(false);
 
-  const [descriptionLength, setDescriptionLength] = useState({
-    expand_project_description: false,
-    expand_proposal_description: false,
-  });
+  const [proposalDesc, setProposalDesc] = useState(false);
+  const [projectDesc, setProjectDesc] = useState(false);
 
   const [projectInfo, setProjectInfo] = useState({
     isProjectApproved: undefined,
@@ -424,18 +422,14 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                 </a>
               </div>
               <div className="leading-relaxed mb-4">
-                {!descriptionLength.expand_project_description
+                {!projectDesc
                   ? projectData.description.slice(0, 100) + "..."
                   : projectData.description}
                 <span
                   className="cursor-pointer"
-                  onClick={() =>
-                    setDescriptionLength({
-                      expand_project_description: !descriptionLength.expand_project_description,
-                    })
-                  }
+                  onClick={() => setProjectDesc(!projectDesc)}
                 >
-                  {descriptionLength.expand_project_description ? (
+                  {projectDesc ? (
                     <span className="text-blue-500"> view less</span>
                   ) : (
                     projectData.description.length > 50 && (
@@ -833,16 +827,12 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                               <Image src={chainImg} height={20} width={25} />
                             </td>
                             <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 ">
-                              {descriptionLength.expand_project_description ? (
+                              {proposalDesc ? (
                                 <div>
                                   {e.description}{" "}
                                   <span
                                     className="text-blue-500 cursor-pointer"
-                                    onClick={() =>
-                                      setDescriptionLength({
-                                        expand_project_description: !descriptionLength.expand_project_description,
-                                      })
-                                    }
+                                    onClick={() => setProposalDesc(false)}
                                   >
                                     view less
                                   </span>
@@ -853,11 +843,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
                                   {e.description.length > 50 && (
                                     <span
                                       className="text-blue-500 cursor-pointer"
-                                      onClick={() =>
-                                        setDescriptionLength({
-                                          expand_project_description: !descriptionLength.expand_project_description,
-                                        })
-                                      }
+                                      onClick={() => setProposalDesc(true)}
                                     >
                                       view more
                                     </span>
