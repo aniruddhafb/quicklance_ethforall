@@ -150,11 +150,12 @@ const CreateProfile = ({ userAddress }) => {
                       Username
                     </label>
                     <input
+                      required
                       onChange={onChange}
                       value={data.username}
                       type="text"
                       name="username"
-                      placeholder="@sonu"
+                      placeholder="@demo.developer"
                       className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
@@ -164,11 +165,12 @@ const CreateProfile = ({ userAddress }) => {
                     </label>
 
                     <input
+                      required
                       value={data.fullName}
                       onChange={onChange}
                       type="text"
                       name="fullName"
-                      placeholder="Raju Babu"
+                      placeholder="Your Full Name"
                       className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
@@ -191,11 +193,12 @@ const CreateProfile = ({ userAddress }) => {
                       Email
                     </label>
                     <input
+                      required
                       onChange={onChange}
                       value={data.email}
                       type="email"
                       name="email"
-                      placeholder="Raju Babu"
+                      placeholder="example@gmail.com"
                       className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
@@ -205,6 +208,7 @@ const CreateProfile = ({ userAddress }) => {
                       Age
                     </label>
                     <input
+                      required
                       onChange={onChange}
                       value={data.age}
                       type="number"
@@ -248,9 +252,10 @@ const CreateProfile = ({ userAddress }) => {
                       About You
                     </label>
                     <textarea
+                      required
                       value={data.about}
                       onChange={onChange}
-                      maxLength={100}
+                      maxLength={200}
                       name="about"
                       cols="20"
                       rows="1"
