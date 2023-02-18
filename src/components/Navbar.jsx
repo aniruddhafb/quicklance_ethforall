@@ -757,7 +757,9 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
                             ></path>
                           </svg>
 
-                          <span className="mx-1">Edit Profile</span>
+                          <span className="mx-1">
+                            {userInfo.username ? "Edit Profile" : "Create Profile"}
+                          </span>
                         </Link>
                         {isRegistered && (
                           <Link
