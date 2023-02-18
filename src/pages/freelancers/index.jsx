@@ -6,7 +6,7 @@ const freelancers = ({ userAddress }) => {
   const [data, setData] = useState([]);
   const fetchFreelancers = async () => {
     const res = await axios({
-      url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/freelancers/getAllfreelancers`,
+      url: `${process.env.NEXT_PUBLIC_PROD_SERVER}/api/freelancers/getAllfreelancers`,
       method: "GET",
     });
     setData(res.data);
@@ -16,7 +16,7 @@ const freelancers = ({ userAddress }) => {
     fetchFreelancers();
   }, [userAddress]);
   return (
-    <div className="h-[100vh] bg-[#111827] pt-6">
+    <div className="min-h-[100vh] max-h-[100%] bg-[#111827] pt-6">
       <section className="bg-white dark:bg-gray-900">
         <div className="container px-6 py-10 mx-auto">
           <h1 className="text-2xl font-semibold text-center text-gray-800 capitalize lg:text-3xl dark:text-white">

@@ -8,6 +8,8 @@ import optimismPng from "../../public/images/optimism.png";
 import filPng from "../../public/images/fil.png";
 import mantlePng from "../../public/images/mantle.png";
 import goerliImg from "../../public/images/ethereumOG.png";
+import quickImg from "../../public/images/quick.png";
+import quickFav from "../../public/images/quickFav.png";
 import defaultAvatar from "../../public/images/avatar.png";
 import { BsChevronDown } from "react-icons/bs";
 import { useDispatch } from "react-redux";
@@ -110,7 +112,7 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/getUserByWalletAddress`,
+          url: `${process.env.NEXT_PUBLIC_PROD_SERVER}/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,
@@ -296,10 +298,10 @@ const Navbar = ({ connectToContract, userAddress, provider }) => {
     >
       <div className="container px-6 py-4 mx-auto">
         <div className="lg:flex lg:items-center lg:justify-between">
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              {/* <Image className="w-auto h-6 sm:h-7" src="https://merakiui.com/images/full-logo.svg" alt="" /> */}
-              <h1 className="text-xl font-[400] text-yellow-50">QuickLance</h1>
+          <div className="flex items-center justify-between text-center">
+            <Link href="/" className="flex flex-row justify-center align-middle">
+              <Image className="w-auto h-10 sm:h-10" src={quickFav} alt="quickLogo" height={100} width={100} />
+              <h1 className="text-xl font-[400] text-yellow-50 text-center mt-1">QUICKLANCE</h1>
             </Link>
 
             {/* action button  */}

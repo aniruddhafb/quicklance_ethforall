@@ -38,7 +38,7 @@ const CreateProfile = ({ userAddress }) => {
     try {
       let user_image = await storage.upload(data.image);
       const res = await axios({
-        url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/signup`,
+        url: `${process.env.NEXT_PUBLIC_PROD_SERVER}/api/users/signup`,
         method: "post",
         data: { ...data, image: user_image },
       });
@@ -60,7 +60,7 @@ const CreateProfile = ({ userAddress }) => {
       if (typeof data.image == "object") {
         let user_image = await storage.upload(data.image);
         const res = await axios({
-          url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/updateUserProfile`,
+          url: `${process.env.NEXT_PUBLIC_PROD_SERVER}/api/users/updateUserProfile`,
           method: "post",
           data: { ...data, image: user_image },
         });
@@ -72,7 +72,7 @@ const CreateProfile = ({ userAddress }) => {
         }
       } else {
         const res = await axios({
-          url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/updateUserProfile`,
+          url: `${process.env.NEXT_PUBLIC_PROD_SERVER}/api/users/updateUserProfile`,
           method: "post",
           data: { ...data },
         });
@@ -93,7 +93,7 @@ const CreateProfile = ({ userAddress }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/getUserByWalletAddress`,
+          url: `${process.env.NEXT_PUBLIC_PROD_SERVER}/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,
@@ -129,7 +129,7 @@ const CreateProfile = ({ userAddress }) => {
           {success}
         </div>
       )}
-      <div className="h-[100vh] bg-[#111827] pt-6">
+      <div className="min-h-[100vh] max-h-[100%] bg-[#111827] pt-6">
         <section className="bg-white dark:bg-gray-900">
           <div className="flex justify-center min-h-screen">
             <div className="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
