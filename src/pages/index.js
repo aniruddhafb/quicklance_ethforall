@@ -16,7 +16,7 @@ export default function Home() {
   const [data, setData] = useState([]);
   const fetchFreelancers = async () => {
     const res = await axios({
-      url: "http://localhost:3000/api/freelancers/getAllfreelancers",
+      url: `https://quicklance-ethforall.vercel.app/api/freelancers/getAllfreelancers`,
       method: "GET",
     });
     // console.log(res.data);

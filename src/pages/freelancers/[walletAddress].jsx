@@ -133,7 +133,7 @@ const userProfile = ({ userAddress, chainId, signer }) => {
     try {
       if (walletAddress) {
         const res = await axios({
-          url: "http://localhost:3000/api/users/getUserByWalletAddress",
+          url: `https://quicklance-ethforall.vercel.app/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: walletAddress,
@@ -151,7 +151,7 @@ const userProfile = ({ userAddress, chainId, signer }) => {
   const followUser = async () => {
     try {
       const res = await axios({
-        url: "http://localhost:3000/api/users/toggleFollow",
+        url: `https://quicklance-ethforall.vercel.app/api/users/toggleFollow`,
         method: "POST",
         data: {
           to_follow_wallet: walletAddress,
@@ -169,7 +169,7 @@ const userProfile = ({ userAddress, chainId, signer }) => {
   const check_follow_status = async () => {
     try {
       const res = await axios({
-        url: "http://localhost:3000/api/users/get_follow_status",
+        url: `https://quicklance-ethforall.vercel.app/api/users/get_follow_status`,
         method: "POST",
         data: {
           to_follow_wallet: walletAddress,
