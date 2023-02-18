@@ -55,9 +55,7 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
   };
 
   const sendStreamNoti = async () => {
-    const signer = new ethers.Wallet(
-      "process.env.NEXT_PUBLIC_PKEY"
-    );
+    const signer = new ethers.Wallet(`${process.env.NEXT_PUBLIC_PKEY}`);
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
         signer,
@@ -83,9 +81,7 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
   };
 
   const sendDeleteStreamNoti = async () => {
-    const signer = new ethers.Wallet(
-      "process.env.NEXT_PUBLIC_PKEY"
-    );
+    const signer = new ethers.Wallet(`${process.env.NEXT_PUBLIC_PKEY}`);
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
         signer,

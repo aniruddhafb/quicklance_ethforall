@@ -199,7 +199,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
 
   // sending notification
   const sendProposalNoti = async () => {
-    const signer = new ethers.Wallet("process.env.NEXT_PUBLIC_PKEY");
+    const signer = new ethers.Wallet(`${process.env.NEXT_PUBLIC_PKEY}`);
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
         signer,
@@ -226,7 +226,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
 
   // sending notification
   const sendMarkedCompleteNoti = async () => {
-    const signer = new ethers.Wallet("process.env.NEXT_PUBLIC_PKEY");
+    const signer = new ethers.Wallet(`${process.env.NEXT_PUBLIC_PKEY}`);
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
         signer,
@@ -253,7 +253,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
 
   // sending notification
   const sendFinalizedNoti = async () => {
-    const signer = new ethers.Wallet("process.env.NEXT_PUBLIC_PKEY");
+    const signer = new ethers.Wallet(`${process.env.NEXT_PUBLIC_PKEY}`);
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
         signer,
@@ -280,7 +280,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
 
   // sending notification
   const sendAcceptNoti = async () => {
-    const signer = new ethers.Wallet(process.env.NEXT_PUBLIC_PKEY);
+    const signer = new ethers.Wallet(`${process.env.NEXT_PUBLIC_PKEY}`);
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
         signer,
