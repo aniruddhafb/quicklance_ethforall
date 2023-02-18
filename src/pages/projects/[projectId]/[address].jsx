@@ -75,7 +75,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
     proposals.map(async (e) => {
       try {
         const res = await axios({
-          url: `https://quicklance-ethforall.vercel.app/api/users/getUserByWalletAddress`,
+          url: `http://localhost:3000/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: e.owner,
@@ -347,7 +347,7 @@ const project = ({ userAddress, signer, provider, chainImg, blockURL }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `https://quicklance-ethforall.vercel.app/api/users/getUserByWalletAddress`,
+          url: `http://localhost:3000/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,

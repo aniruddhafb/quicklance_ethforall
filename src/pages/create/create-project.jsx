@@ -78,7 +78,7 @@ const createProject = ({ provider, userAddress }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `https://quicklance-ethforall.vercel.app/api/users/getUserByWalletAddress`,
+          url: `http://localhost:3000/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,
