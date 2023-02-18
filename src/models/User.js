@@ -6,14 +6,17 @@ const UserSchema = Schema(
     username: {
       type: String,
       required: true,
-      unique: true,
     },
     image: String,
     followers: {
       type: [String],
+      sparse: true,
+      index: true,
     },
     followings: {
       type: [String],
+      sparse: true,
+      index: true,
     },
     email: {
       type: String,
