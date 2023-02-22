@@ -55,9 +55,7 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
   };
 
   const sendStreamNoti = async () => {
-    const signer = new ethers.Wallet(
-      "process.env.NEXT_PUBLIC_PKEY"
-    );
+    const signer = new ethers.Wallet(`${process.env.NEXT_PUBLIC_PKEY}`);
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
         signer,
@@ -83,9 +81,7 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
   };
 
   const sendDeleteStreamNoti = async () => {
-    const signer = new ethers.Wallet(
-      "process.env.NEXT_PUBLIC_PKEY"
-    );
+    const signer = new ethers.Wallet(`${process.env.NEXT_PUBLIC_PKEY}`);
     try {
       const apiResponse = await PushAPI.payloads.sendNotification({
         signer,
@@ -133,7 +129,7 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
     try {
       if (walletAddress) {
         const res = await axios({
-          url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/getUserByWalletAddress`,
+          url: `${process.env.NEXT_PUBLIC_PROD_SERVER}/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: walletAddress,
@@ -152,7 +148,7 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
     setLoading(true);
     try {
       const res = await axios({
-        url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/toggleFollow`,
+        url: `${process.env.NEXT_PUBLIC_PROD_SERVER}/api/users/toggleFollow`,
         method: "POST",
         data: {
           to_follow_wallet: walletAddress,
@@ -172,7 +168,7 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
   const check_follow_status = async () => {
     try {
       const res = await axios({
-        url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/get_follow_status`,
+        url: `${process.env.NEXT_PUBLIC_PROD_SERVER}/api/users/get_follow_status`,
         method: "POST",
         data: {
           to_follow_wallet: walletAddress,
@@ -334,7 +330,7 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
     }
   }, [userAddress, followData.isFollowing, currentContract]);
   return (
-    <div className="h-[100vh] bg-[#111827] pt-6">
+    <div className="min-h-[100vh] max-h-[100%] bg-[#111827] pt-6">
       <div className={`w-full h-10 ${error && "bg-red-500"}`}>{error}</div>
       <div className="p-16">
         <div className="p-8 shadow mt-24">

@@ -78,7 +78,7 @@ const createProject = ({ provider, userAddress }) => {
     try {
       if (userAddress) {
         const res = await axios({
-          url: `${process.env.NEXT_PUBLIC_DEV_SERVER}/api/users/getUserByWalletAddress`,
+          url: `${process.env.NEXT_PUBLIC_PROD_SERVER}/api/users/getUserByWalletAddress`,
           method: "POST",
           data: {
             wallet: userAddress,
@@ -114,7 +114,7 @@ const createProject = ({ provider, userAddress }) => {
           Please wait while we process..
         </div>
       )}
-      <div className="h-[100vh] bg-[#111827] pt-6">
+      <div className="min-h-[100vh] max-h-[100%] bg-[#111827] pt-6">
         <section className="max-w-4xl p-6 mx-auto my-20 rounded-md shadow-md ">
           <h2 className="text-lg font-semibold text-gray-700 capitalize dark:text-white">
             Create Project
