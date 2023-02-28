@@ -191,16 +191,13 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
         signer
       );
       const addr = await signer.getAddress();
-      // console.log({ addr });
       const projects = await ProjectFactoryContract.getProjectsByOwner();
       let project_arr = [];
       projects.map((e) => {
-        e.owner == addr && project_arr.push(e);
+        e.owner == walletAddress && project_arr.push(e);
       });
 
       set_my_projects(project_arr);
-
-      // console.log({ project_arr });
     }
   };
 
@@ -295,29 +292,29 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
     await provider.send("eth_requestAccounts", []);
     setProvider(provider);
     const { chainId } = await provider.getNetwork();
-    const sf = await Framework.create({
-      chainId,
-      provider,
-    });
+    if (chainId == 5) {
+      const sf = await Framework.create({
+        chainId,
+        provider,
+      });
+      const daix = await sf.loadSuperToken("fDAIx");
 
-    const daix = await sf.loadSuperToken("fDAIx");
+      // fetch transactions
+      const res = await daix.getFlow({
+        sender: userAddress,
+        receiver: walletAddress,
+        providerOrSigner: provider,
+      });
+      SetUserStreamData(res);
 
-    // fetch transactions
-    const res = await daix.getFlow({
-      sender: userAddress,
-      receiver: walletAddress,
-      providerOrSigner: provider,
-    });
-    // console.log(res);
-    SetUserStreamData(res);
-    // console.log(userStreamData);
+      // user income in dia
+      let earningData = await daix.getAccountFlowInfo({
+        account: walletAddress,
+        providerOrSigner: provider,
+      });
+      SetUserIncome(earningData.flowRate);
+    }
 
-    // user income in dia
-    let earningData = await daix.getAccountFlowInfo({
-      account: walletAddress,
-      providerOrSigner: provider,
-    });
-    SetUserIncome(earningData.flowRate);
   };
 
   useEffect(() => {
@@ -591,10 +588,81 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
             </div>
             <p className="mt-8 text-gray-500">{data.about}</p>
           </div>
-          <div className="mt-12 flex flex-col justify-center">
+          <div className="mt-6 flex flex-col justify-center">
             <button className="text-indigo-500 py-2 px-4  font-medium mt-4">
-              No Project History Found
+              Recent Projects
             </button>
+            <div className="flex justify-center">
+              {my_projects.map((e, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="w-[300px] h-[100%] overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 relative m-5"
+                  >
+                    <div className="px-4 py-2">
+                      <h1 className="text-xl font-bold text-gray-800 uppercase dark:text-white">
+                        {e.title}
+                      </h1>
+                      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        {e.short_description}
+                      </p>
+                    </div>
+                    <div className="flex flex-row px-4">
+                      <h1 className="text-white">Budget - </h1>
+                      <p className="ml-2 text-gray-300">
+                        {ethers.utils.formatEther(e.budget)}
+                      </p>
+                      <Image
+                        src={polygonPng}
+                        className="ml-2"
+                        width={25}
+                        height={20}
+                        alt="matic"
+                      />
+                    </div>
+
+                    <div className="flex flex-row px-4">
+                      <h1 className="text-white">Deadline - </h1>
+                      <p className="ml-2 text-gray-300">{e.deadLine.toString()}</p>
+                    </div>
+
+                    <Image
+                      className="object-cover w-full h-48 mt-2"
+                      src={e.images.replace(
+                        "ipfs://",
+                        "https://gateway.ipfscdn.io/ipfs/"
+                      )}
+                      alt="NIKE AIR"
+                      height={100}
+                      width={100}
+                    />
+
+                    <div className="flex items-center justify-between px-4 py-2 bg-gray-600">
+                      <div className="text-sm w-full font-bold text-white flex flex-col">
+                        <p>Coatations</p>
+                        <span className="flex flex-row align-middle text-center">
+                          0 <BsFillPeopleFill className="mt-1 ml-2" />
+                        </span>
+                      </div>
+                      <Link
+                        href={`/projects/${e.id}/${e.project}`}
+                        className="w-full ml-2"
+                      >
+                        <button className="px-2 py-1 text-xs font-semibold text-gray-900 uppercase transition-colors duration-300 transform bg-white rounded hover:bg-gray-200 focus:bg-gray-400 focus:outline-none">
+                          View Project
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+              {my_projects == "" &&
+                <button className="text-white py-2 px-4  font-medium mt-4">
+                  No Project History Found
+                </button>
+              }
+            </div>
+
           </div>
         </div>
 
@@ -734,69 +802,8 @@ const userProfile = ({ userAddress, chainId, signer, currentContract }) => {
           </div>
         )}
       </div>
-      {my_projects.map((e, index) => {
-        return (
-          <div
-            key={index}
-            className="w-[300px] h-[100%] overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 relative mt-5 mb-5 mr-6"
-          >
-            <div className="px-4 py-2">
-              <h1 className="text-xl font-bold text-gray-800 uppercase dark:text-white">
-                {e.title}
-              </h1>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {e.short_description}
-              </p>
-            </div>
-            <div className="flex flex-row px-4">
-              <h1 className="text-white">Budget - </h1>
-              <p className="ml-2 text-gray-300">
-                {ethers.utils.formatEther(e.budget)}
-              </p>
-              <Image
-                src={polygonPng}
-                className="ml-2"
-                width={25}
-                height={20}
-                alt="matic"
-              />
-            </div>
 
-            <div className="flex flex-row px-4">
-              <h1 className="text-white">Deadline - </h1>
-              <p className="ml-2 text-gray-300">{e.deadLine.toString()}</p>
-            </div>
 
-            <Image
-              className="object-cover w-full h-48 mt-2"
-              src={e.images.replace(
-                "ipfs://",
-                "https://gateway.ipfscdn.io/ipfs/"
-              )}
-              alt="NIKE AIR"
-              height={100}
-              width={100}
-            />
-
-            <div className="flex items-center justify-between px-4 py-2 bg-gray-600">
-              <div className="text-sm w-full font-bold text-white flex flex-col">
-                <p>Coatations</p>
-                <span className="flex flex-row align-middle text-center">
-                  0 <BsFillPeopleFill className="mt-1 ml-2" />
-                </span>
-              </div>
-              <Link
-                href={`/projects/${e.id}/${e.project}`}
-                className="w-full ml-2"
-              >
-                <button className="px-2 py-1 text-xs font-semibold text-gray-900 uppercase transition-colors duration-300 transform bg-white rounded hover:bg-gray-200 focus:bg-gray-400 focus:outline-none">
-                  View Project
-                </button>
-              </Link>
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 };

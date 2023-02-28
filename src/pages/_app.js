@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }) {
   const contractMumbai = "0x4ee660E20ED169AECF027E480F79D785cf54c581";
   const contractOptimism = ""; //pending
   const contractFilecoin = "0x60E5aABd492a9c6479D74dCec24B0dAa78a89b0B";
-  const contractMantle = "0xB3176B8c838Da2450967eB047938CE18901dDe7E"; //pending
+  const contractMantle = "0xB3176B8c838Da2450967eB047938CE18901dDe7E";
   const contractGoerli = "0xCe1552ecab7b39EC44aC5d84102ba9dA1C780F93";
 
   const [userId, setUserId] = useState("");
